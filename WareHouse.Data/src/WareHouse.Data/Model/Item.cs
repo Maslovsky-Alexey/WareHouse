@@ -7,8 +7,10 @@ namespace WareHouse.Data.Model
 {
     public class Item
     {
-        string Name { get; set; }
+        public int ID { get; set; }
+
+        public string Name { get; set; }
         
-        int Count { get; set; }
+        public int Count { get; set; }
     }
 }

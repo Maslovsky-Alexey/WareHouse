@@ -7,7 +7,8 @@ namespace WareHouse.Data.Model
 {
     public class Client
     {
-        string Name { get; set; }
+        public int ID { get; set; }
+        public string Name { get; set; }
 
     }
 }
