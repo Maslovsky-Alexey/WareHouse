@@ -36,5 +36,10 @@ namespace WareHouse.Data.EF.Repository
         {
             return await employees.FirstAsync(employee => employee.ID == id);
         }
+
+        public async Task<int> Count()
+        {
+            return await Task.Factory.StartNew(employees.Count);
+        }
     }
 }
