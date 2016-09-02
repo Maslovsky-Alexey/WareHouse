@@ -6,13 +6,13 @@ namespace WareHouse.Data.EF.Context
 {
     public class WareHouseDbContext : DbContext
     {
-        public ClientRepository Clients { get; set; }
+        public DbSet<Client> Clients { get; set; }
 
-        public ItemRepository Items { get; set; }
+        public DbSet<Item> Items { get; set; }
 
-        public EmployeeRepository Employees { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
-        public ProviderRepository Providers { get; set; }
+        public DbSet<Provider> Providers { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
