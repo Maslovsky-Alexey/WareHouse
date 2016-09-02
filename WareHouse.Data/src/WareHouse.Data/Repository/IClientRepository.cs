@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WareHouse.Data.Model
+namespace WareHouse.Data.Repository
 {
-    public interface IEmployee
+    public interface IClientRepository : IRepository<Model.Client>
     {
-        string Name { get; set; }
 
     }
 }

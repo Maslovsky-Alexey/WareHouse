@@ -7,10 +7,12 @@ namespace WareHouse.Data.Repository
 {
     public interface IRepository<T>
     {
-        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAll();
 
-        void Add(T item);
+        Task Add(T item);
 
-        void Remove(T item);
+        Task Remove(T item);
+
+        Task<T> GetItem(int id);
     }
 }

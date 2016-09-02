@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WareHouse.Data.Model
 {
-    public interface IProvider
+    public class Employee
     {
         string Name { get; set; }
 

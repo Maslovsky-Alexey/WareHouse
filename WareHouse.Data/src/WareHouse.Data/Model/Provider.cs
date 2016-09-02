@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace WareHouse.Data.Model
 {
-    public interface IItem
+    public class Provider
     {
         string Name { get; set; }
-        
-        int Count { get; set; }
+
     }
 }
