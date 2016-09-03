@@ -29,16 +29,24 @@ namespace WareHouse.Data.EF.Context
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Client>()
-                .HasKey(client => client.ID);
+                .Property(client => client.Name)
+                .HasDefaultValue("Noname")
+                .HasMaxLength(25);
 
             modelBuilder.Entity<Provider>()
-                 .HasKey(provider => provider.ID);
+                .Property(client => client.Name)
+                .HasDefaultValue("Noname")
+                .HasMaxLength(25);
 
             modelBuilder.Entity<Item>()
-                .HasKey(item => item.ID);
+                .Property(client => client.Name)
+                .IsRequired()
+                .HasMaxLength(50);
 
             modelBuilder.Entity<Employee>()
-                 .HasKey(employee => employee.ID);
-       }
+                .Property(client => client.Name)
+                .HasDefaultValue("Noname")
+                .HasMaxLength(25);
+        }
     }
 }
