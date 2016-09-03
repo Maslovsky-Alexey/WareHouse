@@ -14,9 +14,20 @@ namespace WareHouse.Data.EF.Context
 
         public DbSet<Provider> Providers { get; set; }
 
+        public WareHouseDbContext(): base()
+        {
+
+        }
+
+        public WareHouseDbContext(DbContextOptions option) : base(option)
+        {
+
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Client>()
                 .HasKey(client => client.ID);
 
