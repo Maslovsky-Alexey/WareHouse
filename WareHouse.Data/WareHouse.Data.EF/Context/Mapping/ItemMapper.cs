@@ -12,6 +12,7 @@ namespace WareHouse.Data.EF.Context.Mapping
                 .Property(item => item.Name)
                 .IsRequired()
                 .HasMaxLength(50);
+
         }
     }
 }

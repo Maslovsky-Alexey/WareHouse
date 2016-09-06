@@ -12,6 +12,7 @@ namespace WareHouse.Data.EF.Context.Mapping
                 .Property(client => client.Name)
                 .HasDefaultValue("Noname")
                 .HasMaxLength(25);
+
         }
     }
 }

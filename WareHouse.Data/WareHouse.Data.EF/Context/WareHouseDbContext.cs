@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WareHouse.Data.EF.Context.Mapping;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
 
 
-    
+
 namespace WareHouse.Data.EF.Context
 {
     public class WareHouseDbContext : DbContext
@@ -30,7 +31,7 @@ namespace WareHouse.Data.EF.Context
         {
             base.OnModelCreating(modelBuilder);
 
-
+            Mapper.MapModels(modelBuilder);
         }
     }
 }
