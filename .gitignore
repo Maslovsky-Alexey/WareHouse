@@ -249,13 +249,5 @@ paket-files/
 
 # JetBrains Rider
 .idea/
-*.sln.iml
-/WareHouse.Data/WareHause.Tests
-/WareHouse.Data/src/ConsoleApp1
-/WareHouse.Data/src/WarHouse.Data.EF.Tests
-/WareHouse.Data/Tests.cs
-/WareHouse.Data/src/template
-/WareHouse.Data/home.html
-/WareHouse.Data/index.html
-/WareHouse.Data/styleHome.css
-/WareHouse.Data/WareHouse.Data.EF/Repository
+
+

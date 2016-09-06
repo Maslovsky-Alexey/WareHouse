@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using WareHouse.Data.EF.Context;
+using WareHouse.Data.EF.Context.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WareHouse.Data.Model;

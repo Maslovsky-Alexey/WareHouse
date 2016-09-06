@@ -2,6 +2,8 @@
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
 
+
+    
 namespace WareHouse.Data.EF.Context
 {
     public class WareHouseDbContext : DbContext
@@ -28,25 +30,7 @@ namespace WareHouse.Data.EF.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Client>()
-                .Property(client => client.Name)
-                .HasDefaultValue("Noname")
-                .HasMaxLength(25);
 
-            modelBuilder.Entity<Provider>()
-                .Property(client => client.Name)
-                .HasDefaultValue("Noname")
-                .HasMaxLength(25);
-
-            modelBuilder.Entity<Item>()
-                .Property(client => client.Name)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            modelBuilder.Entity<Employee>()
-                .Property(client => client.Name)
-                .HasDefaultValue("Noname")
-                .HasMaxLength(25);
         }
     }
 }
