@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace WareHouse.Data.Model
 {
-    public class Item : BaseModel
+    public abstract class BaseModel
     {
-        public string Name { get; set; }
-        
-        public int Count { get; set; }
+        public int ID { get; set; }
     }
 }

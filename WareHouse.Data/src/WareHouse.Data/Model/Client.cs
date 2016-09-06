@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace WareHouse.Data.Model
 {
-    public class Client
-    {
-        public int ID { get; set; }
+    public class Client : BaseModel
+    {    
         public string Name { get; set; }
-
     }
 }

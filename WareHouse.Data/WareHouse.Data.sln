@@ -16,6 +16,36 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.Data.EF", "WareHo
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WarHouse.Data.EF.Tests", "src\WarHouse.Data.EF.Tests\WarHouse.Data.EF.Tests.xproj", "{C96B4A22-EE98-4D8A-A306-4C8037EC21EB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{C785C241-C7AE-4539-9829-D1C2D5E10251}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "home", "home", "{76D07815-9185-4EEC-9C05-1BF958F54EAD}"
+	ProjectSection(SolutionItems) = preProject
+		src\template\index.html = src\template\index.html
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "css", "css", "{3342B876-D207-4893-A8B6-BE676755DBCF}"
+	ProjectSection(SolutionItems) = preProject
+		src\template\css\bootstrap.css = src\template\css\bootstrap.css
+		src\template\css\bootstrap.min.css = src\template\css\bootstrap.min.css
+		src\template\css\shop-homepage.css = src\template\css\shop-homepage.css
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "font", "font", "{3C6A3B7C-7D1E-48BA-A743-97737FF2D05A}"
+	ProjectSection(SolutionItems) = preProject
+		src\template\fonts\glyphicons-halflings-regular.eot = src\template\fonts\glyphicons-halflings-regular.eot
+		src\template\fonts\glyphicons-halflings-regular.svg = src\template\fonts\glyphicons-halflings-regular.svg
+		src\template\fonts\glyphicons-halflings-regular.ttf = src\template\fonts\glyphicons-halflings-regular.ttf
+		src\template\fonts\glyphicons-halflings-regular.woff = src\template\fonts\glyphicons-halflings-regular.woff
+		src\template\fonts\glyphicons-halflings-regular.woff2 = src\template\fonts\glyphicons-halflings-regular.woff2
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "js", "js", "{B59F41BD-FA4A-4B51-9A9F-DCAAA3EF2BCC}"
+	ProjectSection(SolutionItems) = preProject
+		src\template\js\bootstrap.js = src\template\js\bootstrap.js
+		src\template\js\bootstrap.min.js = src\template\js\bootstrap.min.js
+		src\template\js\jquery.js = src\template\js\jquery.js
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +72,9 @@ Global
 		{6957DD68-C7F4-4438-978A-576499B4EA76} = {3E2CC7D0-E69F-4397-BE99-E18C6EE3DE77}
 		{997EF344-28DF-4EC5-9B4C-417CCFF314FE} = {3E2CC7D0-E69F-4397-BE99-E18C6EE3DE77}
 		{C96B4A22-EE98-4D8A-A306-4C8037EC21EB} = {3E2CC7D0-E69F-4397-BE99-E18C6EE3DE77}
+		{76D07815-9185-4EEC-9C05-1BF958F54EAD} = {C785C241-C7AE-4539-9829-D1C2D5E10251}
+		{3342B876-D207-4893-A8B6-BE676755DBCF} = {76D07815-9185-4EEC-9C05-1BF958F54EAD}
+		{3C6A3B7C-7D1E-48BA-A743-97737FF2D05A} = {76D07815-9185-4EEC-9C05-1BF958F54EAD}
+		{B59F41BD-FA4A-4B51-9A9F-DCAAA3EF2BCC} = {76D07815-9185-4EEC-9C05-1BF958F54EAD}
 	EndGlobalSection
 EndGlobal
