@@ -10,38 +10,13 @@ using WareHouse.Data.EF.Context;
 
 namespace WareHouse.Data.EF.Repository
 {
-    public class ClientRepository : IClientRepository
+    public class ClientRepository : BaseRepository<Client>, IClientRepository
     {
         private WareHouseDbContext context;
 
-        public ClientRepository(WareHouseDbContext context)
+        public ClientRepository(WareHouseDbContext context) : base(context.Clients)
         {
             this.context = context;
-        }
-
-        public async Task<IEnumerable<Client>> GetAll()
-        {
-            return await context.Clients.ToArrayAsync();
-        }
-
-        public async Task Add(Client client)
-        {
-            await Task.Factory.StartNew(() => context.Clients.Add(client));
-        }
-
-        public async Task Remove(Client client)
-        {
-            await Task.Factory.StartNew(() => context.Clients.Remove(client));
-        }
-
-        public async Task<Client> GetItem(int id)
-        {
-            return await context.Clients.FirstAsync(client => client.ID == id);
-        }
-
-        public async Task<int> Count()
-        {
-            return await Task.Factory.StartNew(context.Clients.Count);
         }
     }
 }
