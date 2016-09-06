@@ -46,6 +46,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "js", "js", "{B59F41BD-FA4A-
 		src\template\js\jquery.js = src\template\js\jquery.js
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReactJS template", "ReactJS template", "{650F9AC3-ABFC-43A6-8A76-9DCAF8BC09D5}"
+	ProjectSection(SolutionItems) = preProject
+		C:\Users\a.maslovsky\Desktop\ReactJSTest\TestReact\TestReact\Scripts\react\itemsView.jsx = C:\Users\a.maslovsky\Desktop\ReactJSTest\TestReact\TestReact\Scripts\react\itemsView.jsx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
