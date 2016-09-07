@@ -9,6 +9,7 @@ namespace WareHouse.Data.EF.Context.Mapping
         public void Map(EntityTypeBuilder<Client> typeBuilder)
         {
             typeBuilder
+                .ToTable("Clients")
                 .Property(client => client.Name)
                 .HasDefaultValue("Noname")
                 .HasMaxLength(25);

@@ -24,14 +24,13 @@ namespace WareHouse.Data.EF.Context
 
         public WareHouseDbContext(DbContextOptions option) : base(option)
         {
-
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
             Mapper.MapModels(modelBuilder);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
