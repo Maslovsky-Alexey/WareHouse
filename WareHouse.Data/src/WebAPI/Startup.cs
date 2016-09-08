@@ -41,6 +41,12 @@ namespace WebAPI
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder.WithOrigins("http://localhost:33607"));
+            });
+
             services.AddMvc();
         }
 
@@ -61,6 +67,8 @@ namespace WebAPI
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseCors("AllowSpecificOrigin");
 
             app.UseApplicationInsightsExceptionTelemetry();
 

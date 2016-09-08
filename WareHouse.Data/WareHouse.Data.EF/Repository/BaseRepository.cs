@@ -24,7 +24,7 @@ namespace WareHouse.Data.EF.Repository
 
         public async Task Add(T item)
         {
-            await Task.Factory.StartNew(() => table.Add(item));
+            await Task.Factory.StartNew(() => table.Add(item));            
         }
 
         public async Task Remove(T item)

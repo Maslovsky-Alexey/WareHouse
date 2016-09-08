@@ -23,7 +23,8 @@
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
     "WareHouse.Data.EF": "1.0.0-*",
     "Microsoft.EntityFrameworkCore": "1.0.0",
-    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0"
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
+    "Microsoft.AspNetCore.Cors": "1.0.0"
   },
 
   "tools": {
