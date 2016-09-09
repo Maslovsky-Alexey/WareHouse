@@ -1,35 +1,5 @@
 ﻿"use strict";
 
-var my_news = [{
-    name: "",
-    price: 0,
-    about: "",
-    link: "#",
-
-    starscount: 4,
-    views: 13,
-    imgSrc: "http://placehold.it/320x150"
-
-}, {
-    info: {
-        name: "Juce",
-        price: 111,
-        about: "This is Juce. Drink it!",
-        link: "#"
-    },
-
-    starscount: 5,
-    views: 55,
-    imgSrc: "http://placehold.it/320x150"
-
-}];
-
-getItems(success);
-
-function success(items) {
-    my_news[0].info.name = items.name;
-}
-
 var About = React.createClass({
     displayName: "About",
 
@@ -139,7 +109,7 @@ var App = React.createClass({
             _this.setState({ items: data });
         });
 
-        return { items: my_news };
+        return { items: [] };
     },
     render: function render() {
         return React.createElement(

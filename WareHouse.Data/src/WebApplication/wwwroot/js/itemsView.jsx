@@ -1,39 +1,4 @@
-﻿var my_news = [
-    {
-            name: "",
-            price: 0,
-            about: "",
-            link: "#",
-
-        starscount: 4,
-        views: 13,
-        imgSrc: "http://placehold.it/320x150",
-
-    },
-    {
-        info: {
-            name: "Juce",
-            price: 111,
-            about: "This is Juce. Drink it!",
-            link: "#"
-        },
-
-        starscount: 5,
-        views: 55,
-        imgSrc: "http://placehold.it/320x150",
-
-    },
-];
-
-getItems(success);
-
-function success(items) {
-    my_news[0].info.name = items.name;
-
-}
-
-
-var About = React.createClass({
+﻿var About = React.createClass({
     render: function () {
         var itemInfo = this.props.itemInfo;
         return (

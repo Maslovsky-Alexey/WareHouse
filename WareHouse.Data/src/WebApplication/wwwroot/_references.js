@@ -1,6 +1,7 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="js/itemsview.js" />
 /// <reference path="js/models/models.js" />
+/// <reference path="js/newoperationview.js" />
 /// <reference path="js/servermediator.js" />
 /// <reference path="js/site.js" />
 /// <reference path="lib/bootstrap/dist/js/bootstrap.js" />

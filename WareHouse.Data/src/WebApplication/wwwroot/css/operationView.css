@@ -1,0 +1,83 @@
+﻿.people-list{
+    background-color: #f7f7f7;
+    height: 400px;
+    padding: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.19);
+}
+
+.people-list .left{
+    float: left;
+}
+
+.people-list .right{
+    float: right;
+}
+
+
+.people-list-head{
+    border-bottom: 1px solid rgba(71, 150, 195, 0.19);
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+.people-list input{
+    border-radius: 0px;
+    font-size: 12px;
+    padding: 2px 3px 1px 2px; 
+    height: auto;
+}
+
+.people-list-title{
+    text-align: center;
+    font-size: 16px;
+    font-weight: 900;    
+}
+
+.people-list-body{
+
+}
+
+.people-list-item{
+    margin-top: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: rgba(71, 150, 195, 0.10) 1px 1px;
+    background-color: rgba(160, 204, 229, 0.19);
+    display: table;
+    width: 90%;
+    margin-left: 5%;
+    text-align: center;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;   
+    -khtml-user-select: none;    
+    -moz-user-select: none;      
+    -ms-user-select: none;       
+    user-select: none;
+}
+
+.people-list-item-checked{
+    background-color: rgba(160, 204, 229, 0.65);
+}
+
+.people-list-item:hover {
+    background-color: rgba(160, 204, 229, 0.50);
+}
+
+.people-list-item i{
+    margin-right: 5px;
+}
+
+button, input{
+    margin-top: 10px;
+}
+
+.item-edit{
+    
+}
+
+.item-edit input{
+    border-radius: 3px;
+    font-size: 16px;
+    padding: 2px 3px 1px 4px; 
+    height: auto;
+}
