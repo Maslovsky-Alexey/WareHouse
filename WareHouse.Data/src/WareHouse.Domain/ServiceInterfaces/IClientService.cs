@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IClientService : IService<Model.Client>
+    public interface IClientService : IService<Domain.Model.Client, Data.Model.Client>
     {
-
+        
     }
 }

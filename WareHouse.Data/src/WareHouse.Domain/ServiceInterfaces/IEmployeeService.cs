@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IEmployeeService : IService<Model.Employee>
+    public interface IEmployeeService : IService<Domain.Model.Employee, Data.Model.Employee>
     {
 
     }

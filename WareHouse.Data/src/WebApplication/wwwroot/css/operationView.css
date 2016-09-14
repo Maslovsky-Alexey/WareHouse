@@ -13,6 +13,13 @@
     float: right;
 }
 
+.radioleft{
+    float: left;
+}
+
+.radioright{
+    float: right;
+}
 
 .people-list-head{
     border-bottom: 1px solid rgba(71, 150, 195, 0.19);

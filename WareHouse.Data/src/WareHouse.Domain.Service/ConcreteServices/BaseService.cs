@@ -8,38 +8,50 @@ using WareHouse.Domain.ServiceInterfaces;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
-    public class BaseService<T> : IService<T> where T : class
+    public class BaseService<ServiceModel, EFModel> : IService<ServiceModel, EFModel>
+        where EFModel : Data.Model.BaseModel
+        where ServiceModel : Domain.Model.BaseModel
     {
-        protected BaseRepository<T> repository;
+        protected BaseRepository<EFModel> repository;
 
-        public BaseService(BaseRepository<T> repository)
+        public BaseService(BaseRepository<EFModel> repository)
         {
             this.repository = repository;
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<IEnumerable<ServiceModel>> GetAll()
         {
-            return await repository.GetAll();
+            return (await repository.GetAll()).Select(m => MapToServiceModel(m));
         }
 
-        public async Task Add(T item)
+        public async Task Add(ServiceModel item)
         {
-            await repository.Add(item);
+            await repository.Add(MapToEFModel(item));
         }
 
-        public async Task Remove(T item)
+        public async Task Remove(ServiceModel item)
         {
-            await repository.Remove(item);
+            await repository.Remove(MapToEFModel(item));
         }
 
-        public async Task<T> GetItem(int id)
+        public async Task<ServiceModel> GetItem(int id)
         {
-            return await repository.GetItem(id);
+            return MapToServiceModel(await repository.GetItem(id));
         }
 
         public async Task<int> Count()
         {
             return await repository.Count();
+        }
+
+        protected virtual EFModel MapToEFModel(ServiceModel model)
+        {
+            return null;
+        }
+
+        protected virtual ServiceModel MapToServiceModel(EFModel model)
+        {
+            return null;
         }
     }
 }

@@ -39,7 +39,7 @@ var List = React.createClass({
             if (this.items[i].toLowerCase().includes(text.toLowerCase())) this.state.viewItems.push(this.items[i]);
         }
 
-        if (this.state.viewItems.length == 1) this.curItem = this.state.viewItems[0];else this.curItem = "";
+        if (this.state.viewItems.length == 1) this.curItem = this.state.viewItems[0]; else this.curItem = "";
 
         this.setState({ viewItems: this.state.viewItems });
     },
@@ -51,12 +51,13 @@ var List = React.createClass({
     click: function click(e) {
         var value = $(e.target).text();
 
-        $("#people-list-input").val(value);
+        $(e.target).parent().parent().find("input").val(value);
         this.search(value);
     },
 
     render: function render() {
         var classname = "people-list " + this.props.side;
+        this.side = this.props.side;
 
         return React.createElement(
             "div",
@@ -69,7 +70,7 @@ var List = React.createClass({
                     { className: "people-list-title" },
                     this.props.title
                 ),
-                React.createElement("input", { className: "form-control", onKeyUp: this.changeSearchText, id: "people-list-input" })
+                React.createElement("input", { className: "form-control people-list-input", onKeyUp: this.changeSearchText })
             ),
             React.createElement(ListBody, { values: this.state.viewItems, click: this.click })
         );
@@ -80,12 +81,53 @@ var List = React.createClass({
 var NewOperartionView = React.createClass({
     displayName: "NewOperartionView",
 
+    items: [],
+
+    getInitialState: function getInitialState() {
+        return { a: this.items };
+    },
+
     modeChange: function modeChange(e) {
 
-        if ($("#supply").prop("checked")) {} else {}
+        if ($("#supply").prop("checked")) { } else { }
+    },
+
+    DeleteItem: function DeleteItem(index) {
+        this.items.splice(index, 1);
+        this.setState({ items: this.items });
+    },
+
+    AddItem: function AddItem() {
+        this.items.push({ name: 'noname', count: 0 });
+        this.setState({ a: this.items });
+    },
+
+    Send: function Send(e) {
+        var input_name = $(e.target).parent().find(".item_name");
+        var input_count = $(e.target).parent().find(".item_count");
+        console.debug($("#supply:checked"));
+
+        if ($("#supply:checked").length > 0)
+            addItem(this.CreateItemValue(input_name.val(), input_count.val()), function () {
+                input_name.val('');
+                input_count.val('');
+            });
+        else
+            removeItem(this.CreateItemValue(input_name.val(), input_count.val()), function () {
+                input_name.val('');
+                input_count.val('');
+            });
+    },
+
+    CreateItemValue: function(name, count){
+        return {
+            name: name,
+            count: count
+        };
     },
 
     render: function render() {
+
         return React.createElement(
             "div",
             { className: "row" },
@@ -99,50 +141,21 @@ var NewOperartionView = React.createClass({
                 { className: "col-xs-6" },
                 React.createElement(
                     "label",
-                    { className: "radio-inline" },
+                    { className: "radio-inline radioleft" },
                     React.createElement("input", { type: "radio", name: "inlineRadioOptions", id: "supply", value: "supply", onChange: this.modeChange }),
                     " Supply"
                 ),
                 React.createElement(
                     "label",
-                    { className: "radio-inline" },
+                    { className: "radio-inline radioright" },
                     React.createElement("input", { type: "radio", name: "inlineRadioOptions", id: "order", value: "order", onChange: this.modeChange }),
                     " Order"
                 ),
-                React.createElement(
-                    "div",
-                    { className: "row" },
-                    React.createElement(
-                        "div",
-                        { className: "col-xs-3 item-edit" },
-                        React.createElement("input", { className: "form-control", placeholder: "item name" }),
-                        React.createElement("input", { className: "form-control", placeholder: "Count" }),
-                        React.createElement(
-                            "button",
-                            { className: "btn btn-danger btn-block btn-sm" },
-                            "Delete"
-                        )
-                    ),
-                    React.createElement(
-                        "div",
-                        { className: "col-xs-3 item-edit" },
-                        React.createElement("input", { className: "form-control", placeholder: "item name" }),
-                        React.createElement("input", { className: "form-control", placeholder: "Count" }),
-                        React.createElement(
-                            "button",
-                            { className: "btn btn-danger btn-block btn-sm" },
-                            "Delete"
-                        )
-                    )
-                ),
+                React.createElement("input", { className: "form-control item_name", placeholder: "item name" }),
+                React.createElement("input", { className: "form-control item_count", placeholder: "count" }),
                 React.createElement(
                     "button",
-                    { className: "btn btn-default btn-block btn-sm" },
-                    "Add"
-                ),
-                React.createElement(
-                    "button",
-                    { className: "btn btn-success btn-block btn-sm" },
+                    { className: "btn btn-success btn-block btn-sm", onClick: this.Send },
                     "Send"
                 )
             ),

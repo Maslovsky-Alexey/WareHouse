@@ -24,7 +24,8 @@
     "WareHouse.Data.EF": "1.0.0-*",
     "Microsoft.EntityFrameworkCore": "1.0.0",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
-    "Microsoft.AspNetCore.Cors": "1.0.0"
+    "Microsoft.AspNetCore.Cors": "1.0.0",
+    "WareHouse.Domain.Service": "1.0.0-*"
   },
 
   "tools": {

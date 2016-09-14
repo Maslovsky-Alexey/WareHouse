@@ -48,12 +48,13 @@ var List = React.createClass({
     click: function (e) {
         var value = $(e.target).text();
 
-        $("#people-list-input").val(value);
+        $(e.target).parent().parent().find("input").val(value);
         this.search(value);
     },
 
     render: function () {
         var classname = "people-list " + this.props.side;
+        this.side = this.props.side;
 
         return (
             <div className={classname}>
@@ -61,7 +62,7 @@ var List = React.createClass({
                     <div className="people-list-title">
                         {this.props.title}
                     </div>
-                    <input className="form-control" onKeyUp={this.changeSearchText} id="people-list-input"/>
+                    <input className="form-control people-list-input" onKeyUp={this.changeSearchText} />
                 </div>
                 <ListBody values={this.state.viewItems} click={this.click}/>
             </div>
@@ -72,6 +73,12 @@ var List = React.createClass({
 
 
 var NewOperartionView = React.createClass({
+    items: [],
+
+    getInitialState: function () {
+        return { a: this.items };
+    },
+
     modeChange: function (e) {
 
         if ($("#supply").prop("checked")) {
@@ -82,34 +89,60 @@ var NewOperartionView = React.createClass({
             
     },
 
-    render: function() {
+    DeleteItem: function (index) {
+        this.items.splice(index, 1);
+        this.setState({ items: this.items });
+    },
+
+    AddItem: function(){
+        this.items.push({ name: 'noname', count: 0 });
+        this.setState({ a: this.items });
+    },
+
+    Send: function Send(e) {
+        var input_name = $(e.target).parent().find(".item_name");
+        var input_count = $(e.target).parent().find(".item_count");
+        console.debug($("#supply").prop("checked", true));
+
+        if ($("#supply").prop("checked", true))
+            addItem(this.CreateItemValue(input_name.val(), input_count.val()), function () {
+                input_name.val('sup');
+                input_count.val('');
+            });
+        else
+            removeItem(this.CreateItemValue(input_name.val(), input_count.val()), function () {
+                input_name.val('ord');
+                input_count.val('');
+            });
+    },
+
+    CreateItemValue: function (name, count) {
+        return {
+            name: name,
+            count: count
+        };
+    },
+
+    render: function () {
+
         return (
             <div className="row">
                 <div className="col-xs-3">
                     <List title="Providers" side="left" />
                 </div>
                 <div className="col-xs-6">
-                    <label className="radio-inline">
+                    <label className="radio-inline radioleft">
                       <input type="radio" name="inlineRadioOptions" id="supply" value="supply" onChange={this.modeChange} /> Supply
                     </label>
-                    <label className="radio-inline">
+                    <label className="radio-inline radioright">
                       <input type="radio" name="inlineRadioOptions" id="order" value="order" onChange={this.modeChange} /> Order
                     </label>
-                    <div className="row">
-                        <div className="col-xs-3 item-edit">
-                            <input className="form-control" placeholder="item name" />
-                            <input className="form-control" placeholder="Count" />
-                            <button className="btn btn-danger btn-block btn-sm">Delete</button>
-                        </div>
-                        <div className="col-xs-3 item-edit">
-                            <input className="form-control" placeholder="item name" />
-                            <input className="form-control" placeholder="Count" />
-                            <button className="btn btn-danger btn-block btn-sm">Delete</button>
-                        </div>
-                    </div>
 
-                    <button className="btn btn-default btn-block btn-sm">Add</button>
-                    <button className="btn btn-success btn-block btn-sm">Send</button>
+                    <input className="form-control item_name" placeholder="item name" />
+                    <input className="form-control item_count" placeholder="count" />
+
+
+                    <button className="btn btn-success btn-block btn-sm" onClick={this.Send}>Send</button>
                 </div>
                 <div className="col-xs-3">
                     <List title="Clients" side="right" />

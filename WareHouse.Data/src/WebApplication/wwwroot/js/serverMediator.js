@@ -4,6 +4,14 @@ function getItems(success) {
     });
 }
 
+function addItem(item, success) {
+    toServer('http://localhost:33649/api/items', 'post', JSON.stringify(item), success);
+}
+
+function removeItem(item, success) {
+    toServer('http://localhost:33649/api/items', 'delete', JSON.stringify(item), success);
+}
+
 function toServer(url, type, data, success) {
     var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
 
@@ -11,9 +19,12 @@ function toServer(url, type, data, success) {
 
     xhr.open(type, url, true);
 
+       
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
     xhr.onload = function (a, b) {
         success(xhr.response);
     };
 
-    xhr.send();
+    xhr.send(data);
 }

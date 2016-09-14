@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IProviderService : IService<Model.Provider>
+    public interface IProviderService : IService<Domain.Model.Provider, Data.Model.Provider>
     {
 
     }

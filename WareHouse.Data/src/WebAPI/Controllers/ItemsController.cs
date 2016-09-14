@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.EF.Context;
-using WareHouse.Data.Model;
+using WareHouse.Domain.Model;
+using Microsoft.AspNetCore.Cors;
+using WareHouse.Domain.Service.ConcreteServices;
 
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,13 +17,13 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class ItemsController : Controller
     {
-        private ItemRepository items;
+        private ItemService items;
         private WareHouseDbContext context;
 
         public ItemsController(WareHouseDbContext context)
         {
             this.context = context;
-            items = new ItemRepository(context);
+            items = new ItemService(new ItemRepository(context));
         }
 
         // GET: api/values
@@ -60,12 +62,15 @@ namespace WebAPI.Controllers
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public async Task Delete(int id)
+        [HttpDelete]
+        public async Task Delete([FromBody]Item value)
         {
-            await items.Remove(await items.GetItem(id));
+            //var removingItem = context.Items.First(x => x.Name == value.Name);
 
-            context.SaveChanges();
+            //if (removingItem != null)
+            //    await items.Remove(removingItem); // need count -= value.count
+
+            //context.SaveChanges();
         }
     }
 }
