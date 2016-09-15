@@ -11,11 +11,14 @@ namespace WareHouse.Data.EF.Repository
 {
     public class ItemRepository : BaseRepository<Item>, IItemRepository
     {
-        private WareHouseDbContext context;
-
-        public ItemRepository(WareHouseDbContext context) : base(context.Items)
+        public ItemRepository(WareHouseDbContext context) : base(context, context.Items)
         {
-            this.context = context;
-        }        
+
+        }
+
+        public async Task<Item> GetItemByName(string name)
+        {
+            return await context.Items.FirstOrDefaultAsync(x => x.Name == name);
+        }
     }
 }

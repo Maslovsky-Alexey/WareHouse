@@ -1,4 +1,6 @@
-﻿var ListBody = React.createClass({
+﻿
+
+var ListBody = React.createClass({
     render: function() {
         var data = this.props.values;
         var itemclick = this.props.click;
@@ -21,7 +23,7 @@
 
 var List = React.createClass({
     items: ['Igor A.A.', 'Vasy A.Q.', 'Ira A.A.', 'Orig A.F.'],
-
+    
     getInitialState: function () {
         return { viewItems: this.items};
     },
@@ -74,9 +76,17 @@ var List = React.createClass({
 
 var NewOperartionView = React.createClass({
     items: [],
+    
+    getInitialState: function(){
+        var sender = this;
+        getItems(function (data) {
+            sender.items = data.map(function (item) {
+                return item.name;
+            });
+            sender.setState({});
+        });
 
-    getInitialState: function () {
-        return { a: this.items };
+        return {};
     },
 
     modeChange: function (e) {
@@ -89,38 +99,29 @@ var NewOperartionView = React.createClass({
             
     },
 
-    DeleteItem: function (index) {
-        this.items.splice(index, 1);
-        this.setState({ items: this.items });
-    },
-
-    AddItem: function(){
-        this.items.push({ name: 'noname', count: 0 });
-        this.setState({ a: this.items });
-    },
-
-    Send: function Send(e) {
+    Send: function Send(e) {        
         var input_name = $(e.target).parent().find(".item_name");
         var input_count = $(e.target).parent().find(".item_count");
-        console.debug($("#supply").prop("checked", true));
+
+        this.Validation(input_name, input_count);
 
         if ($("#supply").prop("checked", true))
-            addItem(this.CreateItemValue(input_name.val(), input_count.val()), function () {
-                input_name.val('sup');
-                input_count.val('');
-            });
+            addItem(this.CreateItemValue(input_name.val(), input_count.val()), this.ClearInputs);
         else
-            removeItem(this.CreateItemValue(input_name.val(), input_count.val()), function () {
-                input_name.val('ord');
-                input_count.val('');
-            });
+            removeItem(this.CreateItemValue(input_name.val(), input_count.val()), this.ClearInputs);
     },
 
-    CreateItemValue: function (name, count) {
-        return {
-            name: name,
-            count: count
-        };
+    ClearInputs: function(){
+        input_name.val('ord');
+        input_count.val('');
+    },
+
+    Validation: function(name, count){
+
+    },
+
+    selectedItem: function(item){
+
     },
 
     render: function () {
@@ -138,7 +139,7 @@ var NewOperartionView = React.createClass({
                       <input type="radio" name="inlineRadioOptions" id="order" value="order" onChange={this.modeChange} /> Order
                     </label>
 
-                    <input className="form-control item_name" placeholder="item name" />
+                    <InputCompiler items={this.items} valuechanged={this.selectedItem}/>
                     <input className="form-control item_count" placeholder="count" />
 
 

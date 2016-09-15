@@ -11,8 +11,8 @@ var About = React.createClass({
             React.createElement(
                 "h4",
                 { className: "pull-right" },
-                "$",
-                itemInfo.price
+                "count: ",
+                itemInfo.count
             ),
             React.createElement(
                 "h4",

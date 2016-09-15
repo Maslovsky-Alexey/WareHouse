@@ -11,9 +11,7 @@ namespace WareHouse.Data.EF.Repository
 {
     public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
     {
-        private WareHouseDbContext context;
-
-        public EmployeeRepository(WareHouseDbContext context) : base(context.Employees)
+        public EmployeeRepository(WareHouseDbContext context) : base(context, context.Employees)
         {
             this.context = context;
         }       

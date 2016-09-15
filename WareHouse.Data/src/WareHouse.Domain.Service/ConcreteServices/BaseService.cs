@@ -44,6 +44,11 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return await repository.Count();
         }
 
+        public async Task SaveChanges()
+        {
+            await repository.SaveChanges();
+        }
+
         protected virtual EFModel MapToEFModel(ServiceModel model)
         {
             return null;

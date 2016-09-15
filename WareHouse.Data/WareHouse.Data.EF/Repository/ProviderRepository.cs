@@ -11,9 +11,7 @@ namespace WareHouse.Data.EF.Repository
 {
     public class ProviderRepository : BaseRepository<Provider>, IProviderRepository
     {
-        private WareHouseDbContext context;
-
-        public ProviderRepository(WareHouseDbContext context) : base(context.Providers)
+        public ProviderRepository(WareHouseDbContext context) : base(context, context.Providers)
         {
             this.context = context;
         }      

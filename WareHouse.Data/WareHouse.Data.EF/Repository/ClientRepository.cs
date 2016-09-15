@@ -12,9 +12,7 @@ namespace WareHouse.Data.EF.Repository
 {
     public class ClientRepository : BaseRepository<Client>, IClientRepository
     {
-        private WareHouseDbContext context;
-
-        public ClientRepository(WareHouseDbContext context) : base(context.Clients)
+        public ClientRepository(WareHouseDbContext context) : base(context, context.Clients)
         {
             this.context = context;
         }

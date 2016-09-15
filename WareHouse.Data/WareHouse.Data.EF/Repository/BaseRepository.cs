@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WareHouse.Data.EF.Context;
 using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
 
@@ -10,11 +11,13 @@ namespace WareHouse.Data.EF.Repository
 {
     public abstract class BaseRepository<T> : IRepository<T> where T : BaseModel
     {
-        private DbSet<T> table;
+        protected DbSet<T> table;
+        protected WareHouseDbContext context;
 
-        public BaseRepository(DbSet<T> table)
+        public BaseRepository(WareHouseDbContext context, DbSet<T> table)
         {
             this.table = table;
+            this.context = context;
         }
 
         public async Task<IEnumerable<T>> GetAll()
@@ -40,6 +43,11 @@ namespace WareHouse.Data.EF.Repository
         public async Task<int> Count()
         {
             return await Task.Factory.StartNew(table.Count);
+        }
+
+        public async Task SaveChanges()
+        {
+            await Task.Factory.StartNew(() => context.SaveChanges());
         }
     }
 }

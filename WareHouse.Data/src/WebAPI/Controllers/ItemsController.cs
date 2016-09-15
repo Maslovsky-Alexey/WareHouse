@@ -18,11 +18,9 @@ namespace WebAPI.Controllers
     public class ItemsController : Controller
     {
         private ItemService items;
-        private WareHouseDbContext context;
 
         public ItemsController(WareHouseDbContext context)
         {
-            this.context = context;
             items = new ItemService(new ItemRepository(context));
         }
 
@@ -46,7 +44,7 @@ namespace WebAPI.Controllers
         {
             await items.Add(value);
 
-            context.SaveChanges();
+            await items.SaveChanges();
         }
 
         // PUT api/values/5
@@ -58,19 +56,28 @@ namespace WebAPI.Controllers
             item.Name = value.Name;
             item.Count = value.Count;
 
-            context.SaveChanges();
+            await items.SaveChanges();
         }
 
         // DELETE api/values/5
         [HttpDelete]
         public async Task Delete([FromBody]Item value)
         {
-            //var removingItem = context.Items.First(x => x.Name == value.Name);
+            var removingItem = await items.GetItemByName(value.Name);
 
-            //if (removingItem != null)
-            //    await items.Remove(removingItem); // need count -= value.count
+            if (removingItem != null)
+                await items.Remove(await items.GetItem(removingItem.ID));
+        }
 
-            //context.SaveChanges();
+        [Route("UpdateCount")]
+        [HttpPost]
+        public async Task UpdateCount([FromBody]Item value)
+        {
+            var oldItem = (await items.GetItemByName(value.Name));
+
+            var newCount = oldItem.Count - value.Count > 0 ? oldItem.Count - value.Count : 0;
+
+            await items.UpdateCount(oldItem.ID, newCount);
         }
     }
 }

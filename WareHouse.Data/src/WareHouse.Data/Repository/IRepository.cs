@@ -16,5 +16,7 @@ namespace WareHouse.Data.Repository
         Task<T> GetItem(int id);
 
         Task<int> Count();
+
+        Task SaveChanges();
     }
 }

@@ -3,7 +3,7 @@
         var itemInfo = this.props.itemInfo;
         return (
             <div className="caption">
-                <h4 className="pull-right">${itemInfo.price}</h4>
+                <h4 className="pull-right">count: {itemInfo.count}</h4>
                 <h4><a href={itemInfo.link ? itemInfo.link : '#' }>{itemInfo.name ? itemInfo.name : 'Noname'}</a></h4>
                 <p>{itemInfo.about}</p>
             </div>

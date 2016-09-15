@@ -1,4 +1,5 @@
 ﻿/// <autosync enabled="true" />
+/// <reference path="js/autocompiler/inputcompiler.js" />
 /// <reference path="js/itemsview.js" />
 /// <reference path="js/models/models.js" />
 /// <reference path="js/newoperationview.js" />

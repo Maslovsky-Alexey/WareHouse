@@ -9,7 +9,7 @@ function addItem(item, success) {
 }
 
 function removeItem(item, success) {
-    toServer('http://localhost:33649/api/items', 'delete', JSON.stringify(item), success);
+    toServer('http://localhost:33649/api/items/updatecount', 'post', JSON.stringify(item), success);
 }
 
 function toServer(url, type, data, success) {

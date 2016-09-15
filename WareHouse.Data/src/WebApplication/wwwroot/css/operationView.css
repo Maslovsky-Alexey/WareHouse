@@ -88,3 +88,27 @@ button, input{
     padding: 2px 3px 1px 4px; 
     height: auto;
 }
+
+.compiler-list-items{
+    background-color: rgba(160, 204, 229, 0.95);
+    max-height: 200px;
+    position: absolute;
+    width: 90%;
+    margin-left: 2%;
+    border-radius: 5px;
+}
+
+.compiler-item{
+    font-weight: 700;
+    padding-left: 10px;
+    border-bottom: 1px solid rgba(114, 112, 112, 0.5);
+}
+
+.compiler-item:last-of-type{
+    border-bottom: none;
+}
+
+.compiler-item:hover{
+   color: rgb(202, 128, 178);
+   cursor: pointer;
+}
