@@ -25,7 +25,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<Model.Item> GetItemByName(string name)
         {
-            return MapToServiceModel(await((ItemRepository)repository).GetItemByName(name));
+            return MapToServiceModel(await ((ItemRepository)repository).GetItemByName(name));
         }
         public async Task<Model.Item> GetItemByNameIgnoreCase(string name)
         {

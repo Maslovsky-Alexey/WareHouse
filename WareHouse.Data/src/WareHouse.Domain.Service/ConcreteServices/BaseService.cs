@@ -24,6 +24,11 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return (await repository.GetAll()).Select(m => MapToServiceModel(m));
         }
 
+        public IEnumerable<ServiceModel> GetAllSync()
+        {
+            return repository.GetAllSync().Select(m => MapToServiceModel(m)); ;
+        }
+
         public async Task Add(ServiceModel item)
         {
             await repository.Add(MapToEFModel(item));

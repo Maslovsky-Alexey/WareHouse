@@ -14,6 +14,15 @@ using WareHouse.Domain.Service.ConcreteServices;
 
 namespace WebAPI.Controllers
 {
+    public class PageModel
+    {
+        public IEnumerable<Item> Items { get; set; }
+
+        public int NextPage { get; set; }
+
+        public int PrevPage { get; set; }
+    }
+
     [Route("api/[controller]")]
     public class ItemsController : Controller
     {
@@ -31,12 +40,6 @@ namespace WebAPI.Controllers
             return await items.GetAll();
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public async Task<Item> Get(int id)
-        {
-            return await items.GetItem(id);
-        }
 
         // POST api/values
         [HttpPost]
@@ -86,6 +89,21 @@ namespace WebAPI.Controllers
             var newCount = oldItem.Count - value.Count > 0 ? oldItem.Count - value.Count : 0;
 
             await items.UpdateCount(oldItem.ID, newCount);
+        }
+
+        [Route("GetPage/{page}")]
+        [HttpPost("{page}")]
+        public async Task<PageModel> GetPage(int page)
+        {
+            var result = new PageModel();
+            result.Items = (await items.GetAll()).Skip(page * 6).Take(6);
+
+            result.PrevPage = page - 1 < 0 ? 0 : page - 1;
+
+            var maxPage = (await items.Count() - 1) / 6;
+            result.NextPage = page + 1 > maxPage ? maxPage : page + 1;
+
+            return result;
         }
     }
 }

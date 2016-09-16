@@ -1,5 +1,11 @@
 function getItems(success) {
-    toServer('http://localhost:33649/api/items', 'get', null, function (data) {
+    toServer('http://localhost:33649/api/items/' , 'get', null, function (data) {
+        success(JSON.parse(data));
+    });
+}
+
+function getItems(success, page) {
+    toServer('http://localhost:33649/api/items/GetPage/' + page, 'post', null, function (data) {
         success(JSON.parse(data));
     });
 }

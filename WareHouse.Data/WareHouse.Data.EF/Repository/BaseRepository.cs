@@ -25,6 +25,11 @@ namespace WareHouse.Data.EF.Repository
             return await table.ToArrayAsync();           
         }
 
+        public IEnumerable<T> GetAllSync()
+        {
+            return table.ToArray();
+        }
+
         public async Task Add(T item)
         {
             await Task.Factory.StartNew(() => table.Add(item));            

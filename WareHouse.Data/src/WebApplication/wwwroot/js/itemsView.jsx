@@ -62,20 +62,45 @@ var News = React.createClass({
 });
 
 var App = React.createClass({
-  getInitialState: function () {
-    getItems((data) => {
-        this.setState({ items: data });
-    });
+    nextPage: 0,
+    prevPage: 0,
 
-    return { items: my_news };
-  },
-  render: function() {
+    getInitialState: function () {
+        getItems(this.onItemsGeted, this.nextPage);
+
+        return { items: [] };
+    },
+
+    PrevPage: function(){
+        getItems(this.onItemsGeted, this.prevPage);
+    },
+
+    NextPage: function () {
+        getItems(this.onItemsGeted, this.nextPage);
+    },
+
+    onItemsGeted: function (data) {
+        this.nextPage = data.nextPage;
+        this.prevPage = data.prevPage;
+        this.setState({ items: data.items });
+    },
+
+    render: function() {
     return (
-      <div className="app">
+        <div className="app">
         <News data={this.state.items} />
-      </div>
+        <div className="col-xs-12">
+            <nav aria-label="...">
+                <ul className="pager">
+                <li><a onClick={this.PrevPage}>Previous</a></li>
+                <li><a onClick={this.NextPage}>Next</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        </div>
     );
-  }
+    }
 });
 
 ReactDOM.render(

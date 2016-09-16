@@ -102,20 +102,64 @@ var News = React.createClass({
 var App = React.createClass({
     displayName: "App",
 
-    getInitialState: function getInitialState() {
-        var _this = this;
+    nextPage: 0,
+    prevPage: 0,
 
-        getItems(function (data) {
-            _this.setState({ items: data });
-        });
+    getInitialState: function getInitialState() {
+        getItems(this.onItemsGeted, this.nextPage);
 
         return { items: [] };
     },
+
+    PrevPage: function PrevPage() {
+        getItems(this.onItemsGeted, this.prevPage);
+    },
+
+    NextPage: function NextPage() {
+        getItems(this.onItemsGeted, this.nextPage);
+    },
+
+    onItemsGeted: function onItemsGeted(data) {
+        this.nextPage = data.nextPage;
+        this.prevPage = data.prevPage;
+        this.setState({ items: data.items });
+    },
+
     render: function render() {
         return React.createElement(
             "div",
             { className: "app" },
-            React.createElement(News, { data: this.state.items })
+            React.createElement(News, { data: this.state.items }),
+            React.createElement(
+                "div",
+                { className: "col-xs-12" },
+                React.createElement(
+                    "nav",
+                    { "aria-label": "..." },
+                    React.createElement(
+                        "ul",
+                        { className: "pager" },
+                        React.createElement(
+                            "li",
+                            null,
+                            React.createElement(
+                                "a",
+                                { onClick: this.PrevPage },
+                                "Previous"
+                            )
+                        ),
+                        React.createElement(
+                            "li",
+                            null,
+                            React.createElement(
+                                "a",
+                                { onClick: this.NextPage },
+                                "Next"
+                            )
+                        )
+                    )
+                )
+            )
         );
     }
 });
