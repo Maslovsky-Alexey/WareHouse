@@ -14,6 +14,15 @@ namespace WareHouse.Data.EF.Repository
         public ProviderRepository(WareHouseDbContext context) : base(context, context.Providers)
         {
             this.context = context;
-        }      
+        }
+        public async Task<Provider> GetProviderByName(string name)
+        {
+            return await context.Providers.FirstOrDefaultAsync(x => x.Name == name);
+        }
+
+        public async Task<Provider> GetProviderByNameIgnoreCase(string name)
+        {
+            return await context.Providers.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+        }
     }
 }

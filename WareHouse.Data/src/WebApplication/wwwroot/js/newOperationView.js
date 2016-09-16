@@ -4,6 +4,8 @@ var ListBody = React.createClass({
     displayName: "ListBody",
 
     render: function render() {
+        if (this.props.hidden) return React.createElement("div", null);
+
         var data = this.props.values;
         var itemclick = this.props.click;
 
@@ -45,7 +47,9 @@ var List = React.createClass({
     },
 
     changeSearchText: function changeSearchText(e) {
-        this.search($(e.target).val());
+        var value = $(e.target).val();
+        this.search(value);
+        this.props.changevalue(value);
     },
 
     click: function click(e) {
@@ -53,10 +57,11 @@ var List = React.createClass({
 
         $(e.target).parent().parent().find("input").val(value);
         this.search(value);
+        this.props.changevalue(value);
     },
 
     render: function render() {
-        var classname = "people-list " + this.props.side;
+        var classname = "people-list " + this.props.side + (this.props.active ? " valid" : " invalid");
         this.side = this.props.side;
 
         return React.createElement(
@@ -70,9 +75,9 @@ var List = React.createClass({
                     { className: "people-list-title" },
                     this.props.title
                 ),
-                React.createElement("input", { className: "form-control people-list-input", onKeyUp: this.changeSearchText })
+                React.createElement("input", { className: "form-control people-list-input", onKeyUp: this.changeSearchText, disabled: !this.props.active })
             ),
-            React.createElement(ListBody, { values: this.state.viewItems, click: this.click })
+            React.createElement(ListBody, { values: this.state.viewItems, click: this.click, hidden: !this.props.active })
         );
     }
 
@@ -82,6 +87,7 @@ var NewOperartionView = React.createClass({
     displayName: "NewOperartionView",
 
     items: [],
+    listItem: '',
 
     getInitialState: function getInitialState() {
         var sender = this;
@@ -92,31 +98,41 @@ var NewOperartionView = React.createClass({
             sender.setState({});
         });
 
-        return {};
+        return { supplymode: true };
     },
 
     modeChange: function modeChange(e) {
-
-        if ($("#supply").prop("checked")) { } else { }
+        this.setState({ supplymode: !this.state.supplymode });
     },
 
     Send: function Send(e) {
         var input_name = $(e.target).parent().find(".item_name");
         var input_count = $(e.target).parent().find(".item_count");
+        var item = this.CreateItemValue(input_name.val(), input_count.val());
 
         this.Validation(input_name, input_count);
 
-        if ($("#supply").prop("checked", true)) addItem(this.CreateItemValue(input_name.val(), input_count.val()), this.ClearInputs); else removeItem(this.CreateItemValue(input_name.val(), input_count.val()), this.ClearInputs);
+        if (this.state.supplymode) addItem(item, function () {
+            input_name.val(''); input_count.val('');
+        }); else removeItem(item, function () {
+            input_name.val(''); input_count.val('');
+        });
     },
 
-    ClearInputs: function ClearInputs() {
-        input_name.val('ord');
-        input_count.val('');
+    CreateItemValue: function CreateItemValue(name, count) {
+        return {
+            name: name,
+            count: count
+        };
     },
 
     Validation: function Validation(name, count) { },
 
     selectedItem: function selectedItem(item) { },
+
+    SelectedListItem: function SelectedListItem(item) {
+        this.listItem = item;
+    },
 
     render: function render() {
 
@@ -126,7 +142,7 @@ var NewOperartionView = React.createClass({
             React.createElement(
                 "div",
                 { className: "col-xs-3" },
-                React.createElement(List, { title: "Providers", side: "left" })
+                React.createElement(List, { title: "Providers", side: "left", active: this.state.supplymode, changevalue: this.SelectedListItem })
             ),
             React.createElement(
                 "div",
@@ -134,13 +150,13 @@ var NewOperartionView = React.createClass({
                 React.createElement(
                     "label",
                     { className: "radio-inline radioleft" },
-                    React.createElement("input", { type: "radio", name: "inlineRadioOptions", id: "supply", value: "supply", onChange: this.modeChange }),
+                    React.createElement("input", { type: "radio", name: "inlineRadioOptions", id: "supply", value: "supply", onChange: this.modeChange, checked: this.state.supplymode }),
                     " Supply"
                 ),
                 React.createElement(
                     "label",
                     { className: "radio-inline radioright" },
-                    React.createElement("input", { type: "radio", name: "inlineRadioOptions", id: "order", value: "order", onChange: this.modeChange }),
+                    React.createElement("input", { type: "radio", name: "inlineRadioOptions", id: "order", value: "order", onChange: this.modeChange, checked: !this.state.supplymode }),
                     " Order"
                 ),
                 React.createElement(InputCompiler, { items: this.items, valuechanged: this.selectedItem }),
@@ -154,7 +170,7 @@ var NewOperartionView = React.createClass({
             React.createElement(
                 "div",
                 { className: "col-xs-3" },
-                React.createElement(List, { title: "Clients", side: "right" })
+                React.createElement(List, { title: "Clients", side: "right", active: !this.state.supplymode, changevalue: this.selectedlistitem })
             )
         );
     }

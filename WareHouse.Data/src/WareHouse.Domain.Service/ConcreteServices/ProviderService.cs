@@ -22,5 +22,14 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             return new ModelsMapper.ProviderMapper().MapService(model);
         }
+
+        public async Task<Model.Provider> GetItemByName(string name)
+        {
+            return MapToServiceModel(await ((ProviderRepository)repository).GetProviderByName(name));
+        }
+        public async Task<Model.Provider> GetItemByNameIgnoreCase(string name)
+        {
+            return MapToServiceModel(await ((ProviderRepository)repository).GetProviderByNameIgnoreCase(name));
+        }
     }
 }

@@ -27,6 +27,10 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             return MapToServiceModel(await((ItemRepository)repository).GetItemByName(name));
         }
+        public async Task<Model.Item> GetItemByNameIgnoreCase(string name)
+        {
+            return MapToServiceModel(await ((ItemRepository)repository).GetItemByNameIgnoreCase(name));
+        }
 
         public async Task UpdateCount(int itemID, int newCount)
         {

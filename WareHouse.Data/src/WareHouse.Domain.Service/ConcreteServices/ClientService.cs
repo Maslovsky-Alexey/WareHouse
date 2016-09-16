@@ -27,5 +27,15 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             return new ModelsMapper.ClientMapper().MapService(model);
         }
+
+        public async Task<Model.Client> GetItemByName(string name)
+        {
+            return MapToServiceModel(await ((ClientRepository)repository).GetClientByName(name));
+        }
+
+        public async Task<Model.Client> GetItemByNameIgnoreCase(string name)
+        {
+            return MapToServiceModel(await ((ClientRepository)repository).GetClientByNameIgnoreCase(name));
+        }
     }
 }

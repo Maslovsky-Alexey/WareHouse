@@ -1,7 +1,17 @@
 ﻿.people-list{
     background-color: #f7f7f7;
-    height: 400px;
+    height: auto;
     padding: 5px;
+    border-radius: 5px;
+}
+
+.valid{
+    background-color: rgba(247, 247, 247, 0.0);
+    border: 3px solid rgba(49, 143, 22, 0.50);
+}
+
+.invalid{
+    background-color: rgba(247, 247, 247, 0.27);
     border: 1px solid rgba(0, 0, 0, 0.19);
 }
 
@@ -41,7 +51,24 @@
 }
 
 .people-list-body{
+    overflow-y:auto; 
+    height: 300px;
+}
 
+.people-list-body::-webkit-scrollbar
+{
+  width: 12px;  /* for vertical scrollbars */
+  height: 12px; /* for horizontal scrollbars */
+}
+
+.people-list-body::-webkit-scrollbar-track
+{
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.people-list-body::-webkit-scrollbar-thumb
+{
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .people-list-item{
@@ -68,6 +95,7 @@
 
 .people-list-item:hover {
     background-color: rgba(160, 204, 229, 0.50);
+    cursor: pointer;
 }
 
 .people-list-item i{

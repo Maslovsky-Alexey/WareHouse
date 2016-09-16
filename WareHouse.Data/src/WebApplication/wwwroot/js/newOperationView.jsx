@@ -1,7 +1,10 @@
 ﻿
 
 var ListBody = React.createClass({
-    render: function() {
+    render: function () {
+        if (this.props.hidden)
+            return (<div></div>);
+
         var data = this.props.values;
         var itemclick = this.props.click;
 
@@ -44,7 +47,9 @@ var List = React.createClass({
     },
 
     changeSearchText: function (e) {
-        this.search($(e.target).val());
+        var value = $(e.target).val();
+        this.search(value);
+        this.props.changevalue(value);
     },
 
     click: function (e) {
@@ -52,10 +57,11 @@ var List = React.createClass({
 
         $(e.target).parent().parent().find("input").val(value);
         this.search(value);
+        this.props.changevalue(value);
     },
 
     render: function () {
-        var classname = "people-list " + this.props.side;
+        var classname = "people-list " + this.props.side + (this.props.active ? " valid" : " invalid");
         this.side = this.props.side;
 
         return (
@@ -64,9 +70,9 @@ var List = React.createClass({
                     <div className="people-list-title">
                         {this.props.title}
                     </div>
-                    <input className="form-control people-list-input" onKeyUp={this.changeSearchText} />
+                    <input className="form-control people-list-input" onKeyUp={this.changeSearchText} disabled={!this.props.active}/>
                 </div>
-                <ListBody values={this.state.viewItems} click={this.click}/>
+                <ListBody values={this.state.viewItems} click={this.click} hidden={!this.props.active}/>
             </div>
         );
     }
@@ -76,7 +82,8 @@ var List = React.createClass({
 
 var NewOperartionView = React.createClass({
     items: [],
-    
+    listItem: '',
+
     getInitialState: function(){
         var sender = this;
         getItems(function (data) {
@@ -86,34 +93,31 @@ var NewOperartionView = React.createClass({
             sender.setState({});
         });
 
-        return {};
+        return {supplymode: true};
     },
 
     modeChange: function (e) {
-
-        if ($("#supply").prop("checked")) {
-            
-        } else {
-            
-        }
-            
+        this.setState({ supplymode: !this.state.supplymode });
     },
 
-    Send: function Send(e) {        
+    Send: function Send(e) {
         var input_name = $(e.target).parent().find(".item_name");
         var input_count = $(e.target).parent().find(".item_count");
+        var item = this.CreateItemValue(input_name.val(), input_count.val());
 
         this.Validation(input_name, input_count);
 
-        if ($("#supply").prop("checked", true))
-            addItem(this.CreateItemValue(input_name.val(), input_count.val()), this.ClearInputs);
+        if(this.state.supplymode)
+            addItem(item, function () { input_name.val(''); input_count.val(''); });
         else
-            removeItem(this.CreateItemValue(input_name.val(), input_count.val()), this.ClearInputs);
+            removeItem(item, function () { input_name.val(''); input_count.val(''); });
     },
 
-    ClearInputs: function(){
-        input_name.val('ord');
-        input_count.val('');
+    CreateItemValue: function(name, count){
+        return {
+            name: name,
+            count: count
+        };
     },
 
     Validation: function(name, count){
@@ -124,19 +128,23 @@ var NewOperartionView = React.createClass({
 
     },
 
+    SelectedListItem: function(item){
+        this.listItem = item;
+    },
+
     render: function () {
 
         return (
             <div className="row">
                 <div className="col-xs-3">
-                    <List title="Providers" side="left" />
+                    <List title="Providers" side="left" active={this.state.supplymode} changevalue={this.SelectedListItem}/>
                 </div>
                 <div className="col-xs-6">
                     <label className="radio-inline radioleft">
-                      <input type="radio" name="inlineRadioOptions" id="supply" value="supply" onChange={this.modeChange} /> Supply
+                      <input type="radio" name="inlineRadioOptions" id="supply" value="supply" onChange={this.modeChange} checked= {this.state.supplymode}/> Supply
                     </label>
                     <label className="radio-inline radioright">
-                      <input type="radio" name="inlineRadioOptions" id="order" value="order" onChange={this.modeChange} /> Order
+                      <input type="radio" name="inlineRadioOptions" id="order" value="order" onChange={this.modeChange} checked= {!this.state.supplymode}/> Order
                     </label>
 
                     <InputCompiler items={this.items} valuechanged={this.selectedItem}/>
@@ -146,7 +154,7 @@ var NewOperartionView = React.createClass({
                     <button className="btn btn-success btn-block btn-sm" onClick={this.Send}>Send</button>
                 </div>
                 <div className="col-xs-3">
-                    <List title="Clients" side="right" />
+                    <List title="Clients" side="right" active={!this.state.supplymode} changevalue={this.selectedlistitem}/>
                 </div>                            
             </div>
         );

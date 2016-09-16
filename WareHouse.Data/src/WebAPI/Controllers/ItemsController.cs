@@ -42,9 +42,17 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task Post([FromBody]Item value)
         {
-            await items.Add(value);
+            var item = await items.GetItemByNameIgnoreCase(value.Name);
 
-            await items.SaveChanges();
+            if (item != null)
+            {
+                await items.UpdateCount(item.ID, item.Count + value.Count);
+            }
+            else
+            {
+                await items.Add(value);
+                await items.SaveChanges();
+            }
         }
 
         // PUT api/values/5

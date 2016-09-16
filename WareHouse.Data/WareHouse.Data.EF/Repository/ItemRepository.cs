@@ -20,5 +20,10 @@ namespace WareHouse.Data.EF.Repository
         {
             return await context.Items.FirstOrDefaultAsync(x => x.Name == name);
         }
+
+        public async Task<Item> GetItemByNameIgnoreCase(string name)
+        {
+            return await context.Items.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+        }
     }
 }

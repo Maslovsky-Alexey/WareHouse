@@ -16,5 +16,15 @@ namespace WareHouse.Data.EF.Repository
         {
             this.context = context;
         }
+
+        public async Task<Client> GetClientByName(string name)
+        {
+            return await context.Clients.FirstOrDefaultAsync(x => x.Name == name);
+        }
+
+        public async Task<Client> GetClientByNameIgnoreCase(string name)
+        {
+            return await context.Clients.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+        }
     }
 }
