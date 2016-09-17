@@ -40,6 +40,11 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task Post([FromBody]Provider value)
         {
+            var provider = await providers.GetItemByNameIgnoreCase(value.Name);
+
+            if (provider != null)
+                return;
+
             await providers.Add(value);
             await providers.SaveChanges();
         }
@@ -59,7 +64,7 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public async Task Delete([FromBody]Provider value)
         {
-            var removingItem = await providers.GetItemByName(value.Name);
+            var removingItem = await providers.GetItemByNameIgnoreCase(value.Name);
 
             if (removingItem != null)
                 await providers.Remove(await providers.GetItem(removingItem.ID));

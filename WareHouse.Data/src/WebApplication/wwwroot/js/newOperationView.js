@@ -113,11 +113,17 @@ var NewOperartionView = React.createClass({
 
         this.Validation(input_name, input_count);
 
-        if (this.state.supplymode) addItem(item, function () {
-            input_name.val(''); input_count.val('');
-        }); else removeItem(item, function () {
-            input_name.val(''); input_count.val('');
-        });
+        if (this.state.supplymode) {
+            addItem(item, function () {
+                input_name.val(''); input_count.val('');
+            });
+            addProvder({ name: this.listItem }, function () { });
+        } else {
+            removeItem(item, function () {
+                input_name.val(''); input_count.val('');
+            });
+            addClient({ name: this.listItem }, function () { });
+        }
     },
 
     CreateItemValue: function CreateItemValue(name, count) {

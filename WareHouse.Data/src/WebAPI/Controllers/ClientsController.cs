@@ -40,6 +40,11 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task Post([FromBody]Client value)
         {
+            var client = await clients.GetItemByNameIgnoreCase(value.Name);
+
+            if (client != null)
+                return;
+
             await clients.Add(value);
             await clients.SaveChanges();        
         }
@@ -59,7 +64,7 @@ namespace WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task Delete([FromBody]Client value)
         {
-            var removingItem = await clients.GetItemByName(value.Name);
+            var removingItem = await clients.GetItemByNameIgnoreCase(value.Name);
 
             if (removingItem != null)
                 await clients.Remove(await clients.GetItem(removingItem.ID));

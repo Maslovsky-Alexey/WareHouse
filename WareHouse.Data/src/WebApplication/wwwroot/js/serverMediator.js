@@ -26,6 +26,14 @@ function addItem(item, success) {
     toServer('http://localhost:33649/api/items', 'post', JSON.stringify(item), success);
 }
 
+function addClient(item, success) {
+    toServer('http://localhost:33649/api/clients', 'post', JSON.stringify(item), success);
+}
+
+function addProvder(item, success) {
+    toServer('http://localhost:33649/api/providers', 'post', JSON.stringify(item), success);
+}
+
 function removeItem(item, success) {
     toServer('http://localhost:33649/api/items/updatecount', 'post', JSON.stringify(item), success);
 }
