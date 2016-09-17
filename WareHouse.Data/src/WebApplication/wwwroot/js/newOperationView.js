@@ -8,8 +8,11 @@ var ListBody = React.createClass({
 
         var data = this.props.values;
         var itemclick = this.props.click;
+        var filter = this.props.filter;
 
         var itemsTemplate = data.map(function (item, index) {
+            if (!item.toLowerCase().includes(filter.toLowerCase())) return;
+
             return React.createElement(
                 "div",
                 { className: "people-list-item", key: index, onClick: itemclick },
@@ -28,22 +31,13 @@ var ListBody = React.createClass({
 var List = React.createClass({
     displayName: "List",
 
-    items: ['Igor A.A.', 'Vasy A.Q.', 'Ira A.A.', 'Orig A.F.'],
-
-    getInitialState: function getInitialState() {
-        return { viewItems: this.items };
-    },
+    items: [],
+    filter: "",
 
     search: function search(text) {
-        this.state.viewItems = [];
+        this.filter = text;
 
-        for (var i = 0; i < this.items.length; i++) {
-            if (this.items[i].toLowerCase().includes(text.toLowerCase())) this.state.viewItems.push(this.items[i]);
-        }
-
-        if (this.state.viewItems.length == 1) this.curItem = this.state.viewItems[0]; else this.curItem = "";
-
-        this.setState({ viewItems: this.state.viewItems });
+        this.forceUpdate();
     },
 
     changeSearchText: function changeSearchText(e) {
@@ -61,6 +55,8 @@ var List = React.createClass({
     },
 
     render: function render() {
+        this.items = this.props.items;
+
         var classname = "people-list " + this.props.side + (this.props.active ? " valid" : " invalid");
         this.side = this.props.side;
 
@@ -77,7 +73,7 @@ var List = React.createClass({
                 ),
                 React.createElement("input", { className: "form-control people-list-input", onKeyUp: this.changeSearchText, disabled: !this.props.active })
             ),
-            React.createElement(ListBody, { values: this.state.viewItems, click: this.click, hidden: !this.props.active })
+            React.createElement(ListBody, { values: this.items, click: this.click, hidden: !this.props.active, filter: this.filter })
         );
     }
 
@@ -88,11 +84,16 @@ var NewOperartionView = React.createClass({
 
     items: [],
     listItem: '',
+    providers: [],
+    clients: [],
 
     getInitialState: function getInitialState() {
         var sender = this;
+        getClients(this.onClientsGeted);
+        getProviders(this.onProvidersGeted);
+
         getItems(function (data) {
-            sender.items = data.map(function (item) {
+            sender.items = data.items.map(function (item) {
                 return item.name;
             });
             sender.setState({});
@@ -134,6 +135,22 @@ var NewOperartionView = React.createClass({
         this.listItem = item;
     },
 
+    onProvidersGeted: function onProvidersGeted(data) {
+        this.providers = data.map(function (item) {
+            return item.name;
+        });
+
+        this.setState({ supplymode: this.state.supplymode });
+    },
+
+    onClientsGeted: function onClientsGeted(data) {
+        this.clients = data.map(function (item) {
+            return item.name;
+        });
+
+        this.setState({ supplymode: this.state.supplymode });
+    },
+
     render: function render() {
 
         return React.createElement(
@@ -142,7 +159,7 @@ var NewOperartionView = React.createClass({
             React.createElement(
                 "div",
                 { className: "col-xs-3" },
-                React.createElement(List, { title: "Providers", side: "left", active: this.state.supplymode, changevalue: this.SelectedListItem })
+                React.createElement(List, { title: "Providers", side: "left", active: this.state.supplymode, changevalue: this.SelectedListItem, items: this.providers })
             ),
             React.createElement(
                 "div",
@@ -170,7 +187,7 @@ var NewOperartionView = React.createClass({
             React.createElement(
                 "div",
                 { className: "col-xs-3" },
-                React.createElement(List, { title: "Clients", side: "right", active: !this.state.supplymode, changevalue: this.selectedlistitem })
+                React.createElement(List, { title: "Clients", side: "right", active: !this.state.supplymode, changevalue: this.selectedlistitem, items: this.clients })
             )
         );
     }

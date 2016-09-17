@@ -65,6 +65,7 @@ var App = React.createClass({
     nextPage: 0,
     prevPage: 0,
 
+
     getInitialState: function () {
         getItems(this.onItemsGeted, this.nextPage);
 

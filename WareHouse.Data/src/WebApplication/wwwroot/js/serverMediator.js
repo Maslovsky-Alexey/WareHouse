@@ -1,3 +1,15 @@
+function getProviders(success) {
+    toServer('http://localhost:33649/api/providers/', 'get', null, function (data) {
+        success(JSON.parse(data));
+    });
+}
+
+function getClients(success) {
+    toServer('http://localhost:33649/api/clients/', 'get', null, function (data) {
+        success(JSON.parse(data));
+    });
+}
+
 function getItems(success) {
     toServer('http://localhost:33649/api/items/' , 'get', null, function (data) {
         success(JSON.parse(data));
