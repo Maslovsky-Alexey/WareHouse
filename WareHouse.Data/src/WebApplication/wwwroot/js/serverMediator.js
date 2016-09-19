@@ -16,8 +16,8 @@ function getItems(success) {
     });
 }
 
-function getItems(success, page) {
-    toServer('http://localhost:33649/api/items/GetPage/' + page, 'post', null, function (data) {
+function getPageItems(success, page) {
+    toServer('http://localhost:33649/api/items/GetPage/' + page + '/?$property1=Name&$filter1=a&$orderby=count', 'post', null, function (data) {
         success(JSON.parse(data));
     });
 }

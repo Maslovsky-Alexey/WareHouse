@@ -93,7 +93,7 @@ var NewOperartionView = React.createClass({
         getProviders(this.onProvidersGeted);
 
         getItems(function (data) {
-            sender.items = data.items.map(function (item) {
+            sender.items = data.map(function (item) {
                 return item.name;
             });
             sender.setState({});
@@ -111,7 +111,10 @@ var NewOperartionView = React.createClass({
         var input_count = $(e.target).parent().find(".item_count");
         var item = this.CreateItemValue(input_name.val(), input_count.val());
 
-        this.Validation(input_name, input_count);
+        if (!this.IsFormValid(input_name, input_count)) {
+            alert("Pechal");
+            return;
+        }
 
         if (this.state.supplymode) {
             addItem(item, function () {
@@ -133,7 +136,19 @@ var NewOperartionView = React.createClass({
         };
     },
 
-    Validation: function Validation(name, count) { },
+    IsFormValid: function IsFormValid(name, count) {
+        var countValue = parseInt(count.val());
+
+        var isNameEmpty = this.IsEmptyString(name.val());
+        var isNameCount = this.IsEmptyString(name.val());
+        var isNameListItem = this.IsEmptyString(name.val());
+
+        return (!isNameEmpty && !isNameCount && !isNameListItem) && (countValue != NaN && countValue > 0);
+    },
+
+    IsEmptyString: function IsEmptyString(str) {
+        return str.replace(" ", "") == "";
+    },
 
     selectedItem: function selectedItem(item) { },
 

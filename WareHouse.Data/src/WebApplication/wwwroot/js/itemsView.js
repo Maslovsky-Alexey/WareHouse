@@ -106,17 +106,17 @@ var App = React.createClass({
     prevPage: 0,
 
     getInitialState: function getInitialState() {
-        getItems(this.onItemsGeted, this.nextPage);
+        getPageItems(this.onItemsGeted, this.nextPage);
 
         return { items: [] };
     },
 
     PrevPage: function PrevPage() {
-        getItems(this.onItemsGeted, this.prevPage);
+        getPageItems(this.onItemsGeted, this.prevPage);
     },
 
     NextPage: function NextPage() {
-        getItems(this.onItemsGeted, this.nextPage);
+        getPageItems(this.onItemsGeted, this.nextPage);
     },
 
     onItemsGeted: function onItemsGeted(data) {

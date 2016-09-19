@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<Item>> Get()
         {
-            return await items.GetAll();
+            return await items.GetAll();      
         }
 
 
@@ -95,8 +95,11 @@ namespace WebAPI.Controllers
         [HttpPost("{page}")]
         public async Task<PageModel> GetPage(int page)
         {
+            var a = WareHouse.MyOData.MyOData.GetConfiguratesFromQueryString(Request.QueryString.Value);
+            var data = WareHouse.MyOData.MyOData.ApplyMyODataCongigurates(items.GetAllSync(), a);
+
             var result = new PageModel();
-            result.Items = (await items.GetAll()).Skip(page * 6).Take(6);
+            result.Items =  data.Skip(page * 6).Take(6);
 
             result.PrevPage = page - 1 < 0 ? 0 : page - 1;
 
