@@ -14,6 +14,7 @@ namespace WareHouse.Data.EF.Repository
         protected DbSet<T> table;
         protected WareHouseDbContext context;
 
+        //TODO: Получив весь DBContext можно получить из него отдельный DBSet, передавать его как парамерт излишне
         public BaseRepository(WareHouseDbContext context, DbSet<T> table)
         {
             this.table = table;
@@ -52,6 +53,7 @@ namespace WareHouse.Data.EF.Repository
 
         public async Task SaveChanges()
         {
+            //TODO: Почему не используешь асинхронный метод? (SaveChangesAsync)
             await Task.Factory.StartNew(() => context.SaveChanges());
         }
     }

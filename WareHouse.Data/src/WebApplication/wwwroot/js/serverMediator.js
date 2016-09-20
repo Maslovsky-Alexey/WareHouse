@@ -1,3 +1,5 @@
+//TODO: Работу с отдельными сущностями лучше разбить на отдельные репозитории, наподобии как на стороне сервера.
+
 function getProviders(success) {
     toServer('http://localhost:33649/api/providers/', 'get', null, function (data) {
         success(JSON.parse(data));
@@ -16,8 +18,9 @@ function getItems(success) {
     });
 }
 
-function getPageItems(success, page) {
-    toServer('http://localhost:33649/api/items/GetPage/' + page + '/?$property1=Name&$filter1=a&$orderby=count', 'post', null, function (data) {
+//TODO: Метод POST не должен использоваться для полкчения данных.
+function getItems(success, page) {
+    toServer('http://localhost:33649/api/items/GetPage/' + page, 'post', null, function (data) {
         success(JSON.parse(data));
     });
 }
@@ -45,7 +48,7 @@ function toServer(url, type, data, success) {
 
     xhr.open(type, url, true);
 
-       
+       //TODO: Нужно добавить еще как минимум заголовки Accept
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 
     xhr.onload = function (a, b) {

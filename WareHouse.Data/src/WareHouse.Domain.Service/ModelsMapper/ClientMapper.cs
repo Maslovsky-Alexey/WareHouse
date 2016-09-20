@@ -6,6 +6,7 @@ using AutoMapper;
 
 namespace WareHouse.Domain.Service.ModelsMapper
 {
+    //TODO: Нужно сделать обобщенную реазилацию сразу для всех, отдельно только создать конфигурацию маппинга
     public class ClientMapper
     {
         private IMapper mapperToEF;

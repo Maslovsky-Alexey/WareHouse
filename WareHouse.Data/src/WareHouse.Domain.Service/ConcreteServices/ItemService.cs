@@ -32,6 +32,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return MapToServiceModel(await ((ItemRepository)repository).GetItemByNameIgnoreCase(name));
         }
 
+        //TODO: Модет лучше передавать не новое количество, а изменение количества (+/-N), и считать новое уже в сервисе?
         public async Task UpdateCount(int itemID, int newCount)
         {
             var item = await repository.GetItem(itemID);
