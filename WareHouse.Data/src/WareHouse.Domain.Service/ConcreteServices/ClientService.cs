@@ -11,6 +11,7 @@ using WareHouse.Domain.ServiceInterfaces;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
+    //TODO: Нужно создать соответсвующий интерфейс и в вызывающем коде использовать интерфейс, а не класс-реализацию.
     public class ClientService : BaseService<Domain.Model.Client, Data.Model.Client>
     {
         public ClientService(BaseRepository<Data.Model.Client> repository) : base(repository)
@@ -33,6 +34,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return MapToServiceModel(await ((ClientRepository)repository).GetClientByName(name));
         }
 
+        //TOOD: IgnoreCase скорее параметр для GetItemByName, а не отдельный метод
         public async Task<Model.Client> GetItemByNameIgnoreCase(string name)
         {
             return MapToServiceModel(await ((ClientRepository)repository).GetClientByNameIgnoreCase(name));

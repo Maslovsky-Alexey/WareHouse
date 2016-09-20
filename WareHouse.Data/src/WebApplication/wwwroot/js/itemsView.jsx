@@ -1,4 +1,7 @@
-﻿var About = React.createClass({
+﻿
+//TODO: отдельные компоненты лучше разделить на отдельные файлы (создать иерархию папок)
+
+var About = React.createClass({
     render: function () {
         var itemInfo = this.props.itemInfo;
         return (
@@ -62,6 +65,7 @@ var News = React.createClass({
 });
 
 var App = React.createClass({
+    //TODO: Items скорее отдельный компонент и эта функциональность не должна находиться в корневом компоненте приложения.
     nextPage: 0,
     prevPage: 0,
 

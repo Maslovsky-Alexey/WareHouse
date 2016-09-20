@@ -1,5 +1,5 @@
 ﻿
-
+//TODO: отдельные компоненты лучше разделить на отдельные файлы (создать иерархию папок)
 var ListBody = React.createClass({
     render: function () {
         if (this.props.hidden)

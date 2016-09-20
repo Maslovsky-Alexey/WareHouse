@@ -14,6 +14,8 @@ using WareHouse.Domain.Service.ConcreteServices;
 
 namespace WebAPI.Controllers
 {
+
+    //TODO: модели лучше вынести в отдельную папку Models
     public class PageModel
     {
         public IEnumerable<Item> Items { get; set; }
@@ -22,7 +24,7 @@ namespace WebAPI.Controllers
 
         public int PrevPage { get; set; }
     }
-
+    
     [Route("api/[controller]")]
     public class ItemsController : Controller
     {
@@ -84,6 +86,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task UpdateCount([FromBody]Item value)
         {
+            //TODO: Бизнес логика должна быть реализована в сервисе, для этого они и создавались
             var oldItem = (await items.GetItemByName(value.Name));
 
             var newCount = oldItem.Count - value.Count > 0 ? oldItem.Count - value.Count : 0;
@@ -95,6 +98,7 @@ namespace WebAPI.Controllers
         [HttpPost("{page}")]
         public async Task<PageModel> GetPage(int page)
         {
+            //TODO: Контроллер должен только передавать модель фильтрации (тот же OData) в сервис, логика должна выболняться в сервсие.
             var result = new PageModel();
             result.Items = (await items.GetAll()).Skip(page * 6).Take(6);
 

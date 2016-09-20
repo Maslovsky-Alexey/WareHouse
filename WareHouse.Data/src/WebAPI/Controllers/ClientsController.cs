@@ -19,6 +19,7 @@ namespace WebAPI.Controllers
 
         public ClientsController(WareHouseDbContext context)
         {
+            //TODO: Вынести инициализацию сервисов в DI контейнер (Autofac, Unity, Ninject и т.д.)
             clients = new ClientService(new ClientRepository(context));
         }
 
@@ -40,6 +41,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task Post([FromBody]Client value)
         {
+            //TODO: проверка уникальности должна быть на стороне БД, в контроллере не должно быть никакой логики, данная реализация не потокобезопасна
             var client = await clients.GetItemByNameIgnoreCase(value.Name);
 
             if (client != null)
@@ -53,6 +55,7 @@ namespace WebAPI.Controllers
         [HttpPut("{id}")]
         public async Task Put(int id, [FromBody]Client value)
         {
+            //TODO: операция обновления должна быть польностью реализована в сервисе.
             var item = await clients.GetItem(id);
 
             item.Name = value.Name;
@@ -64,6 +67,7 @@ namespace WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task Delete([FromBody]Client value)
         {
+            //TODO: Почему поиск присходит по имени, а удаление по идентификатору? Операция должна быть вынесена в сервис/репозиторий, в таком виде она не потокобезопасна.
             var removingItem = await clients.GetItemByNameIgnoreCase(value.Name);
 
             if (removingItem != null)
