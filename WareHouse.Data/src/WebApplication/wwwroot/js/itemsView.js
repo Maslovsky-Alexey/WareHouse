@@ -107,7 +107,7 @@ var App = React.createClass({
 
     getInitialState: function getInitialState() {
         getPageItems(this.onItemsGeted, this.nextPage);
-
+        
         return { items: [] };
     },
 
@@ -120,6 +120,7 @@ var App = React.createClass({
     },
 
     onItemsGeted: function onItemsGeted(data) {
+        console.debug(data);
         this.nextPage = data.nextPage;
         this.prevPage = data.prevPage;
         this.setState({ items: data.items });

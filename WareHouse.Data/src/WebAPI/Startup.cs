@@ -9,6 +9,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using WareHouse.Data.EF.Context;
+using Autofac;
+using WareHouse.Domain.Service.ConcreteServices;
+using WareHouse.Domain.ServiceInterfaces;
+using Autofac.Extensions.DependencyInjection;
+using Autofac.Core;
+using WareHouse.Data.EF.Repository;
+using WareHouse.Data.Repository;
 
 namespace WebAPI
 {
@@ -31,11 +38,16 @@ namespace WebAPI
         }
 
         public IConfigurationRoot Configuration { get; }
+        public IContainer ApplicationContainer { get; private set; }
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse;uid=Admin;password=123123";
+            //    var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse;uid=Admin;password=123123;";    it's magic
+            var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse.Data.EF.Context.WarehouseDbContext;Integrated Security=True";
+
+
             services.AddDbContext<WareHouseDbContext>(options => options.UseSqlServer(connection));
 
             // Add framework services.
@@ -50,6 +62,31 @@ namespace WebAPI
             });
 
             services.AddMvc();
+
+            var containerBuilder = new ContainerBuilder();
+
+            RegistrTypes(containerBuilder);
+
+            containerBuilder.Populate(services);
+            this.ApplicationContainer = containerBuilder.Build();
+
+            // Create the IServiceProvider based on the container.
+            return new AutofacServiceProvider(this.ApplicationContainer);
+        }
+
+        private void RegistrTypes(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<ClientRepository>().As<BaseRepository<WareHouse.Data.Model.Client>>();
+            containerBuilder.RegisterType<ClientService>().As<IClientService>();
+
+            containerBuilder.RegisterType<ItemRepository>().As<BaseRepository<WareHouse.Data.Model.Item>>();
+            containerBuilder.RegisterType<ItemService>().As<IItemService>();
+
+            containerBuilder.RegisterType<ProviderRepository>().As<BaseRepository<WareHouse.Data.Model.Provider>>();
+            containerBuilder.RegisterType<ProviderService>().As<IProviderService>();
+
+            containerBuilder.RegisterType<EmployeeRepository>().As<BaseRepository<WareHouse.Data.Model.Employee>>();
+            containerBuilder.RegisterType<EmployeeService>().As<IEmployeeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

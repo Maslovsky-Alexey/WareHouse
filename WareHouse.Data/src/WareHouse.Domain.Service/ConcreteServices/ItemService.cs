@@ -3,42 +3,80 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
+using WareHouse.Domain.ServiceInterfaces;
+using WareHouse.Domain.Service.ModelsMapper;
+using WareHouse.Domain.Service.ModelsMapper.Configurators;
+using WareHouse.Domain.Model;
+using WareHouse.MyOData;
+using System.Linq.Expressions;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
-    public class ItemService : BaseService<Domain.Model.Item, Data.Model.Item>
+    public class ItemService : BaseService<Domain.Model.Item, Data.Model.Item>, IItemService
     {
-        public ItemService(BaseRepository<Data.Model.Item> repository) : base(repository)
+        public ItemService(BaseRepository<Data.Model.Item> repository) : base(repository,
+            new ModelsMapper<Data.Model.Item, Domain.Model.Item>(new ItemMapConfigurator()))
         {
 
         }
 
-        protected override Data.Model.Item MapToEFModel(Domain.Model.Item model)
+        public async Task<Model.Item> GetItemByName(string name, bool ignoreCase)
         {
-            return new ModelsMapper.ItemMapper().MapEF(model);
+            return MapToServiceModel(await ((ItemRepository)repository).GetItemByName(name, ignoreCase));
         }
 
-        protected override Domain.Model.Item MapToServiceModel(Data.Model.Item model)
+        public async Task AddOrUpdateCount(Item value)
         {
-            return new ModelsMapper.ItemMapper().MapService(model);
+            var item = await GetItemByName(value.Name, true);
+
+            if (item != null)
+            {
+                await ((ItemRepository)repository).UpdateCount(item.Id, value.Count);
+            }
+            else
+            {
+                await Add(value);
+            }
         }
 
-        public async Task<Model.Item> GetItemByName(string name)
+        public async Task SubCount(Item value)
         {
-            return MapToServiceModel(await ((ItemRepository)repository).GetItemByName(name));
-        }
-        public async Task<Model.Item> GetItemByNameIgnoreCase(string name)
-        {
-            return MapToServiceModel(await ((ItemRepository)repository).GetItemByNameIgnoreCase(name));
+            var oldItem = (await GetItemByName(value.Name, true));
+
+            if (oldItem == null)
+                return;
+
+            var deltaCount = oldItem.Count - value.Count > 0 ? 0 - value.Count : 0;
+
+            if (deltaCount == 0)
+                return;
+
+            await ((ItemRepository)repository).UpdateCount(oldItem.Id, deltaCount);
         }
 
-        //TODO: Модет лучше передавать не новое количество, а изменение количества (+/-N), и считать новое уже в сервисе?
-        public async Task UpdateCount(int itemID, int newCount)
+        public async Task RemoveItemByName(Item value)
         {
-            var item = await repository.GetItem(itemID);
-            item.Count = newCount;
+            var removingItem = await GetItemByName(value.Name, true);
 
-            await repository.SaveChanges();
+            if (removingItem != null)
+                await Remove(await GetItem(removingItem.Id));
+        }
+
+        public async Task<PageModel> GetPage(int page, MyODataConfigurates config)
+        {
+            var a = MyOData.MyOData.CompileFunc<Item>(config);
+
+            var result = new PageModel();
+            result.Items = GetAllSync().Where(a)
+                .Skip(page * 6)
+                .Take(6);
+
+            result.PrevPage = page - 1 < 0 ? 0 : page - 1;
+
+            var maxPage = (await Count() - 1) / 6;
+            result.NextPage = page + 1 > maxPage ? maxPage : page + 1;
+
+            return result;
         }
     }
 }

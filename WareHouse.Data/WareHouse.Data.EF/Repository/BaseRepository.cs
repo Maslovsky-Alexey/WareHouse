@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Context;
 using WareHouse.Data.Model;
@@ -14,11 +15,10 @@ namespace WareHouse.Data.EF.Repository
         protected DbSet<T> table;
         protected WareHouseDbContext context;
 
-        //TODO: Получив весь DBContext можно получить из него отдельный DBSet, передавать его как парамерт излишне
-        public BaseRepository(WareHouseDbContext context, DbSet<T> table)
+        public BaseRepository(WareHouseDbContext context)
         {
-            this.table = table;
             this.context = context;
+            this.table = context.Set<T>();           
         }
 
         public async Task<IEnumerable<T>> GetAll()
@@ -26,35 +26,61 @@ namespace WareHouse.Data.EF.Repository
             return await table.ToArrayAsync();           
         }
 
+        public async Task<IEnumerable<T>> GetAllWithFilter(Expression<Func<T, bool>> filter)
+        {
+            return table.Where(filter);
+        }
+
         public IEnumerable<T> GetAllSync()
         {
             return table.ToArray();
         }
 
-        public async Task Add(T item)
+        public async Task<OperationStatus> Add(T item)
         {
-            await Task.Factory.StartNew(() => table.Add(item));            
+            var count = 0;
+
+            try
+            {
+                await Task.Factory.StartNew(() => table.Add(item));
+                count = await SaveChanges();
+            }
+            catch
+            {
+                return OperationStatus.Error;
+            }
+
+            return count > 0 ? OperationStatus.Added : OperationStatus.NotAdded;
         }
 
-        public async Task Remove(T item)
+        public async Task<OperationStatus> Remove(T item)
         {
-            await Task.Factory.StartNew(() => table.Remove(item));
+            try
+            {
+                await Task.Factory.StartNew(() => table.Remove(item));
+                await SaveChanges();
+            }
+            catch
+            {
+                return OperationStatus.Error;
+            }
+
+            return OperationStatus.Removed;
         }
 
         public async Task<T> GetItem(int id)
         {
-            return await table.FirstAsync(item => item.ID == id);
+            return await table.FirstAsync(item => item.Id == id);
         }
 
         public async Task<int> Count()
         {
-            return await Task.Factory.StartNew(table.Count);
+            return await table.CountAsync();
         }
 
-        public async Task SaveChanges()
+        protected async Task<int> SaveChanges()
         {
-            //TODO: Почему не используешь асинхронный метод? (SaveChangesAsync)
-            await Task.Factory.StartNew(() => context.SaveChanges());
+            return await context.SaveChangesAsync();
         }
     }
 }

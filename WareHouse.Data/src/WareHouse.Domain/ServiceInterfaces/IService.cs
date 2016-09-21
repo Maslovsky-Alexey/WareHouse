@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WareHouse.Data.Repository;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
@@ -11,9 +12,9 @@ namespace WareHouse.Domain.ServiceInterfaces
     {
         Task<IEnumerable<ServiceModel>> GetAll();
 
-        Task Add(ServiceModel item);
+        Task<OperationStatus> Add(ServiceModel item);
 
-        Task Remove(ServiceModel item);
+        Task<OperationStatus> Remove(ServiceModel item);
 
         Task<ServiceModel> GetItem(int id);
 

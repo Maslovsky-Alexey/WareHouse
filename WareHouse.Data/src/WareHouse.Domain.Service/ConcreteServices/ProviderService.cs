@@ -3,33 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
+using WareHouse.Domain.ServiceInterfaces;
+using WareHouse.Domain.Service.ModelsMapper;
+using WareHouse.Domain.Service.ModelsMapper.Configurators;
+using WareHouse.Domain.Model;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
-    public class ProviderService : BaseService<Domain.Model.Provider, Data.Model.Provider>
+    public class ProviderService : BaseService<Domain.Model.Provider, Data.Model.Provider>, IProviderService
     {
-        public ProviderService(BaseRepository<Data.Model.Provider> repository) : base(repository)
+        public ProviderService(BaseRepository<Data.Model.Provider> repository) : base(repository,
+             new ModelsMapper<Data.Model.Provider, Domain.Model.Provider>(new ProviderMapConfigurator()))
         {
 
         }
 
-        protected override Data.Model.Provider MapToEFModel(Domain.Model.Provider model)
+        public async Task<Model.Provider> GetProviderByName(string name, bool ignoreCase)
         {
-            return new ModelsMapper.ProviderMapper().MapEF(model);
+            return MapToServiceModel(await ((ProviderRepository)repository).GetProviderByName(name, ignoreCase));
         }
 
-        protected override Domain.Model.Provider MapToServiceModel(Data.Model.Provider model)
+        public async Task AddWithoutRepetition(Model.Provider value)
         {
-            return new ModelsMapper.ProviderMapper().MapService(model);
+            var provider = await GetProviderByName(value.Name, true);
+
+            if (provider != null)
+                return;
+
+            await Add(value);
         }
 
-        public async Task<Model.Provider> GetItemByName(string name)
+        public async Task RemoveProviderByName(Provider value)
         {
-            return MapToServiceModel(await ((ProviderRepository)repository).GetProviderByName(name));
-        }
-        public async Task<Model.Provider> GetItemByNameIgnoreCase(string name)
-        {
-            return MapToServiceModel(await ((ProviderRepository)repository).GetProviderByNameIgnoreCase(name));
+            var removingItem = await GetProviderByName(value.Name, true);
+
+            if (removingItem != null)
+                await Remove(await GetItem(removingItem.Id));
         }
     }
 }

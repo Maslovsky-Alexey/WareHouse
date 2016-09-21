@@ -11,18 +11,20 @@ namespace WareHouse.Data.EF.Repository
 {
     public class ProviderRepository : BaseRepository<Provider>, IProviderRepository
     {
-        public ProviderRepository(WareHouseDbContext context) : base(context, context.Providers)
+        public ProviderRepository(WareHouseDbContext context) : base(context)
         {
             this.context = context;
         }
-        public async Task<Provider> GetProviderByName(string name)
+        public async Task<Provider> GetProviderByName(string name, bool ignoreCose)
         {
-            return await context.Providers.FirstOrDefaultAsync(x => x.Name == name);
-        }
-
-        public async Task<Provider> GetProviderByNameIgnoreCase(string name)
-        {
-            return await context.Providers.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+            if (ignoreCose)
+            {
+                return await context.Providers.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+            }
+            else
+            {
+                return await context.Providers.FirstOrDefaultAsync(x => x.Name == name);
+            }
         }
     }
 }

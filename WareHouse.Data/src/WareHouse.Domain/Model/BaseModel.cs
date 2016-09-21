@@ -7,7 +7,6 @@ namespace WareHouse.Domain.Model
 {
     public abstract class BaseModel
     {
-        //TODO: Не соответсвует спецификации C# 
-        public int ID { get; set; }
+        public int Id { get; set; }
     }
 }

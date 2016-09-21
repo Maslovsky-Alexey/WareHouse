@@ -13,14 +13,16 @@ function getClients(success) {
 }
 
 function getItems(success) {
-    toServer('http://localhost:33649/api/items/' , 'get', null, function (data) {
+    toServer('http://localhost:33649/api/items/', 'get', null, function (data) {
+        console.debug(data);
         success(JSON.parse(data));
     });
 }
 
 //TODO: Метод POST не должен использоваться для полкчения данных.
-function getItems(success, page) {
-    toServer('http://localhost:33649/api/items/GetPage/' + page, 'post', null, function (data) {
+function getPageItems(success, page) {
+    toServer('http://localhost:33649/api/items/GetPage/' + page + '/?$property1=name&$filter1=a', 'post', null, function (data) {
+
         success(JSON.parse(data));
     });
 }
@@ -48,7 +50,7 @@ function toServer(url, type, data, success) {
 
     xhr.open(type, url, true);
 
-       //TODO: Нужно добавить еще как минимум заголовки Accept
+       //TODO: Нужно добавить еще как минимум заголовки Accept (спросить зачем)
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 
     xhr.onload = function (a, b) {

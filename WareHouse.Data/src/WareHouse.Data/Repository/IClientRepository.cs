@@ -7,6 +7,6 @@ namespace WareHouse.Data.Repository
 {
     public interface IClientRepository : IRepository<Model.Client>
     {
-
+    
     }
 }

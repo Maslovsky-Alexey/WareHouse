@@ -1,22 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Repository;
+using WareHouse.Domain.Service.ModelsMapper;
 using WareHouse.Domain.ServiceInterfaces;
 
 namespace WareHouse.Domain.Service.ConcreteServices
-{
+{ 
+
+
     public class BaseService<ServiceModel, EFModel> : IService<ServiceModel, EFModel>
         where EFModel : Data.Model.BaseModel
         where ServiceModel : Domain.Model.BaseModel
     {
         protected BaseRepository<EFModel> repository;
+        private ModelsMapper<EFModel, ServiceModel> mapper;
 
-        public BaseService(BaseRepository<EFModel> repository)
+
+        public BaseService(BaseRepository<EFModel> repository, ModelsMapper<EFModel, ServiceModel> mapper)
         {
             this.repository = repository;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<ServiceModel>> GetAll()
@@ -27,18 +34,16 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public IEnumerable<ServiceModel> GetAllSync()
         {
             return repository.GetAllSync().Select(MapToServiceModel);
-            ;
+        }
+        
+        public async Task<OperationStatus> Add(ServiceModel item)
+        {
+            return await repository.Add(MapToEFModel(item));
         }
 
-        //TODO: Операции изменения данных должны возвращать статус выполнения операции, не всегда они завершабтся успешно. Операция создания должна еще возвращать идентификатор новой записи.
-        public async Task Add(ServiceModel item)
+        public async Task<OperationStatus> Remove(ServiceModel item)
         {
-            await repository.Add(MapToEFModel(item));
-        }
-
-        public async Task Remove(ServiceModel item)
-        {
-            await repository.Remove(MapToEFModel(item));
+            return await repository.Remove(MapToEFModel(item));
         }
 
         public async Task<ServiceModel> GetItem(int id)
@@ -51,22 +56,14 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return await repository.Count();
         }
 
-        //TODO: Эта операция не нужна на уровне сервиса, не нужно отдавать контроль над транзакцией вызывающему коду, каждая операция изменения в сервисе должна быть атомарной для вызывающего кода.
-        public async Task SaveChanges()
+        protected EFModel MapToEFModel(ServiceModel model)
         {
-            await repository.SaveChanges();
+            return mapper.MapEF(model);
         }
 
-
-        //TODO: Когда будет сделан обобщенный класс для маппинка, то эту логику можно будет реализовать прямо здесь
-        protected virtual EFModel MapToEFModel(ServiceModel model)
+        protected ServiceModel MapToServiceModel(EFModel model)
         {
-            return null;
-        }
-
-        protected virtual ServiceModel MapToServiceModel(EFModel model)
-        {
-            return null;
+            return mapper.MapService(model);
         }
     }
 }

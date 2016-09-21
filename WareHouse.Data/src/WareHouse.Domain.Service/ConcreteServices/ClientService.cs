@@ -7,37 +7,44 @@ using WareHouse.Data.EF.Context.Mapping;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
 using WareHouse.Domain.Model;
+using WareHouse.Domain.Service.ModelsMapper;
+using WareHouse.Domain.Service.ModelsMapper.Configurators;
 using WareHouse.Domain.ServiceInterfaces;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
-    //TODO: Нужно создать соответсвующий интерфейс и в вызывающем коде использовать интерфейс, а не класс-реализацию.
-    public class ClientService : BaseService<Domain.Model.Client, Data.Model.Client>
+
+    public class ClientService : BaseService<Domain.Model.Client, Data.Model.Client>, IClientService
     {
-        public ClientService(BaseRepository<Data.Model.Client> repository) : base(repository)
+        public ClientService(BaseRepository<Data.Model.Client> repository) : base(repository, 
+            new ModelsMapper<Data.Model.Client, Domain.Model.Client>(new ClientMapConfigurator()))
         {
-
+         
         }
 
-        protected override Data.Model.Client MapToEFModel(Model.Client model)
+        public async Task<Model.Client> GetClientByName(string name, bool ignoreCase)
         {
-            return new ModelsMapper.ClientMapper().MapEF(model);
+            return MapToServiceModel(await ((ClientRepository)repository).GetClientByName(name, ignoreCase));
         }
 
-        protected override Model.Client MapToServiceModel(Data.Model.Client model)
+        public async Task AddWithoutRepetition(Model.Client value)
         {
-            return new ModelsMapper.ClientMapper().MapService(model);
+            var client = await GetClientByName(value.Name, true);
+
+            if (client != null)
+                return;
+
+            await Add(value);
         }
 
-        public async Task<Model.Client> GetItemByName(string name)
+        public async Task RemoveClientByName(Model.Client value)
         {
-            return MapToServiceModel(await ((ClientRepository)repository).GetClientByName(name));
-        }
+            //TODO: Почему поиск присходит по имени, а удаление по идентификатору?                     Операция должна быть вынесена в сервис/репозиторий, в таком виде она не потокобезопасна.
 
-        //TOOD: IgnoreCase скорее параметр для GetItemByName, а не отдельный метод
-        public async Task<Model.Client> GetItemByNameIgnoreCase(string name)
-        {
-            return MapToServiceModel(await ((ClientRepository)repository).GetClientByNameIgnoreCase(name));
+            var removingItem = await GetClientByName(value.Name, true);
+
+            if (removingItem != null)
+                await Remove(await GetItem(removingItem.Id));
         }
     }
 }

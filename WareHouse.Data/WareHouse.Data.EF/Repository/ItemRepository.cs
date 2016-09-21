@@ -11,19 +11,31 @@ namespace WareHouse.Data.EF.Repository
 {
     public class ItemRepository : BaseRepository<Item>, IItemRepository
     {
-        public ItemRepository(WareHouseDbContext context) : base(context, context.Items)
+        public ItemRepository(WareHouseDbContext context) : base(context)
         {
 
         }
 
-        public async Task<Item> GetItemByName(string name)
+        public async Task<Item> GetItemByName(string name, bool ignoreCase)
         {
-            return await context.Items.FirstOrDefaultAsync(x => x.Name == name);
+            if (ignoreCase)
+            {
+                return await context.Items.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+            }                
+            else
+            {
+                return await context.Items.FirstOrDefaultAsync(x => x.Name == name);
+            }            
         }
 
-        public async Task<Item> GetItemByNameIgnoreCase(string name)
+        public async Task<int> UpdateCount(int itemID, int deltaCount)
         {
-            return await context.Items.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+            var item = await GetItem(itemID);
+            item.Count += deltaCount;
+
+            await SaveChanges();
+
+            return item.Count;
         }
     }
 }

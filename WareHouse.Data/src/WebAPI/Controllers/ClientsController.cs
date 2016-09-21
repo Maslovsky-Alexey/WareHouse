@@ -7,6 +7,8 @@ using WareHouse.Domain.Service.ConcreteServices;
 using WareHouse.Data.EF.Context;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Domain.Model;
+using WareHouse.Domain.ServiceInterfaces;
+using WareHouse.Data.Repository;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,12 +17,11 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class ClientsController : Controller
     {
-        private ClientService clients;
+        private IClientService clients;
 
-        public ClientsController(WareHouseDbContext context)
+        public ClientsController(IClientService clients)
         {
-            //TODO: Вынести инициализацию сервисов в DI контейнер (Autofac, Unity, Ninject и т.д.)
-            clients = new ClientService(new ClientRepository(context));
+            this.clients = clients;
         }
 
         // GET: api/values
@@ -41,37 +42,14 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task Post([FromBody]Client value)
         {
-            //TODO: проверка уникальности должна быть на стороне БД, в контроллере не должно быть никакой логики, данная реализация не потокобезопасна
-            var client = await clients.GetItemByNameIgnoreCase(value.Name);
-
-            if (client != null)
-                return;
-
-            await clients.Add(value);
-            await clients.SaveChanges();        
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody]Client value)
-        {
-            //TODO: операция обновления должна быть польностью реализована в сервисе.
-            var item = await clients.GetItem(id);
-
-            item.Name = value.Name;
-
-            await clients.SaveChanges();
+            await clients.AddWithoutRepetition(value);
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public async Task Delete([FromBody]Client value)
         {
-            //TODO: Почему поиск присходит по имени, а удаление по идентификатору? Операция должна быть вынесена в сервис/репозиторий, в таком виде она не потокобезопасна.
-            var removingItem = await clients.GetItemByNameIgnoreCase(value.Name);
-
-            if (removingItem != null)
-                await clients.Remove(await clients.GetItem(removingItem.ID));
+            await clients.RemoveClientByName(value);
         }
     }
 }

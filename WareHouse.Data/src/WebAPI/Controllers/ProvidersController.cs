@@ -40,34 +40,15 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task Post([FromBody]Provider value) 
         {
-            var provider = await providers.GetItemByNameIgnoreCase(value.Name);
+            await providers.AddWithoutRepetition(value);
 
-            if (provider != null)
-                return;
-
-            await providers.Add(value);
-            await providers.SaveChanges();
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody]Provider value)
-        {
-            var item = await providers.GetItem(id);
-
-            item.Name = value.Name;
-
-            await providers.SaveChanges();
         }
 
         // DELETE api/values/5
         [HttpDelete]
         public async Task Delete([FromBody]Provider value)
         {
-            var removingItem = await providers.GetItemByNameIgnoreCase(value.Name);
-
-            if (removingItem != null)
-                await providers.Remove(await providers.GetItem(removingItem.ID));
+            await providers.RemoveProviderByName(value);
         }
     }
 }

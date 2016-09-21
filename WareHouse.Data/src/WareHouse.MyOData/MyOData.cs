@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Linq.Expressions;
 
 namespace WareHouse.MyOData
 {
@@ -39,6 +40,34 @@ namespace WareHouse.MyOData
                 items = items.OrderByDescending((item) => item.GetType().GetTypeInfo().GetProperty(config.OrderBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(item, null));
 
             return items;
+        }
+
+        public static Func<T, bool> CompileFunc<T>(MyODataConfigurates config)
+        {
+            //TODO: !!!спросить как правильно!!!
+            Func<T, bool> func = (item) =>
+            {
+                foreach (PropertyFilter prop in config.PropertiesFilter)
+                {
+                    var value = GetPropertyValue(item, prop.Name).ToString();
+
+                    if (value.ToLower().IndexOf(prop.Filter.ToLower()) < 0)
+                        return false;
+                }
+                  
+
+                return true;
+            };  
+
+            return func;
+        }
+
+        private static object GetPropertyValue<T>(T obj, string propertyName)
+        {
+            var typeInfo = obj.GetType().GetTypeInfo();
+
+            var property = typeInfo.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            return property.GetValue(obj, null);
         }
 
         private static IEnumerable<PropertyFilter> GetPropertiesFilter(string source)

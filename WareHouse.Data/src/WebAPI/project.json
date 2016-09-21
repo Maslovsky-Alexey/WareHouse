@@ -26,8 +26,9 @@
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
     "Microsoft.AspNetCore.Cors": "1.0.0",
     "WareHouse.Domain.Service": "1.0.0-*",
-    "WareHouse.MyOData": "1.0.0-*"
-  },
+    "WareHouse.MyOData": "1.0.0-*",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
+    "Autofac.Extensions.DependencyInjection": "4.0.0"  },
 
   "tools": {
     "BundlerMinifier.Core": "2.0.238",

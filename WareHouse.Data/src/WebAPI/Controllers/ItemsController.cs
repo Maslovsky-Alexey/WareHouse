@@ -8,31 +8,21 @@ using WareHouse.Data.EF.Context;
 using WareHouse.Domain.Model;
 using Microsoft.AspNetCore.Cors;
 using WareHouse.Domain.Service.ConcreteServices;
-
+using WareHouse.Domain.ServiceInterfaces;
+using WareHouse.MyOData;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebAPI.Controllers
-{
-
-    //TODO: модели лучше вынести в отдельную папку Models
-    public class PageModel
-    {
-        public IEnumerable<Item> Items { get; set; }
-
-        public int NextPage { get; set; }
-
-        public int PrevPage { get; set; }
-    }
-    
+{   
     [Route("api/[controller]")]
     public class ItemsController : Controller
     {
-        private ItemService items;
+        private IItemService items;
 
-        public ItemsController(WareHouseDbContext context)
+        public ItemsController(IItemService items)
         {
-            items = new ItemService(new ItemRepository(context));
+            this.items = items;
         }
 
         // GET: api/values
@@ -47,17 +37,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task Post([FromBody]Item value)
         {
-            var item = await items.GetItemByNameIgnoreCase(value.Name);
-
-            if (item != null)
-            {
-                await items.UpdateCount(item.ID, item.Count + value.Count);
-            }
-            else
-            {
-                await items.Add(value);
-                await items.SaveChanges();
-            }
+            await items.AddOrUpdateCount(value);
         }
 
         // PUT api/values/5
@@ -68,46 +48,27 @@ namespace WebAPI.Controllers
 
             item.Name = value.Name;
             item.Count = value.Count;
-
-            await items.SaveChanges();
         }
 
         // DELETE api/values/5
         [HttpDelete]
         public async Task Delete([FromBody]Item value)
         {
-            var removingItem = await items.GetItemByName(value.Name);
-
-            if (removingItem != null)
-                await items.Remove(await items.GetItem(removingItem.ID));
+            await items.RemoveItemByName(value);
         }
 
         [Route("UpdateCount")]
         [HttpPost]
         public async Task UpdateCount([FromBody]Item value)
-        {
-            //TODO: Бизнес логика должна быть реализована в сервисе, для этого они и создавались
-            var oldItem = (await items.GetItemByName(value.Name));
-
-            var newCount = oldItem.Count - value.Count > 0 ? oldItem.Count - value.Count : 0;
-
-            await items.UpdateCount(oldItem.ID, newCount);
+        {     
+            await items.SubCount(value);
         }
 
         [Route("GetPage/{page}")]
         [HttpPost("{page}")]
         public async Task<PageModel> GetPage(int page)
         {
-            //TODO: Контроллер должен только передавать модель фильтрации (тот же OData) в сервис, логика должна выболняться в сервсие.
-            var result = new PageModel();
-            result.Items = (await items.GetAll()).Skip(page * 6).Take(6);
-
-            result.PrevPage = page - 1 < 0 ? 0 : page - 1;
-
-            var maxPage = (await items.Count() - 1) / 6;
-            result.NextPage = page + 1 > maxPage ? maxPage : page + 1;
-
-            return result;
+            return await items.GetPage(page, MyOData.GetConfiguratesFromQueryString(Request.QueryString.Value));
         }
     }
 }
