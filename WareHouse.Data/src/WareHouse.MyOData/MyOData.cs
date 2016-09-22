@@ -42,24 +42,35 @@ namespace WareHouse.MyOData
             return items;
         }
 
-        public static Func<T, bool> CompileFunc<T>(MyODataConfigurates config)
+        public static Expression<Func<T, bool>> CompileFilters<T>(MyODataConfigurates config)
         {
-            //TODO: !!!спросить как правильно!!!
-            Func<T, bool> func = (item) =>
+            var filters = GetFiltersFromConfigurates<T>(config);
+
+            Expression<Func<T, bool>> firstFilter = filters.FirstOrDefault();
+
+            if (firstFilter == null)            
+                return x => true;
+            
+            var body = firstFilter.Body;
+            var param = firstFilter.Parameters.ToArray();
+
+            foreach (var nextFilter in filters.Skip(1))
             {
-                foreach (PropertyFilter prop in config.PropertiesFilter)
-                {
-                    var value = GetPropertyValue(item, prop.Name).ToString();
+                var nextBody = Expression.Invoke(nextFilter, param);
+                body = Expression.OrElse(body, nextBody);
+            }
 
-                    if (value.ToLower().IndexOf(prop.Filter.ToLower()) < 0)
-                        return false;
-                }
-                  
+            return Expression.Lambda<Func<T, bool>>(body, param);
+        }
 
-                return true;
-            };  
+        private static IEnumerable<Expression<Func<T, bool>>> GetFiltersFromConfigurates<T>(MyODataConfigurates config)
+        {
+            var filters = new List<Expression<Func<T, bool>>>();
 
-            return func;
+            foreach (PropertyFilter prop in config.PropertiesFilter)
+                filters.Add((item) => GetPropertyValue(item, prop.Name).ToString().ToLower().IndexOf(prop.Filter.ToLower()) > -1);
+
+            return filters;
         }
 
         private static object GetPropertyValue<T>(T obj, string propertyName)

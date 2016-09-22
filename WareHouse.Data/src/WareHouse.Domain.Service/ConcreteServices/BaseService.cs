@@ -35,7 +35,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             return repository.GetAllSync().Select(MapToServiceModel);
         }
-        
+
         public async Task<OperationStatus> Add(ServiceModel item)
         {
             return await repository.Add(MapToEFModel(item));

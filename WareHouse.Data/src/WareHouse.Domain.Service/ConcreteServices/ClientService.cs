@@ -39,8 +39,6 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task RemoveClientByName(Model.Client value)
         {
-            //TODO: Почему поиск присходит по имени, а удаление по идентификатору?                     Операция должна быть вынесена в сервис/репозиторий, в таком виде она не потокобезопасна.
-
             var removingItem = await GetClientByName(value.Name, true);
 
             if (removingItem != null)

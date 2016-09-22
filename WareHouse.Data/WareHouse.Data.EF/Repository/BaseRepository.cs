@@ -27,8 +27,8 @@ namespace WareHouse.Data.EF.Repository
         }
 
         public async Task<IEnumerable<T>> GetAllWithFilter(Expression<Func<T, bool>> filter)
-        {
-            return table.Where(filter);
+        {           
+            return await Task<IEnumerable<T>>.Factory.StartNew(() => table.Where(filter));
         }
 
         public IEnumerable<T> GetAllSync()

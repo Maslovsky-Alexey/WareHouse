@@ -64,19 +64,28 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<PageModel> GetPage(int page, MyODataConfigurates config)
         {
-            var a = MyOData.MyOData.CompileFunc<Item>(config);
+            var filter = MyOData.MyOData.CompileFilters<Data.Model.Item>(config);
 
             var result = new PageModel();
-            result.Items = GetAllSync().Where(a)
-                .Skip(page * 6)
-                .Take(6);
+            var items = (await repository.GetAllWithFilter(filter)).Select((item) => MapToServiceModel(item));
 
-            result.PrevPage = page - 1 < 0 ? 0 : page - 1;
+            result.Items = items.Skip(page * 6).Take(6);
 
-            var maxPage = (await Count() - 1) / 6;
-            result.NextPage = page + 1 > maxPage ? maxPage : page + 1;
+            result.PrevPage = GetPrevPage(page);
+            result.NextPage = GetNextPage(page, items.Count());
 
             return result;
+        }
+
+        private int GetPrevPage(int page)
+        {
+            return page - 1 < 0 ? 0 : page - 1;
+        }
+
+        private int GetNextPage(int page, int count)
+        {
+            var maxPage = (count - 1) / 6;
+            return page + 1 > maxPage ? maxPage : page + 1;
         }
     }
 }
