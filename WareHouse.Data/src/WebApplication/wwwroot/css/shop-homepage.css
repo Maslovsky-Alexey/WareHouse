@@ -52,3 +52,26 @@ body {
 footer {
     margin: 50px 0;
 }
+
+.fa-long-arrow-up, .fa-long-arrow-down{
+    font-size: 30px;
+    margin-right: 5px;
+    color: #a12a2a;
+}
+
+.fa-long-arrow-up:hover, .fa-long-arrow-down:hover{
+    color: #ce4a4a;
+    cursor: pointer;
+}
+
+.active-arrow{
+    color: #1ead29;
+}
+
+.active-arrow:hover{
+    color: #3bd447;
+}
+
+.input-range{
+    margin-top: 50px;
+}

@@ -30,28 +30,37 @@ var FormOperations = React.createClass({
 
     Send: function Send(e) {
         var input_name = $(e.target).parent().find(".item_name");
+       
         var input_count = $(e.target).parent().find(".item_count");
-        var item = this.CreateItemValue(input_name.val(), input_count.val());
+        var item = this.CreateItemValue(input_name.attr('id'), input_name.val(), input_count.val());
 
         if (!this.IsFormValid(input_name, input_count)) {
             alert("Pechal");
             return;
         }
 
+        var sender = this;
         if (this.state.supplymode) {
-            new CreateItemRepository().addItem(item, function () { input_name.val(''); input_count.val(''); });
+            new CreateItemRepository().addItem(item, function () { sender.emptyControlItems(input_name, input_count); });
             new CreateProviderRepository().addProvder({ name: this.props.actor }, function () { });
         }
         else {
-            new CreateItemRepository().removeItem(item, function () { input_name.val(''); input_count.val(''); });
+            new CreateItemRepository().removeItem(item, function () { sender.emptyControlItems(input_name, input_count); });
             new CreateClientRepository().addClient({ name: this.props.actor }, function () { });
         }
     },
 
-    CreateItemValue: function (name, count) {
+    emptyControlItems: function (input_name, input_count) {
+        input_name.val('');
+        input_count.val('');
+        input_name.attr('id', '');
+    },
+
+    CreateItemValue: function (id, name, count) {
         return {
             name: name,
-            count: count
+            count: count,
+            id: id
         };
     },
 

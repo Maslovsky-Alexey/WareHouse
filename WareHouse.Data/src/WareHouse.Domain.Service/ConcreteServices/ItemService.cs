@@ -27,14 +27,13 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task AddOrUpdateCount(Item value)
         {
-            var item = await GetItemByName(value.Name, true);
-
-            if (item != null)
+            if (value.Id > 0)
             {
-                await ((ItemRepository)repository).UpdateCount(item.Id, value.Count);
+                await ((ItemRepository)repository).UpdateCount(value.Id, value.Count);
             }
             else
             {
+                value.Id = 0;
                 await Add(value);
             }
         }
@@ -54,12 +53,10 @@ namespace WareHouse.Domain.Service.ConcreteServices
             await ((ItemRepository)repository).UpdateCount(oldItem.Id, deltaCount);
         }
 
-        public async Task RemoveItemByName(Item value)
-        {
-            var removingItem = await GetItemByName(value.Name, true);
-
-            if (removingItem != null)
-                await Remove(await GetItem(removingItem.Id));
+        public async Task RemoveItem(Item value)
+        {            
+            if (value.Id > 0)
+                await Remove(await GetItem(value.Id));
         }
 
         public async Task<PageModel> GetPage(int page, MyODataConfigurates config)

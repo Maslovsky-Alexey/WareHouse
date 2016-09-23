@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
         [HttpDelete]
         public async Task Delete([FromBody]Item value)
         {
-            await items.RemoveItemByName(value);
+            await items.RemoveItem(value);
         }
 
         [Route("UpdateCount")]

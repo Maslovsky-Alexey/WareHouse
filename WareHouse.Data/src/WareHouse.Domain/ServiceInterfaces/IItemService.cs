@@ -15,7 +15,7 @@ namespace WareHouse.Domain.ServiceInterfaces
 
         Task SubCount(Item value);
 
-        Task RemoveItemByName(Item value);
+        Task RemoveItem(Item value);
 
         Task<PageModel> GetPage(int page, MyODataConfigurates config);
     }

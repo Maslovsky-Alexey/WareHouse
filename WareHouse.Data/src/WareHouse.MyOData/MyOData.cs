@@ -68,9 +68,28 @@ namespace WareHouse.MyOData
             var filters = new List<Expression<Func<T, bool>>>();
 
             foreach (PropertyFilter prop in config.PropertiesFilter)
-                filters.Add((item) => GetPropertyValue(item, prop.Name).ToString().ToLower().IndexOf(prop.Filter.ToLower()) > -1);
+                filters.Add((item) => GetFilter(prop, item));
 
             return filters;
+        }
+
+        private static bool GetFilter<T>(PropertyFilter prop, T item)
+        {
+            bool result = true;
+
+            var stringValue = GetPropertyValue(item, prop.Name).ToString();
+            var numberOrStringLength = stringValue.ToNullableDouble() == null ? stringValue.Length : stringValue.ToNullableDouble();
+
+            if (!string.IsNullOrEmpty(prop.Filter))
+                result &= stringValue.ToLower().IndexOf(prop.Filter.ToLower()) > -1;
+
+            if (result && prop.LessThan != null)
+                result &= numberOrStringLength < prop.LessThan;
+
+            if (result && prop.MoreThan != null)
+                result &= numberOrStringLength > prop.MoreThan;
+
+            return result;
         }
 
         private static object GetPropertyValue<T>(T obj, string propertyName)
@@ -87,12 +106,16 @@ namespace WareHouse.MyOData
 
             var properties = GetElement("property", source);
             var filters = GetElement("filter", source);
+            var moreThan = GetElement("morethan", source);
+            var lessthan = GetElement("lessthan", source);
 
             foreach (Element element in properties)
                 result.Add(new PropertyFilter()
                 {
                     Name = element.Value,
-                    Filter = filters.FirstOrDefault((filter) => filter.ID == element.ID).Value
+                    Filter = filters.FirstOrDefault((filter) => filter.ID == element.ID)?.Value,
+                    MoreThan = moreThan.FirstOrDefault((x) => x.ID == x.ID)?.Value.ToNullableDouble(),
+                    LessThan = lessthan.FirstOrDefault((x) => x.ID == x.ID)?.Value.ToNullableDouble()
                 });
 
             return result;
@@ -129,6 +152,13 @@ namespace WareHouse.MyOData
                 result += $"[{char.ToLower(c)}{char.ToUpper(c)}]";
 
             return result;
+        }
+
+        public static double? ToNullableDouble(this string s)
+        {
+            double i;
+            if (double.TryParse(s, out i)) return i;
+            return null;
         }
     }
 }

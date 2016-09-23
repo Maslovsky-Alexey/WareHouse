@@ -10,7 +10,7 @@ var CreateItemRepository = function() {
     };
 
     this.getPageItems = function (success, page) {
-        this.serverMediator.sendRequest('http://localhost:33649/api/items/GetPage/' + page + '/?$property1=name&$filter1=a', 'get', null, function (data) {
+        this.serverMediator.sendRequest('http://localhost:33649/api/items/GetPage/' + page + '/?$property1=count&$morethan1=9&$lessthan1=21', 'get', null, function (data) {
 
             success(JSON.parse(data));
         });
