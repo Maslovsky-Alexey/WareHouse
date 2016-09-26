@@ -7,26 +7,35 @@ var Items = React.createClass({
     nextPage: 0,
     prevPage: 0,
     itemRepos: new CreateItemRepository(),
+    isFirst: true,
 
-    getInitialState: function () {
-        this.itemRepos.getPageItems(this.onItemsGeted, this.nextPage);
+    componentWillReceiveProps: function (nextProps) {
+        this.nextPage = 0;
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, nextProps.filter);
+    },
 
+    getInitialState: function getInitialState() {
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, this.props.filter);
         return { items: [] };
     },
 
-    PrevPage: function () {
-        this.itemRepos.getPageItems(this.onItemsGeted, this.prevPage);
+    PrevPage: function PrevPage() {
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.prevPage, this.props.filter);
     },
 
-    NextPage: function () {
-        this.itemRepos.getPageItems(this.onItemsGeted, this.nextPage);
+    NextPage: function NextPage() {
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, this.props.filter);
     },
 
-    onItemsGeted: function (data) {
+    onItemsGeted: function onItemsGeted(data) {
         this.nextPage = data.nextPage;
         this.prevPage = data.prevPage;
+        if (this.isFirst)
+            this.props.changeMaxMinCount(data.max, data.min);
+        this.isFirst = false;
         this.setState({ items: data.items });
     },
+
 
     render: function () {
         var data = this.state.items;

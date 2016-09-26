@@ -64,12 +64,17 @@ namespace WareHouse.Domain.Service.ConcreteServices
             var filter = MyOData.MyOData.CompileFilters<Data.Model.Item>(config);
 
             var result = new PageModel();
+
             var items = (await repository.GetAllWithFilter(filter)).Select((item) => MapToServiceModel(item));
+
+            items = MyOData.MyOData.OrderBy<Item>(items, config);
 
             result.Items = items.Skip(page * 6).Take(6);
 
             result.PrevPage = GetPrevPage(page);
             result.NextPage = GetNextPage(page, items.Count());
+            result.Max = items.Max(item => item.Count);
+            result.Min = items.Min(item => item.Count);
 
             return result;
         }

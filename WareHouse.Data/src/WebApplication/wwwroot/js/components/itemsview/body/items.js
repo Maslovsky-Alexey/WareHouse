@@ -11,24 +11,36 @@ var Items = React.createClass({
     nextPage: 0,
     prevPage: 0,
     itemRepos: new CreateItemRepository(),
+    isFirst: true,
+
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        this.nextPage = 0;
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, nextProps.filter);
+    },
 
     getInitialState: function getInitialState() {
-        this.itemRepos.getPageItems(this.onItemsGeted, this.nextPage);
 
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, this.props.filter);
+        
         return { items: [] };
     },
 
     PrevPage: function PrevPage() {
-        this.itemRepos.getPageItems(this.onItemsGeted, this.prevPage);
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.prevPage, this.props.filter);
     },
 
     NextPage: function NextPage() {
-        this.itemRepos.getPageItems(this.onItemsGeted, this.nextPage);
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, this.props.filter);
     },
 
     onItemsGeted: function onItemsGeted(data) {
         this.nextPage = data.nextPage;
         this.prevPage = data.prevPage;
+
+        if (this.isFirst)
+            this.props.changeMaxMinCount(data.max, data.min);
+        this.isFirst = false;
+
         this.setState({ items: data.items });
     },
 

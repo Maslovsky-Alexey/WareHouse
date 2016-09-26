@@ -13,5 +13,9 @@ namespace WareHouse.Domain.Model
         public int NextPage { get; set; }
 
         public int PrevPage { get; set; }
+
+        public int Max { get; set; }
+
+        public int Min { get; set; }
     }
 }

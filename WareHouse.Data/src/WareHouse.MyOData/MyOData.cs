@@ -63,6 +63,21 @@ namespace WareHouse.MyOData
             return Expression.Lambda<Func<T, bool>>(body, param);
         }
 
+        public static IEnumerable<T> OrderBy<T>(IEnumerable<T> items, MyODataConfigurates config)
+        {
+            var result = items;
+
+            if (String.IsNullOrEmpty(config.OrderBy))
+                return items;
+
+            if (config.IsOrderAsceneding)
+                result = result.OrderBy((item) => item.GetType().GetTypeInfo().GetProperty(config.OrderBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(item, null));
+            else
+                result = result.OrderByDescending((item) => item.GetType().GetTypeInfo().GetProperty(config.OrderBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(item, null));
+
+            return result;
+        }
+
         private static IEnumerable<Expression<Func<T, bool>>> GetFiltersFromConfigurates<T>(MyODataConfigurates config)
         {
             var filters = new List<Expression<Func<T, bool>>>();

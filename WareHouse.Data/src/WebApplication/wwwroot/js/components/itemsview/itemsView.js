@@ -2,89 +2,41 @@
 
 /// <reference path="components/itemsview/body/items.js" />
 /// <reference path="../react-input-range/react-input-range.min.js" />
-
+/// <reference path="filterform/filterform.js" />
 
 var ItemsView = React.createClass({
     displayName: "ItemsView",
 
 
     getInitialState: function getInitialState() {
-        return { values: { min: 2, max: 6 }, asc: true };
+        return { filter: "", maxCount: 1, minCount: 0 };
     },
 
-    handleValuesChange: function handleValuesChange(component, values) {
-        this.setState({
-            values: values
-        });
+    Search: function Search(searchName, minCount, maxCount, orderBy, orderAsc) {
+        var filter = "?";
+
+        if (searchName != null && searchName.length > 0) filter += "$property1=name&$filter1=" + searchName;
+
+        if (minCount != null && maxCount != null) filter += "&$property2=count&$morethan2=" + (minCount - 1) + "&$lessthan2=" + (maxCount + 1);
+
+        if (orderBy != null) filter += "&$orderby=" + orderBy;
+
+        if (orderAsc != null && orderAsc == false) filter += "&$ordertype=descending";
+
+        this.setState({ filter: filter });
     },
 
-    changeOrder: function changeOrder() {
-        this.setState({ values: this.state.values, asc: !this.state.asc });
-    },
-
-    setOrderDown: function setOrderDown() {
-        $("#down").addClass("active-arrow");
-        $("#up").removeClass("active-arrow");
+    changeMaxMinCount: function changeMaxMinCount(max, min) {
+        if (this.state.maxCount != max || this.state.minCount != min) this.setState({ filter: this.state.filter, maxCount: max, minCount: min });
     },
 
     render: function render() {
-        var classNameUp = "fa fa-long-arrow-up " + (this.state.asc ? "active-arrow" : "");
-        var classNameDown = "fa fa-long-arrow-down " + (!this.state.asc ? "active-arrow" : "");
 
         return React.createElement(
             "div",
             { className: "app" },
-            React.createElement(
-                "div",
-                { className: "row" },
-                React.createElement(
-                    "div",
-                    { className: "col-xs-7" },
-                    React.createElement("input", { className: "form-control search-name-input" })
-                ),
-                React.createElement(
-                    "div",
-                    { className: "col-xs-2" },
-                    React.createElement(
-                        "select",
-                        { className: "form-control" },
-                        React.createElement(
-                            "option",
-                            null,
-                            "Name"
-                        ),
-                        React.createElement(
-                            "option",
-                            null,
-                            "Count"
-                        )
-                    )
-                ),
-                React.createElement(
-                    "div",
-                    { className: "col-xs-1" },
-                    React.createElement("i", { className: classNameUp, "aria-hidden": "true", onClick: this.changeOrder, id: "up" }),
-                    React.createElement("i", { className: classNameDown, "aria-hidden": "true", onClick: this.changeOrder, id: "down" })
-                )
-            ),
-            React.createElement(
-                "button",
-                { className: "form-control" },
-                "Search"
-            ),
-            React.createElement(
-                "div",
-                null,
-                React.createElement(InputRange, {
-                    className: "input-range",
-                    maxValue: 20,
-                    minValue: 0,
-                    value: this.state.values,
-                    onChange: this.handleValuesChange.bind(this),
-                    labelSuffix: " count"
-                })
-            ),
-            React.createElement(Items, null)
+            React.createElement(FilterForm, { search: this.Search, maxcount: this.state.maxCount, mincount: this.state.minCount }),
+            React.createElement(Items, { filter: this.state.filter, changeMaxMinCount: this.changeMaxMinCount })
         );
     }
 });

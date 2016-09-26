@@ -1,65 +1,42 @@
 ﻿/// <reference path="components/itemsview/body/items.js" />
 /// <reference path="../react-input-range/react-input-range.min.js" />
-
-//TODO: РАЗБИТЬ НА ОТДЕЛЬНЫЕ ФАЙЛЫ И ПОПРАВИТЬ ВЕРСТКУ
+/// <reference path="filterform/filterform.js" />
 
 var ItemsView = React.createClass({
 
-    getInitialState: function () {
-        return { values: { min: 2, max: 6 }, asc: true };
+    getInitialState: function getInitialState() {
+        return { filter: "", maxCount: 1, minCount: 0 };
     },
 
-    handleValuesChange: function (component, values) {
-        this.setState({
-            values: values,
-        });
+    Search: function(searchName, minCount, maxCount, orderBy, orderAsc){
+        var filter = "?";
+
+        if (searchName != null && searchName.length > 0)
+            filter += "$property1=name&$filter1=" + searchName;
+
+        if (minCount != null && maxCount != null)
+            filter += "&$property2=count&$morethan2=" + (minCount - 1) + "&$lessthan2=" + (maxCount + 1);
+
+        if (orderBy != null)
+            filter += "&$orderby=" + orderBy;
+
+        if (orderAsc != null && orderAsc == false)
+            filter += "&$ordertype=descending";
+
+        this.setState({ filter: filter });
     },
 
-    changeOrder: function () {
-        this.setState({ values: this.state.values, asc: !this.state.asc });
-    },
-
-    setOrderDown: function () {
-        $("#down").addClass("active-arrow");
-        $("#up").removeClass("active-arrow");
+    changeMaxMinCount: function (max, min) {
+        if (this.state.maxCount != max || this.state.minCount != min)
+            this.setState({ filter: this.state.filter, maxCount: max, minCount: min });
     },
 
     render: function () {
-        var classNameUp = "fa fa-long-arrow-up " + (this.state.asc ? "active-arrow" : "");
-        var classNameDown = "fa fa-long-arrow-down " + (!this.state.asc ? "active-arrow" : "");
 
-        return (    
-            <div className="app">
-                <div className="row">
-                    <div className="col-xs-7">
-                          <input className="form-control search-name-input" />
-                    </div>
-                    <div className="col-xs-2">
-                        <select className="form-control">
-                            <option>Name</option>
-                            <option>Count</option>
-                        </select>
-                    </div>
-                    <div className="col-xs-1">
-                        <i className={classNameUp} aria-hidden="true" onClick={this.changeOrder} id="up"></i>
-                        <i className={classNameDown} aria-hidden="true" onClick={this.changeOrder} id="down"></i>
-                    </div>
-                </div>
-
-                <button className="form-control">
-                    Search
-                </button>
-
-                <div>
-                <InputRange className="input-range"
-                            maxValue={20}
-                            minValue={0}
-                            value={this.state.values}
-                            onChange={this.handleValuesChange.bind(this)}
-                            labelSuffix={" count"} />
-                </div>
-                <Items />
-
+        return (
+            <div className="app">   
+                <FilterForm search={this.Search} maxcount={this.state.maxCount} mincount={this.state.minCount}/>          
+                <Items filter={this.state.filter} changeMaxMinCount={this.changeMaxMinCount}/>
             </div>
         );
     }
