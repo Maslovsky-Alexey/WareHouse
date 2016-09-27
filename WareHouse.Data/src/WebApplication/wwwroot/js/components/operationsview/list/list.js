@@ -28,6 +28,18 @@ var List = React.createClass({
         this.props.changevalue(value);
     },
 
+    add: function add(e) {
+        var value = $(e.target).parent().parent().find("input").val();
+
+        this.props.items.push(value);
+
+        if (this.props.onadded) this.props.onadded(value);
+
+        this.props.changevalue(value);
+
+        this.forceUpdate();
+    },
+
     render: function render() {
         this.items = this.props.items;
 
@@ -45,7 +57,20 @@ var List = React.createClass({
                     { className: "people-list-title" },
                     this.props.title
                 ),
-                React.createElement("input", { className: "form-control people-list-input", onKeyUp: this.changeSearchText, disabled: !this.props.active })
+                React.createElement(
+                    "div",
+                    { className: "input-group" },
+                    React.createElement("input", { type: "text", className: "form-control people-list-input", onKeyUp: this.changeSearchText, disabled: !this.props.active }),
+                    React.createElement(
+                        "span",
+                        { className: "input-group-btn" },
+                        React.createElement(
+                            "button",
+                            { className: "btn btn-default btn-xs", type: "button", onClick: this.add },
+                            "Add"
+                        )
+                    )
+                )
             ),
             React.createElement(ListBody, { values: this.items, click: this.click, hidden: !this.props.active, filter: this.filter })
         );

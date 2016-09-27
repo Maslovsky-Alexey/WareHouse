@@ -8,7 +8,7 @@
 var OperartionsView = React.createClass({
     displayName: "OperartionsView",
 
-    listItem: {},
+    listItem: '',
     providerRepos: new CreateProviderRepository(),
     clientRepos: new CreateClientRepository(),
 
@@ -49,6 +49,14 @@ var OperartionsView = React.createClass({
         this.forceUpdate();
     },
 
+    providerAdded: function providerAdded(value) {
+        new CreateProviderRepository().addProvder({ name: value }, function () { });
+    },
+
+    clientAdded: function clientAdded(value) {
+        new CreateClientRepository().addClient({ name: value }, function () { });
+    },
+
     render: function render() {
 
         return React.createElement(
@@ -57,7 +65,7 @@ var OperartionsView = React.createClass({
             React.createElement(
                 "div",
                 { className: "col-xs-3" },
-                React.createElement(List, { title: "Providers", side: "left", active: this.supplymode, changevalue: this.SelectedListItem, items: this.providers })
+                React.createElement(List, { title: "Providers", side: "left", active: this.supplymode, changevalue: this.SelectedListItem, items: this.providers, onadded: this.providerAdded })
             ),
             React.createElement(
                 "div",
@@ -67,7 +75,7 @@ var OperartionsView = React.createClass({
             React.createElement(
                 "div",
                 { className: "col-xs-3" },
-                React.createElement(List, { title: "Clients", side: "right", active: !this.supplymode, changevalue: this.selectedlistitem, items: this.clients })
+                React.createElement(List, { title: "Clients", side: "right", active: !this.supplymode, changevalue: this.selectedlistitem, items: this.clients, onadded: this.clientAdded })
             )
         );
     }

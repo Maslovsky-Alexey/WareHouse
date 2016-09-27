@@ -42,11 +42,9 @@ var FormOperations = React.createClass({
         var sender = this;
         if (this.state.supplymode) {
             new CreateItemRepository().addItem(item, function () { sender.emptyControlItems(input_name, input_count); });
-            new CreateProviderRepository().addProvder({ name: this.props.actor }, function () { });
         }
         else {
             new CreateItemRepository().removeItem(item, function () { sender.emptyControlItems(input_name, input_count); });
-            new CreateClientRepository().addClient({ name: this.props.actor }, function () { });
         }
     },
 

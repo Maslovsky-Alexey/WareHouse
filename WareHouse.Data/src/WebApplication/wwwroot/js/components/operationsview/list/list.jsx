@@ -24,6 +24,19 @@ var List = React.createClass({
         this.props.changevalue(value);
     },
 
+    add: function(e){
+        var value = $(e.target).parent().parent().find("input").val();
+      
+        this.props.items.push(value);
+
+        if (this.props.onadded)
+            this.props.onadded(value);
+
+        this.props.changevalue(value);
+
+        this.forceUpdate();
+    },
+
     render: function () {
         this.items = this.props.items;
 
@@ -36,7 +49,12 @@ var List = React.createClass({
                     <div className="people-list-title">
                         {this.props.title}
                     </div>
-                    <input className="form-control people-list-input" onKeyUp={this.changeSearchText} disabled={!this.props.active}/>
+                     <div className="input-group">
+                        <input type="text" className="form-control people-list-input" onKeyUp={this.changeSearchText} disabled={!this.props.active} />
+                        <span className="input-group-btn">
+                            <button className="btn btn-default btn-xs" type="button" onClick={this.add}>Add</button>
+                        </span>
+                     </div>
                 </div>
                 <ListBody values={this.items} click={this.click} hidden={!this.props.active} filter={this.filter}/>
             </div>

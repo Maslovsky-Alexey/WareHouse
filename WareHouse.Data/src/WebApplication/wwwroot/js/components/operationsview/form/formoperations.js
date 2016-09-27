@@ -47,12 +47,10 @@ var FormOperations = React.createClass({
             new CreateItemRepository().addItem(item, function () {
                 sender.emptyControlItems(input_name, input_count);
             });
-            new CreateProviderRepository().addProvder({ name: this.props.actor }, function () { });
         } else {
             new CreateItemRepository().removeItem(item, function () {
                 sender.emptyControlItems(input_name, input_count);
             });
-            new CreateClientRepository().addClient({ name: this.props.actor }, function () { });
         }
     },
 

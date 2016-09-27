@@ -45,18 +45,26 @@ var OperartionsView = React.createClass({
         this.forceUpdate();
     },
 
+    providerAdded: function(value){
+        new CreateProviderRepository().addProvder({ name: value }, function () { });
+    },
+
+    clientAdded: function (value) {
+        new CreateClientRepository().addClient({ name: value }, function () { });
+    },
+
     render: function () {
 
         return (
             <div className="row">
                 <div className="col-xs-3">
-                    <List title="Providers" side="left" active={this.supplymode} changevalue={this.SelectedListItem} items={this.providers}/>
+                    <List title="Providers" side="left" active={this.supplymode} changevalue={this.SelectedListItem} items={this.providers} onadded={this.providerAdded}/>
                 </div>
                 <div className="col-xs-6">
                     <FormOperations actor={this.listItem} changeMode={this.modeChange}/>
                 </div>
                 <div className="col-xs-3">
-                    <List title="Clients" side="right" active={!this.supplymode} changevalue={this.selectedlistitem} items={this.clients}/>
+                    <List title="Clients" side="right" active={!this.supplymode} changevalue={this.selectedlistitem} items={this.clients} onadded={this.clientAdded}/>
                 </div>                            
             </div>
         );
