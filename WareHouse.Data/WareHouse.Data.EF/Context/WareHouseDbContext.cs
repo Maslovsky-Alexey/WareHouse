@@ -17,6 +17,11 @@ namespace WareHouse.Data.EF.Context
 
         public DbSet<Provider> Providers { get; set; }
 
+        public DbSet<ItemStatus> ItemStatus { get; set; }
+
+        public DbSet<WarehouseItem> WarehouseItem { get; set; }
+
+
         public WareHouseDbContext(): base()
         {
 
@@ -24,7 +29,9 @@ namespace WareHouse.Data.EF.Context
 
         public WareHouseDbContext(DbContextOptions option) : base(option)
         {
+           // Database.EnsureDeleted();
             Database.EnsureCreated();
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

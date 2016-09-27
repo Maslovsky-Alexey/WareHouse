@@ -44,7 +44,7 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            //    var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse;uid=Admin;password=123123;";    it's magic
+            //    var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse;uid=Admin;password=123123;";    
             var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse.Data.EF.Context.WarehouseDbContext;Integrated Security=True";
 
 
@@ -87,6 +87,12 @@ namespace WebAPI
 
             containerBuilder.RegisterType<EmployeeRepository>().As<BaseRepository<WareHouse.Data.Model.Employee>>();
             containerBuilder.RegisterType<EmployeeService>().As<IEmployeeService>();
+
+            containerBuilder.RegisterType<ItemStatusRepository>().As<BaseRepository<WareHouse.Data.Model.ItemStatus>>();
+            containerBuilder.RegisterType<ItemStatusService>().As<IItemStatusService>();
+
+            containerBuilder.RegisterType<WarehouseItemRepository>().As<BaseRepository<WareHouse.Data.Model.WarehouseItem>>();
+            containerBuilder.RegisterType<WarehouseItemService>().As<WarehouseItemService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

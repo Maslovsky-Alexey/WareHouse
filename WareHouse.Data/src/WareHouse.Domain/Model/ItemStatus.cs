@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WareHouse.Data.Model
+namespace WareHouse.Domain.Model
 {
-    public class Item : BaseModel
+    public class ItemStatus : BaseModel
     {
         public string Name { get; set; }
-        
-        public int Count { get; set; }
-
-
     }
 }

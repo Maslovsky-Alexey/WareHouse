@@ -5,12 +5,8 @@ using System.Threading.Tasks;
 
 namespace WareHouse.Data.Model
 {
-    public class Item : BaseModel
+    public class ItemStatus : BaseModel
     {
         public string Name { get; set; }
-        
-        public int Count { get; set; }
-
-
     }
 }
