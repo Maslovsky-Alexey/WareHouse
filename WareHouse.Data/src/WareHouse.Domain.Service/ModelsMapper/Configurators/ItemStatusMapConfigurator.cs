@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace WareHouse.Domain.Service.ModelsMapper.Configurators
 {
@@ -10,7 +11,9 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
     {
         public IMapper ConfigurateEF()
         {
-            return new MapperConfiguration(cfg => cfg.CreateMap<Domain.Model.ItemStatus, Data.Model.ItemStatus>()).CreateMapper();
+            return new MapperConfiguration(cfg => cfg
+                .CreateMap<Domain.Model.ItemStatus, Data.Model.ItemStatus>())
+                .CreateMapper();
         }
 
         public IMapper ConfigurateService()

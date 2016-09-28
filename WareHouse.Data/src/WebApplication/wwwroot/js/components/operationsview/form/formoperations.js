@@ -1,17 +1,24 @@
 ﻿"use strict";
 
 /// <reference path="../../../repositories/itemrepository.js" />
+/// <reference path="../../../repositories/warehouseitemrepository.js" />
 /// <reference path="../../../repositories/providerrepository.js" />
 /// <reference path="../../../repositories/clientrepository.js" />
 
 /// <reference path="../../../autocompiler/inputcompiler.js" />
+/// <reference path="elements/statusselect.js" />
+
+
+/// <reference path="../../../models/models.js" />
 
 var FormOperations = React.createClass({
     displayName: "FormOperations",
 
     itemsRepos: new CreateItemRepository(),
+    warehouseItems: new CreateWarehouseItemsRepository(),
 
     items: [],
+    itemId: -1,
 
     getInitialState: function getInitialState() {
         this.itemsRepos.getItems(this.onItemsGeted);
@@ -21,7 +28,6 @@ var FormOperations = React.createClass({
 
     onItemsGeted: function onItemsGeted(data) {
         this.items = data;
-
         this.forceUpdate();
     },
 
@@ -35,47 +41,54 @@ var FormOperations = React.createClass({
         var input_name = $(e.target).parent().find(".item_name");
 
         var input_count = $(e.target).parent().find(".item_count");
-        var item = this.CreateItemValue(input_name.attr('id'), input_name.val(), input_count.val());
 
-        if (!this.IsFormValid(input_name, input_count)) {
+        if (!this.IsFormValid(input_count)) {
             alert("Pechal");
             return;
         }
 
+        var item = this.CreateItemValue(this.itemId, input_count.val());
+
         var sender = this;
         if (this.state.supplymode) {
-            new CreateItemRepository().addItem(item, function () {
+            this.warehouseItems.addSupply(item, function () {
                 sender.emptyControlItems(input_name, input_count);
             });
         } else {
-            new CreateItemRepository().removeItem(item, function () {
+            this.warehouseItems.addOrder(item, function () {
                 sender.emptyControlItems(input_name, input_count);
             });
         }
     },
 
     emptyControlItems: function emptyControlItems(input_name, input_count) {
-        input_name.val('');
         input_count.val('');
-        input_name.attr('id', '');
     },
 
-    CreateItemValue: function CreateItemValue(id, name, count) {
+    CreateItemValue: function CreateItemValue(id, count) {
         return {
-            name: name,
             count: count,
-            id: id
+            itemId: id
         };
     },
 
-    IsFormValid: function IsFormValid(name, count) {
+    IsFormValid: function IsFormValid(count) {
         var countValue = parseInt(count.val());
 
-        return !this.IsEmptyString(name.val()) && !this.IsEmptyString(count.val()) && !Number.isNaN(countValue) && countValue > 0 && !this.IsEmptyString(this.props.actor);
+        return !this.IsEmptyString(count.val()) && !Number.isNaN(countValue) && countValue > 0 && !this.IsEmptyString(this.props.actor);
     },
 
     IsEmptyString: function IsEmptyString(str) {
         return str.replace(" ", "") == "";
+    },
+
+    onChangeStatus: function onChangeStatus(status, statusId) {
+        this.status = status;
+        this.statusId = statusId;
+    },
+
+    itemSelected: function itemSelected(name, id) {
+        this.itemId = id;
     },
 
     render: function render() {
@@ -94,7 +107,7 @@ var FormOperations = React.createClass({
                 React.createElement("input", { type: "radio", name: "inlineRadioOptions", id: "order", value: "order", onChange: this.modeChange, checked: !this.state.supplymode }),
                 " Order"
             ),
-            React.createElement(InputCompiler, { items: this.items }),
+            React.createElement(StatusSelect, { items: this.items, onchangevalue: this.itemSelected }),
             React.createElement("input", { className: "form-control item_count", placeholder: "count" }),
             React.createElement(
                 "button",

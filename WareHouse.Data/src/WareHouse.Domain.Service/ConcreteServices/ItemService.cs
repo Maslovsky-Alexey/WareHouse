@@ -27,15 +27,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task AddOrUpdateCount(Item value)
         {
-            if (value.Id > 0)
-            {
-                await ((ItemRepository)repository).UpdateCount(value.Id, value.Count);
-            }
-            else
-            {
-                value.Id = 0;
-                await Add(value);
-            }
+            var item = await GetItemByName(value.Name, true);
+
+            if (item != null)
+                return;
+
+            await Add(value);
         }
 
         public async Task SubCount(Item value)

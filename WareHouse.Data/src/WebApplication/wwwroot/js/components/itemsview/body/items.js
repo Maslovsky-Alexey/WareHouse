@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 /// <reference path="repositories/itemrepository.js" />
+/// <reference path="../../../repositories/warehouseitemrepository.js" />
 
 /// <reference path="elements/about.js" />
 /// <reference path="elements/rating.js" />
@@ -10,37 +11,33 @@ var Items = React.createClass({
 
     nextPage: 0,
     prevPage: 0,
-    itemRepos: new CreateItemRepository(),
+    itemRepos: new CreateWarehouseItemsRepository(),
     isFirst: true,
 
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
         this.nextPage = 0;
-        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, nextProps.filter);
+        this.itemRepos.getItems(this.onItemsGeted, this.nextPage, nextProps.filter);
     },
 
     getInitialState: function getInitialState() {
-
-        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, this.props.filter);
-        
+        this.itemRepos.getItems(this.onItemsGeted, this.nextPage, this.props.filter);
         return { items: [] };
     },
 
     PrevPage: function PrevPage() {
-        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.prevPage, this.props.filter);
+        this.itemRepos.getItems(this.onItemsGeted, this.prevPage, this.props.filter);
     },
 
     NextPage: function NextPage() {
-        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, this.props.filter);
+        this.itemRepos.getItems(this.onItemsGeted, this.nextPage, this.props.filter);
     },
 
     onItemsGeted: function onItemsGeted(data) {
+        console.debug(data);
         this.nextPage = data.nextPage;
         this.prevPage = data.prevPage;
-
-        if (this.isFirst)
-            this.props.changeMaxMinCount(data.max, data.min);
+        if (this.isFirst) this.props.changeMaxMinCount(data.max, data.min);
         this.isFirst = false;
-
         this.setState({ items: data.items });
     },
 
