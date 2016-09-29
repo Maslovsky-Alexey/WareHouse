@@ -1,5 +1,9 @@
-var CreateServerMediator = function () {
+var ServerMediator = function () {
+    this.host = "http://localhost:33649/";
+
     this.sendRequest = function (url, type, data, success) {
+        url = this.host + url;
+
         var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
 
         var xhr = new XHR();

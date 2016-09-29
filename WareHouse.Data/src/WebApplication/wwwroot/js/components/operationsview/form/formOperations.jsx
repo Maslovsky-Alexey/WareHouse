@@ -10,8 +10,8 @@
 /// <reference path="../../../models/models.js" />
 
 var FormOperations = React.createClass({
-    itemsRepos: new CreateItemRepository(),
-    warehouseItems: new CreateWarehouseItemsRepository(),
+    itemsRepos: new ItemRepository(),
+    warehouseItems: new WarehouseItemsRepository(),
 
     items: [],
     itemId: -1,

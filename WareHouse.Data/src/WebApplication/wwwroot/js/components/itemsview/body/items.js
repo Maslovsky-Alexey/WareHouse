@@ -11,7 +11,7 @@ var Items = React.createClass({
 
     nextPage: 0,
     prevPage: 0,
-    itemRepos: new CreateWarehouseItemsRepository(),
+    itemRepos: new WarehouseItemsRepository(),
     isFirst: true,
 
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {

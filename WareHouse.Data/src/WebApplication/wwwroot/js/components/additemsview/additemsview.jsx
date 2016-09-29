@@ -3,7 +3,7 @@
 /// <reference path="../../../autocompiler/inputcompiler.js" />
 
 var AddItemsView = React.createClass({
-    itemsRepos: new CreateItemRepository(),
+    itemsRepos: new ItemRepository(),
 
     items: [],
 
@@ -23,8 +23,7 @@ var AddItemsView = React.createClass({
     Add: function Send(e) {
         var name = $(e.target).parent().find('input').val();
 
-        //TODO: Валидация должна быть в отдельным методе или объекте
-        if (this.IsEmptyString(name))
+        if (this.IsFormValid(name))
             //TODO: Отображение сообщений должно быть унифицировано во всем проекте.
             alert('Error');
 
@@ -33,10 +32,7 @@ var AddItemsView = React.createClass({
         this.itemsRepos.addItem(this.CreateItemValue(name), function () {
             sender.itemsRepos.getItems(this.onItemsGeted);
             this.emptyControlItems($(e.target).parent().find('input'));
-        });
-        
-
-        
+        });                
     },
 
     emptyControlItems: function (input_name) {
@@ -47,6 +43,10 @@ var AddItemsView = React.createClass({
         return {
             name: name
         };
+    },
+
+    IsFormValid: function(name){
+        return !this.IsEmptyString(name);
     },
 
     IsEmptyString: function (str) {

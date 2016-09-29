@@ -7,7 +7,7 @@
 var AddItemsView = React.createClass({
     displayName: 'AddItemsView',
 
-    itemsRepos: new CreateItemRepository(),
+    itemsRepos: new ItemRepository(),
 
     items: [],
 

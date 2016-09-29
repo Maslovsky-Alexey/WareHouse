@@ -1,19 +1,19 @@
 ﻿/// <reference path="servermediator.js" />
-var CreateWarehouseItemsRepository = function () {
-    this.serverMediator = new CreateServerMediator(),
+var WarehouseItemsRepository = function () {
+    this.serverMediator = new ServerMediator(),
 
     this.getItems = function (success) {
-        this.serverMediator.sendRequest('http://localhost:33649/api/warehouseitems/', 'get', null, function (data) {
+        this.serverMediator.sendRequest('api/warehouseitems/', 'get', null, function (data) {
             success(JSON.parse(data));
         });
     },
 
     this.addOrder = function (item, success) {
-        this.serverMediator.sendRequest('http://localhost:33649/api/warehouseitems/addorder', 'post', JSON.stringify(item), success);
+        this.serverMediator.sendRequest('api/warehouseitems/addorder', 'post', JSON.stringify(item), success);
     }
 
     this.addSupply = function (item, success) {
-        this.serverMediator.sendRequest('http://localhost:33649/api/warehouseitems/addsupply', 'post', JSON.stringify(item), success);
+        this.serverMediator.sendRequest('api/warehouseitems/addsupply', 'post', JSON.stringify(item), success);
     }
 };
 

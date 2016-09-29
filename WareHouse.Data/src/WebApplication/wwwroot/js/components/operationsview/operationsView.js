@@ -9,8 +9,8 @@ var OperartionsView = React.createClass({
     displayName: "OperartionsView",
 
     listItem: '',
-    providerRepos: new CreateProviderRepository(),
-    clientRepos: new CreateClientRepository(),
+    providerRepos: new ProviderRepository(),
+    clientRepos: new ClientRepository(),
 
     providers: [],
     clients: [],
@@ -50,11 +50,11 @@ var OperartionsView = React.createClass({
     },
 
     providerAdded: function providerAdded(value) {
-        new CreateProviderRepository().addProvder({ name: value }, function () { });
+        new ProviderRepository().addProvder({ name: value }, function () { });
     },
 
     clientAdded: function clientAdded(value) {
-        new CreateClientRepository().addClient({ name: value }, function () { });
+        new ClientRepository().addClient({ name: value }, function () { });
     },
 
     render: function render() {

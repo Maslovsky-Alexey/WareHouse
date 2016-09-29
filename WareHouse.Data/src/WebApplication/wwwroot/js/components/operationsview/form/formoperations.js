@@ -14,8 +14,8 @@
 var FormOperations = React.createClass({
     displayName: "FormOperations",
 
-    itemsRepos: new CreateItemRepository(),
-    warehouseItems: new CreateWarehouseItemsRepository(),
+    itemsRepos: new ItemRepository(),
+    warehouseItems: new WarehouseItemsRepository(),
 
     items: [],
     itemId: -1,
