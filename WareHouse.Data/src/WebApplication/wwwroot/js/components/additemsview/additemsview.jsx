@@ -23,7 +23,9 @@ var AddItemsView = React.createClass({
     Add: function Send(e) {
         var name = $(e.target).parent().find('input').val();
 
+        //TODO: Валидация должна быть в отдельным методе или объекте
         if (this.IsEmptyString(name))
+            //TODO: Отображение сообщений должно быть унифицировано во всем проекте.
             alert('Error');
 
         var sender = this;
