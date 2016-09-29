@@ -13,9 +13,9 @@ namespace WareHouse.Data.EF.Context.Mapping
         public void Map(EntityTypeBuilder<ItemStatus> typeBuilder)
         {
             typeBuilder
-                .Property(status => status.Name)
-                .HasDefaultValue("Noname")
-                .HasMaxLength(50);
+                .HasOne(p => p.WarehouseItem)
+                .WithOne(p => p.Status)
+                .HasForeignKey<Model.WarehouseItem>(p => p.StatusId);
         }
     }
 }

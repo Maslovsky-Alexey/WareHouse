@@ -26,7 +26,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             {
                 Count = model.Count,
                 Item = new Item { Id = model.ItemId },
-                Status = new ItemStatus { Id = model.StatusId }
+                Status = new ItemStatus { Id = 1 }
             });            
         }
 
@@ -51,17 +51,18 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<OperationStatus> AddSupply(SupplyViewModel model)
         {
+            
             return await Add(new WarehouseItem
             {
                 Count = model.Count,
-                Item = new Item { Id = model.ItemId },
-                Status = new ItemStatus { Id = 0 } //TODO: спросить как лучше передовать статус с клиента
+                ItemId = model.ItemId,
+                StatusId = 2 //TODO: СТАТУС КАК БРАТЬ (СМОТРИ В БЛОКНОТ)
             });
         }
 
         public async Task<IEnumerable<WarehouseItemViewModel>> GetAllAsViewModel()
         {
-            return (await GetAll()).Select(item => new WarehouseItemViewModel
+            return (await ((WarehouseItemRepository)repository).GetAll()).Select(item => new WarehouseItemViewModel
             {
                 ItemId = item.Item.Id,
                 Name = item.Item.Name,
@@ -75,5 +76,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             return (await((WarehouseItemRepository)repository).GetItemsByName(name, ignoreCase)).Select(item => MapToServiceModel(item));
         }
+
+
     }
 }

@@ -10,12 +10,18 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
     {
         public IMapper ConfigurateEF()
         {
-            return new MapperConfiguration(cfg => cfg.CreateMap<Domain.Model.Item, Data.Model.Item>()).CreateMapper();
+            return new MapperConfiguration(cfg => cfg.CreateMap<Domain.Model.Item, Data.Model.Item>()
+                .ForMember((Data.Model.Item obj) => obj.WarehouseItem,
+                    obj => obj.Ignore())
+            ).CreateMapper();
         }
 
         public IMapper ConfigurateService()
         {
-            return new MapperConfiguration(cfg => cfg.CreateMap<Data.Model.Item, Domain.Model.Item>()).CreateMapper();
+            return new MapperConfiguration(cfg => cfg.CreateMap<Data.Model.Item, Domain.Model.Item>()
+                .ForMember((Domain.Model.Item obj) => obj.WarehouseItem,
+                    obj => obj.Ignore())
+            ).CreateMapper();
         }
     }
 }

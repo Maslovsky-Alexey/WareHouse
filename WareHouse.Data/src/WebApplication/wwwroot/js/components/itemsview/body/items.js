@@ -36,9 +36,9 @@ var Items = React.createClass({
         console.debug(data);
         this.nextPage = data.nextPage;
         this.prevPage = data.prevPage;
-        if (this.isFirst) this.props.changeMaxMinCount(data.max, data.min);
+        //if (this.isFirst) this.props.changeMaxMinCount(data.max, data.min);
         this.isFirst = false;
-        this.setState({ items: data.items });
+        this.setState({ items: data });
     },
 
     render: function render() {

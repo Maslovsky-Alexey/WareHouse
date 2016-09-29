@@ -11,6 +11,6 @@ namespace WareHouse.Data.Model
         
         public int Count { get; set; }
 
-
+        public WarehouseItem WarehouseItem { get; set; }
     }
 }

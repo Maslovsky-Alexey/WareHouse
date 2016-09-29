@@ -40,15 +40,10 @@ namespace WareHouse.Data.EF.Repository
         {
             var count = 0;
 
-            try
-            {
+ 
                 await Task.Factory.StartNew(() => table.Add(item));
                 count = await SaveChanges();
-            }
-            catch
-            {
-                return OperationStatus.Error;
-            }
+
 
             return count > 0 ? OperationStatus.Added : OperationStatus.NotAdded;
         }

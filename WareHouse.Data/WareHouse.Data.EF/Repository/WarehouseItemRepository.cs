@@ -27,5 +27,10 @@ namespace WareHouse.Data.EF.Repository
                 return await context.WarehouseItem.Where(x => x.Item.Name == name).ToArrayAsync();
             }
         }
+
+        new public async Task<IEnumerable<WarehouseItem>> GetAll()
+        {
+            return await context.WarehouseItem.Include(x => x.Item).Include(x => x.Status).ToListAsync();
+        }
     }
 }

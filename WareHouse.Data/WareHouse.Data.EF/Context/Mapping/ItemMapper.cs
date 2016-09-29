@@ -4,15 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WareHouse.Data.EF.Context.Mapping
 {
-    public class ItemMapper : IMapper<Employee>
+    public class ItemMapper : IMapper<Item>
     {
-        public void Map(EntityTypeBuilder<Employee> typeBuilder)
+        public void Map(EntityTypeBuilder<Item> typeBuilder)
         {
             typeBuilder
-                .Property(item => item.Name)
-                .IsRequired()
-                .HasMaxLength(50);
-
+                .HasOne(p => p.WarehouseItem)
+                .WithOne(p => p.Item)
+                .HasForeignKey<Model.WarehouseItem>(p => p.ItemId);        
         }
     }
 }

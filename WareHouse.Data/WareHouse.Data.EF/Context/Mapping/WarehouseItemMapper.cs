@@ -11,9 +11,7 @@ namespace WareHouse.Data.EF.Context.Mapping
     {
         public void Map(EntityTypeBuilder<Model.WarehouseItem> typeBuilder)
         {
-            typeBuilder
-                .Property(item => item.Count)
-                .HasDefaultValue(0);
+
         }
     }
 }

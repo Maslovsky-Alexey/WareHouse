@@ -7,9 +7,11 @@ namespace WareHouse.Data.Model
 {
     public class WarehouseItem : BaseModel
     {
-        public virtual Item Item { get; set; }
+        public int ItemId { get; set; }
+        public Item Item { get; set; }
 
-        public virtual ItemStatus Status { get; set; }
+        public int StatusId { get; set; }
+        public ItemStatus Status { get; set; }
 
         public int Count { get; set; }
     }

@@ -8,5 +8,7 @@ namespace WareHouse.Data.Model
     public class ItemStatus : BaseModel
     {
         public string Name { get; set; }
+
+        public WarehouseItem WarehouseItem { get; set; }
     }
 }

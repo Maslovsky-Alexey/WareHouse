@@ -16,8 +16,7 @@ namespace WareHouse.Domain.Service.ModelsMapper
         }
 
         public ServiceModel MapService(EFmodel source)
-        {
-            
+        {           
             return configurator.ConfigurateService().Map<ServiceModel>(source);
         }
 

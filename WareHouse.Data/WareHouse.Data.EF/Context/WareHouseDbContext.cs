@@ -29,9 +29,8 @@ namespace WareHouse.Data.EF.Context
 
         public WareHouseDbContext(DbContextOptions option) : base(option)
         {
-           // Database.EnsureDeleted();
-            Database.EnsureCreated();
-            
+            //Database.EnsureDeleted();
+            Database.EnsureCreated();         
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
