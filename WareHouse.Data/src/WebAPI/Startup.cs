@@ -93,6 +93,9 @@ namespace WebAPI
 
             containerBuilder.RegisterType<WarehouseItemRepository>().As<BaseRepository<WareHouse.Data.Model.WarehouseItem>>();
             containerBuilder.RegisterType<WarehouseItemService>().As<IWarehouseItemService>();
+
+
+            containerBuilder.RegisterType<OperationService>().As<IOperationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

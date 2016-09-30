@@ -32,19 +32,5 @@ namespace WebAPI.Controllers
         {
             await warehouseItems.AddOrUpdateAsViewModel(value);
         }
-
-        [Route("AddSupply")]
-        [HttpPost]
-        public async Task AddSupply([FromBody]SupplyViewModel value)
-        {
-            await warehouseItems.AddSupply(value);
-        }
-
-        [Route("AddOrder")]
-        [HttpPost]
-        public async Task AddOrder([FromBody]OrderViewModel value)
-        {
-            await warehouseItems.AddOrder(value);
-        }
     }
 }

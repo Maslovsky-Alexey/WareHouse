@@ -14,20 +14,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class WarehouseItemService : BaseService<Domain.Model.WarehouseItem, Data.Model.WarehouseItem>, IWarehouseItemService
     {
+        IWarehouseItemRepository warehouseItemRepository;
+
         public WarehouseItemService(BaseRepository<Data.Model.WarehouseItem> repository) : base(repository, 
             new ModelsMapper<Data.Model.WarehouseItem, Domain.Model.WarehouseItem>(new WarehouseItemMapConfigurator()))
         {
-
-        }
-
-        public async Task<OperationStatus> AddOrder(OrderViewModel model)
-        {
-            return await Add(new WarehouseItem
-            {
-                Count = model.Count,
-                Item = new Item { Id = model.ItemId },
-                Status = new ItemStatus { Id = 1 }
-            });            
+            warehouseItemRepository = (IWarehouseItemRepository)repository;
         }
 
         public async Task AddOrUpdateAsViewModel(WarehouseItemViewModel model)
@@ -49,17 +41,6 @@ namespace WareHouse.Domain.Service.ConcreteServices
             }
         }
 
-        public async Task<OperationStatus> AddSupply(SupplyViewModel model)
-        {
-            
-            return await Add(new WarehouseItem
-            {
-                Count = model.Count,
-                ItemId = model.ItemId,
-                StatusId = 2 //TODO: СТАТУС КАК БРАТЬ (СМОТРИ В БЛОКНОТ)
-            });
-        }
-
         public async Task<IEnumerable<WarehouseItemViewModel>> GetAllAsViewModel()
         {
             return (await ((WarehouseItemRepository)repository).GetAll()).Select(item => new WarehouseItemViewModel
@@ -77,6 +58,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return (await((WarehouseItemRepository)repository).GetItemsByName(name, ignoreCase)).Select(item => MapToServiceModel(item));
         }
 
-
+        public async Task UpdateStatus(int itemId, int itemStatusId)
+        {
+            await warehouseItemRepository.UpdateStatus(itemId, itemStatusId);
+        }
     }
 }

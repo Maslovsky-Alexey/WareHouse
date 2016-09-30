@@ -13,8 +13,6 @@ namespace WareHouse.Domain.ServiceInterfaces
 
         Task<IEnumerable<Model.WarehouseItem>> GetItemsByName(string name, bool ignoreCase);
 
-        Task<Data.Repository.OperationStatus> AddSupply(Model.ViewModel.SupplyViewModel model);
-
-        Task<Data.Repository.OperationStatus> AddOrder(Model.ViewModel.OrderViewModel model);
+        Task UpdateStatus(int itemId, int itemStatusId);
     }
 }

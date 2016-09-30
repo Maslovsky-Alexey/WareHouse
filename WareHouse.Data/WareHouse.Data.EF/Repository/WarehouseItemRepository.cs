@@ -32,5 +32,18 @@ namespace WareHouse.Data.EF.Repository
         {
             return await context.WarehouseItem.Include(x => x.Item).Include(x => x.Status).ToListAsync();
         }
+
+        public async Task UpdateStatus(int itemId, int itemStatusId)
+        {
+            var oldItem = await GetItem(itemId);
+
+            if (oldItem == null)
+                return;
+
+            oldItem.StatusId = itemStatusId;
+
+            
+            await SaveChanges();
+        }
     }
 }

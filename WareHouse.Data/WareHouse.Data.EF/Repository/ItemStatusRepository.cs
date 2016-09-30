@@ -15,5 +15,10 @@ namespace WareHouse.Data.EF.Repository
         {
             this.context = context;
         }
+
+        public async Task<ItemStatus> GetStatus(Status status)
+        {
+            return await Task<ItemStatus>.Factory.StartNew(() => table.FirstOrDefault(x => x.Status == status));
+        }
     }
 }

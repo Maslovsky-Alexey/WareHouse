@@ -16,6 +16,10 @@ namespace WareHouse.Data.EF.Context.Mapping
                 .HasOne(p => p.WarehouseItem)
                 .WithOne(p => p.Status)
                 .HasForeignKey<Model.WarehouseItem>(p => p.StatusId);
+
+            typeBuilder
+                .Property(x => x.Status)
+                .HasDefaultValue(Status.UnknowItem);
         }
     }
 }

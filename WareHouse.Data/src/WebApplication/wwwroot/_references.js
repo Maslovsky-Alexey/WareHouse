@@ -16,6 +16,7 @@
 /// <reference path="js/repositories/clientrepository.js" />
 /// <reference path="js/repositories/ItemRepository.js" />
 /// <reference path="js/repositories/itemstatusrepository.js" />
+/// <reference path="js/repositories/operationrepository.js" />
 /// <reference path="js/repositories/providerrepository.js" />
 /// <reference path="js/repositories/servermediator.js" />
 /// <reference path="js/repositories/warehouseitemrepository.js" />

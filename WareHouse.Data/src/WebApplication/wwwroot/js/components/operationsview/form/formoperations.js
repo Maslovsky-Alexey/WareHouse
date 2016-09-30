@@ -1,7 +1,7 @@
 ﻿"use strict";
 
 /// <reference path="../../../repositories/itemrepository.js" />
-/// <reference path="../../../repositories/warehouseitemrepository.js" />
+/// <reference path="../../../repositories/operationrepository.js" />
 /// <reference path="../../../repositories/providerrepository.js" />
 /// <reference path="../../../repositories/clientrepository.js" />
 
@@ -15,7 +15,7 @@ var FormOperations = React.createClass({
     displayName: "FormOperations",
 
     itemsRepos: new ItemRepository(),
-    warehouseItems: new WarehouseItemsRepository(),
+    warehouseItems: new OperationRepository(),
 
     items: [],
     itemId: -1,
