@@ -2,12 +2,12 @@
 using WareHouse.Data.EF.Context.Mapping;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
-
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 
 namespace WareHouse.Data.EF.Context
 {
-    public class WareHouseDbContext : DbContext
+    public class WareHouseDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Client> Clients { get; set; }
 
@@ -22,16 +22,13 @@ namespace WareHouse.Data.EF.Context
         public DbSet<WarehouseItem> WarehouseItem { get; set; }
 
 
-        public WareHouseDbContext(): base()
+        public WareHouseDbContext(DbContextOptions<WareHouseDbContext> options)
+            : base(options)
         {
-
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
         }
 
-        public WareHouseDbContext(DbContextOptions option) : base(option)
-        {
-            //Database.EnsureDeleted();
-            Database.EnsureCreated();         
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

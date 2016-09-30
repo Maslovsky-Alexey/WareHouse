@@ -16,6 +16,8 @@ using Autofac.Extensions.DependencyInjection;
 using Autofac.Core;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Repository;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using WareHouse.Data.Model;
 
 namespace WebAPI
 {
@@ -49,6 +51,10 @@ namespace WebAPI
 
 
             services.AddDbContext<WareHouseDbContext>(options => options.UseSqlServer(connection));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<WareHouseDbContext>()
+                .AddDefaultTokenProviders();
 
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
