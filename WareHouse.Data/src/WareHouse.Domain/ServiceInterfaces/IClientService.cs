@@ -12,5 +12,7 @@ namespace WareHouse.Domain.ServiceInterfaces
         Task AddWithoutRepetition(Model.Client value);
 
         Task RemoveClientByName(Model.Client value);
+
+        Task<Model.Client> GetClientByIdentityId(string identityId);
     }
 }

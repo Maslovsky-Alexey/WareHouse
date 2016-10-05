@@ -44,5 +44,10 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (removingItem != null)
                 await Remove(await GetItem(removingItem.Id));
         }
+
+        public async Task<Model.Client> GetClientByIdentityId(string identityId)
+        {
+            return MapToServiceModel(await((ClientRepository)repository).GetClientByIdentityId(identityId));
+        }
     }
 }

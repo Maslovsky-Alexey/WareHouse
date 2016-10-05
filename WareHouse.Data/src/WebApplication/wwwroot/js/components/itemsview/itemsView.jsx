@@ -41,5 +41,3 @@ var ItemsView = React.createClass({
         );
     }
 });
-
-ReactDOM.render(<ItemsView />, document.getElementById('root'));

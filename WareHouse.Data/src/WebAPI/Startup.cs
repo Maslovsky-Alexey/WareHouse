@@ -56,6 +56,15 @@ namespace WebAPI
                 .AddEntityFrameworkStores<WareHouseDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 5;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+            });
+
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
@@ -100,8 +109,11 @@ namespace WebAPI
             containerBuilder.RegisterType<WarehouseItemRepository>().As<BaseRepository<WareHouse.Data.Model.WarehouseItem>>();
             containerBuilder.RegisterType<WarehouseItemService>().As<IWarehouseItemService>();
 
+            containerBuilder.RegisterType<UserRepository>().As<IUserRepository>();
+            containerBuilder.RegisterType<UserService>().As<IUserService>();
 
             containerBuilder.RegisterType<OperationService>().As<IOperationService>();
+            containerBuilder.RegisterType<AccountService>().As<IAccountService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -128,12 +140,16 @@ namespace WebAPI
 
             app.UseStaticFiles();
 
+            app.UseIdentity();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            
         }
     }
 }

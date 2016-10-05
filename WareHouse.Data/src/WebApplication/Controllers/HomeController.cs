@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Controllers
 {
@@ -21,6 +21,16 @@ namespace WebApplication.Controllers
         }
 
         public IActionResult ItemAdd()
+        {
+            return View();
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult Profile()
         {
             return View();
         }

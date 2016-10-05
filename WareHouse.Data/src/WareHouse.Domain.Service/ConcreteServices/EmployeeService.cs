@@ -6,6 +6,7 @@ using WareHouse.Data.EF.Repository;
 using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.Service.ModelsMapper;
 using WareHouse.Domain.Service.ModelsMapper.Configurators;
+using WareHouse.Domain.Model;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
@@ -15,6 +16,16 @@ namespace WareHouse.Domain.Service.ConcreteServices
             new ModelsMapper<Data.Model.Employee, Domain.Model.Employee>(new EmployeeMapConfigurator()))
         {
 
+        }
+
+        public async Task<Employee> GetEmployeeByIdentityId(string identityId)
+        {
+            return MapToServiceModel((await ((EmployeeRepository)repository).GetEmployeeByIdentityId(identityId)));
+        }
+
+        public async Task<Employee> GetEmployeeByName(string name, bool ignoreCase)
+        {
+            return MapToServiceModel((await((EmployeeRepository)repository).GetEmployeeByName(name, ignoreCase)));
         }
     }
 }

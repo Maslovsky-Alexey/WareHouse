@@ -3,7 +3,7 @@ using WareHouse.Data.EF.Context.Mapping;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace WareHouse.Data.EF.Context
 {
@@ -25,8 +25,20 @@ namespace WareHouse.Data.EF.Context
         public WareHouseDbContext(DbContextOptions<WareHouseDbContext> options)
             : base(options)
         {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
+            //Database.EnsureDeleted();
+
+            if (Database.EnsureCreated())
+            {
+                Seed();
+            }
+        }
+
+        private void Seed()
+        {
+            Roles.Add(new IdentityRole("employee") { NormalizedName = "EMPLOYEE" });
+            Roles.Add(new IdentityRole("client") { NormalizedName = "CLIENT" });
+
+            SaveChanges();
         }
 
 

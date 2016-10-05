@@ -9,5 +9,8 @@ namespace WareHouse.Data.Repository
     public interface IClientRepository : IRepository<Model.Client>
     {
         Task<Client> GetClientByName(string name, bool ignoreCase);
+
+        Task<Client> GetClientByIdentityId(string identityId);
+
     }
 }
