@@ -1,4 +1,8 @@
-﻿var InputCompiler = React.createClass({
+﻿var React = require('react');
+var ReactDom = require('react-dom');
+
+
+var InputCompiler = React.createClass({
 
     getInitialState: function () {
         return { viewItems: [] };
@@ -59,3 +63,5 @@
             );
     }
 });
+
+exports.InputCompiler = InputCompiler;

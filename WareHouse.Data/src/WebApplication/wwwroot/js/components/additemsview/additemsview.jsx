@@ -1,9 +1,11 @@
-﻿/// <reference path="../../../repositories/itemrepository.js" />
+﻿var React = require('react');
+var ReactDom = require('react-dom');
 
-/// <reference path="../../../autocompiler/inputcompiler.js" />
+var ItemRepository = require('../../repositories/itemrepository.js');
+var InputCompiler = require('../../autocompiler/inputcompiler.jsx');
 
 var AddItemsView = React.createClass({
-    itemsRepos: new ItemRepository(),
+    itemsRepos: new ItemRepository.ItemRepository(),
 
     items: [],
 
@@ -56,7 +58,7 @@ var AddItemsView = React.createClass({
     render: function () {
         return (
             <div>
-                <InputCompiler items={this.items} />
+                <InputCompiler.InputCompiler items={this.items} />
 
                 <button className="btn btn-success btn-block btn-sm" onClick={this.Add}>Add</button>
             </div>
@@ -64,7 +66,4 @@ var AddItemsView = React.createClass({
     }
 });
 
-ReactDOM.render(
-  <AddItemsView />,
-  document.getElementById('root')
-);
+exports.AddItemsView = AddItemsView;

@@ -1,5 +1,5 @@
 {
-  "projects": [ "src", "test", "." ],
+  "projects": [ "src", "test", ".", "C:/Users/a.maslovsky/Desktop/openiddict-core-dev/openid" ],
   "sdk": {
     "version": "1.0.0-preview2-003121"
   }

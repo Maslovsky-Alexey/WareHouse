@@ -1,7 +1,11 @@
-﻿/// <reference path="../../repositories/accountrepository.js" />
+﻿
+var React = require('react');
+var ReactDom = require('react-dom');
+
+var AccountRepository = require('../../repositories/accountrepository.js');
 
 var ProfileView = React.createClass({
-    accountRepository: new AccountRepository(),
+    accountRepository: new AccountRepository.AccountRepository(),
     isInvalidUser: true,
 
     getInitialState: function getInitialState() {
@@ -37,7 +41,4 @@ var ProfileView = React.createClass({
     }
 });
 
-ReactDOM.render(
-  <ProfileView />,
-  document.getElementById('root')
-);
+exports.ProfileView = ProfileView;

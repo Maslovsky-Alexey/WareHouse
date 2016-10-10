@@ -3,10 +3,18 @@
 /// <reference path="../../repositories/clientrepository.js" />
 /// <reference path="../../repositories/providerrepository.js" />
 
-var OperartionsView = React.createClass({
+var React = require('react');
+var ReactDom = require('react-dom');
+
+var FormOperations = require('./form/formoperations.jsx');
+var ClientRepository = require('../../repositories/clientrepository.js');
+var ProviderRepository = require('../../repositories/providerrepository.js');
+var List = require('./list/list.jsx');
+
+var OperationsView = React.createClass({
     listItem: '',
-    providerRepos: new ProviderRepository(),
-    clientRepos: new ClientRepository(),
+    providerRepos: new ProviderRepository.ProviderRepository(),
+    clientRepos: new ClientRepository.ClientRepository(),
 
     providers: [],
     clients: [],
@@ -58,20 +66,17 @@ var OperartionsView = React.createClass({
         return (
             <div className="row">
                 <div className="col-xs-3">
-                    <List title="Providers" side="left" active={this.supplymode} changevalue={this.SelectedListItem} items={this.providers} onadded={this.providerAdded}/>
+                    <List.List title="Providers" side="left" active={this.supplymode} changevalue={this.SelectedListItem} items={this.providers} onadded={this.providerAdded}/>
                 </div>
                 <div className="col-xs-6">
-                    <FormOperations actor={this.listItem} changeMode={this.modeChange}/>
+                    <FormOperations.FormOperations actor={this.listItem} changeMode={this.modeChange}/>
                 </div>
                 <div className="col-xs-3">
-                    <List title="Clients" side="right" active={!this.supplymode} changevalue={this.selectedlistitem} items={this.clients} onadded={this.clientAdded}/>
+                    <List.List title="Clients" side="right" active={!this.supplymode} changevalue={this.selectedlistitem} items={this.clients} onadded={this.clientAdded}/>
                 </div>                            
             </div>
         );
     }
 });
 
-ReactDOM.render(
-  <OperartionsView />,
-  document.getElementById('root')
-);
+exports.OperationsView = OperationsView;

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using WareHouse.Domain.Model.ViewModel;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using WareHouse.Domain.ServiceInterfaces;
+using Microsoft.Extensions.Primitives;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,7 +34,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("RegisterEmployee")]
-        [Authorize(Roles = "employee")]
+        [AllowAnonymous]
         public async Task<UserModel> RegisterEmployee([FromBody]RegisterModel model)
         {
             return await accountService.RegisterEmployee(model);
@@ -43,11 +44,32 @@ namespace WebAPI.Controllers
         [AllowAnonymous]
         public async Task<bool> Login([FromBody]LoginModel model)
         {
-            return await accountService.Login(model);
+            var result = await accountService.Login(model);
+
+            if (result)
+            {
+                HttpContext.Response.Headers.Add("Authorization", new[] { "Bearer " + TokenEncryptor.Encrypt(model.Username) });
+            }
+
+            return result;
+        }
+
+        [HttpGet("Login")]
+        [AllowAnonymous]
+        public async Task<bool> Login()
+        {
+            var result = await accountService.Login(new LoginModel { Password = "admin", Username = "admin" });
+
+            if (result)
+            {
+                HttpContext.Response.Headers.Add("Authorization", new [] { "Bearer " + TokenEncryptor.Encrypt("admin") });
+            }
+
+            return result;
         }
 
         [HttpGet("GetCurrentUser")]
-        [AllowAnonymous]
+        [Authorize(Roles = "employee")]
         public async Task<UserModel> GetCurrentUser()
         {
             return await accountService.GetCurrentUser(HttpContext);

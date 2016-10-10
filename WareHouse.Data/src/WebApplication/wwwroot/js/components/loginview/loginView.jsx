@@ -1,7 +1,13 @@
-﻿/// <reference path="../../repositories/accountrepository.js" />
+﻿
+
+var React = require('react');
+var ReactDom = require('react-dom');
+
+var AccountRepository = require('../../repositories/accountrepository.js');
+
 
 var LoginView = React.createClass({
-    accountRepository: new AccountRepository(),
+    accountRepository: new AccountRepository.AccountRepository(),
 
     Send: function(){
         var name = $("#username1").val();
@@ -11,10 +17,13 @@ var LoginView = React.createClass({
     },
 
     loginSuccess: function(isSuccess){
-        if (isSuccess)
+        isSuccess = isSuccess == "true";
+        console.debug(isSuccess);
+
+        if (isSuccess == true)
             alert("YAHOOO!");
         else
-            alert("OOOPPS :( ");   //TODO: измменить на нормальное отображение
+            alert("OOOPPS :( "); //TODO: измменить на нормальное отображение
     },
 
     render: function () {
@@ -35,7 +44,4 @@ var LoginView = React.createClass({
     }
 });
 
-ReactDOM.render(
-  <LoginView />,
-  document.getElementById('root')
-);
+exports.LoginView = LoginView;

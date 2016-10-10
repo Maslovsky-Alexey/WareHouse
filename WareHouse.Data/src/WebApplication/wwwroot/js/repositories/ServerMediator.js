@@ -11,16 +11,17 @@ var ServerMediator = function () {
         xhr.open(type, url, true);
 
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-
         xhr.setRequestHeader('Accept', 'application/json');
-        xhr.setRequestHeader('Accept-Charset', 'utf-8');
+        //xhr.setRequestHeader('Accept-Charset', 'utf-8');
+        xhr.setRequestHeader('Authorization', window.localStorage.getItem("AuthToken"));
 
         xhr.onload = function (a, b) {
-            success(xhr.response);
+            success(xhr.response, xhr);
         };
-
+        
         xhr.send(data);
     }
 };
 
+exports.ServerMediator = ServerMediator;
 

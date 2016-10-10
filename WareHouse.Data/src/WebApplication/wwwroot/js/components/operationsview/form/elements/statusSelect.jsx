@@ -1,4 +1,5 @@
-﻿/// <reference path="../../../../repositories/itemstatusrepository.js" />
+﻿var React = require('react');
+var ReactDom = require('react-dom');
 
 var StatusSelect = React.createClass({
 
@@ -26,3 +27,5 @@ var StatusSelect = React.createClass({
         )
      }
 });
+
+exports.StatusSelect = StatusSelect;

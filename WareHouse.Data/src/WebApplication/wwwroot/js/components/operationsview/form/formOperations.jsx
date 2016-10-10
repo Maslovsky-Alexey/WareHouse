@@ -1,17 +1,13 @@
-﻿/// <reference path="../../../repositories/itemrepository.js" />
-/// <reference path="../../../repositories/operationrepository.js" />
-/// <reference path="../../../repositories/providerrepository.js" />
-/// <reference path="../../../repositories/clientrepository.js" />
+﻿var React = require('react');
+var ReactDom = require('react-dom');
 
-/// <reference path="../../../autocompiler/inputcompiler.js" />
-/// <reference path="elements/statusselect.js" />
-
-
-/// <reference path="../../../models/models.js" />
+var ItemRepository = require('../../../repositories/itemrepository.js');
+var OperationRepository = require('../../../repositories/operationrepository.js');
+var StatusSelect = require('./elements/statusselect.jsx');
 
 var FormOperations = React.createClass({
-    itemsRepos: new ItemRepository(),
-    warehouseItems: new OperationRepository(),
+    itemsRepos: new ItemRepository.ItemRepository(),
+    warehouseItems: new OperationRepository.OperationRepository(),
 
     items: [],
     itemId: -1,
@@ -95,7 +91,7 @@ var FormOperations = React.createClass({
                     <input type="radio" name="inlineRadioOptions" id="order" value="order" onChange={this.modeChange} checked={!this.state.supplymode} /> Order
                 </label>
 
-                <StatusSelect items={this.items} onchangevalue={this.itemSelected}/>
+                <StatusSelect.StatusSelect items={this.items} onchangevalue={this.itemSelected}/>
 
                 <input className="form-control item_count" placeholder="count" />
                 <button className="btn btn-success btn-block btn-sm" onClick={this.Send}>Send</button>
@@ -103,3 +99,5 @@ var FormOperations = React.createClass({
             )
     }
 });
+
+exports.FormOperations = FormOperations;

@@ -1,6 +1,7 @@
-﻿/// <reference path="servermediator.js" />
+﻿var ServerMediator = require('./ServerMediator.js');
+
 var ProviderRepository = function() {
-    serverMediator = new ServerMediator(),
+    serverMediator = new ServerMediator.ServerMediator(),
 
     this.getProviders = function (success) {
         serverMediator.sendRequest('api/providers/', 'get', null, function (data) {
@@ -13,15 +14,4 @@ var ProviderRepository = function() {
     }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
+exports.ProviderRepository = ProviderRepository;

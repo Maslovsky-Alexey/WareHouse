@@ -1,7 +1,8 @@
-﻿/// <reference path="../servermediator.js" />
+﻿
+var ServerMediator = require('./ServerMediator.js');
 
 var ItemRepository = function() {
-    serverMediator = new ServerMediator();
+    serverMediator = new ServerMediator.ServerMediator();
 
     this.getItems = function (success) {
         serverMediator.sendRequest('api/items/', 'get', null, function (data) {
@@ -35,5 +36,7 @@ var ItemRepository = function() {
         serverMediator.sendRequest('api/items/updatecount', 'post', JSON.stringify(item), success);
     };
 };
+
+exports.ItemRepository = ItemRepository;
 
 

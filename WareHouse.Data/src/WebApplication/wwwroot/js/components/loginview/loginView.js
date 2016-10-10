@@ -15,7 +15,9 @@ var LoginView = React.createClass({
     },
 
     loginSuccess: function loginSuccess(isSuccess) {
-        if (isSuccess) alert("YAHOOO!"); else alert("OOOPPS :( "); //TODO: измменить на нормальное отображение
+        isSuccess = isSuccess == "true";
+        console.debug(isSuccess);
+        if (isSuccess == true) alert("YAHOOO!"); else alert("OOOPPS :( "); //TODO: измменить на нормальное отображение
     },
 
     render: function render() {

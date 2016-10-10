@@ -1,4 +1,7 @@
-﻿/// <reference path="body/listbody.js" />
+﻿var React = require('react');
+var ReactDom = require('react-dom');
+
+var ListBody = require('./body/listbody.jsx');
 
 var List = React.createClass({
     items: [],
@@ -56,9 +59,11 @@ var List = React.createClass({
                         </span>
                      </div>
                 </div>
-                <ListBody values={this.items} click={this.click} hidden={!this.props.active} filter={this.filter}/>
+                <ListBody.ListBody values={this.items} click={this.click} hidden={!this.props.active} filter={this.filter}/>
             </div>
         );
     }
 
 });
+
+exports.List = List;

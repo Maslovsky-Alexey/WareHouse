@@ -1,5 +1,8 @@
-﻿/// <reference path="components/itemsview/body/items.js" />
-/// <reference path="../react-input-range/react-input-range.min.js" />
+﻿
+var React = require('react');
+var ReactDom = require('react-dom');
+
+var InputRange = require('react-input-range');
 
 var FilterForm = React.createClass({
     values: {min: 0, max: 0},
@@ -97,3 +100,5 @@ var FilterForm = React.createClass({
         );
     }
 });
+
+exports.FilterForm = FilterForm;

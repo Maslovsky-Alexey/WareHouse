@@ -71,9 +71,12 @@ namespace WebAPI
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder.WithOrigins("*")
-                                       .WithMethods("*")
-                                       .WithHeaders("*"));
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        .WithExposedHeaders("Authorization"));
             });
 
             services.AddMvc();
@@ -142,14 +145,14 @@ namespace WebAPI
 
             app.UseIdentity();
 
+            app.UseMiddleware<AuthenticationMddleware>();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            
         }
     }
 }

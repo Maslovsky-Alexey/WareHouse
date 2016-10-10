@@ -1,4 +1,7 @@
-﻿var Ratings = React.createClass({
+﻿var React = require('react');
+var ReactDom = require('react-dom');
+
+var Ratings = React.createClass({
     maxStars: 5,
 
     createStar: function(status, id){
@@ -22,3 +25,5 @@
         return (<p>{this.generateStarsRating(this.props.starscount)}</p>)
     }
 });
+
+exports.Ratings = Ratings;

@@ -1,4 +1,7 @@
-﻿var ListBody = React.createClass({
+﻿var React = require('react');
+var ReactDom = require('react-dom');
+
+var ListBody = React.createClass({
     render: function () {
         if (this.props.hidden)
             return (<div></div>);
@@ -25,3 +28,5 @@
         );
     }
 });
+
+exports.ListBody = ListBody;

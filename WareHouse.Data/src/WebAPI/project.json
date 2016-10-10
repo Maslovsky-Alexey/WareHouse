@@ -29,7 +29,10 @@
     "WareHouse.MyOData": "1.0.0-*",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "Autofac.Extensions.DependencyInjection": "4.0.0",
-    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0"  },
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
+    "Microsoft.AspNetCore.Owin": "1.0.0",
+    "Microsoft.AspNetCore.Authentication.JwtBearer": "1.0.0",
+    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0" },
 
   "tools": {
     "BundlerMinifier.Core": "2.0.238",

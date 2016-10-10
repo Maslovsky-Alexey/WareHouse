@@ -1,6 +1,9 @@
 ﻿/// <reference path="servermediator.js" />
+var ServerMediator = require('./ServerMediator.js');
+
+
 var WarehouseItemsRepository = function () {
-    serverMediator = new ServerMediator(),
+    serverMediator = new ServerMediator.ServerMediator(),
 
     this.getItems = function (success) {
         serverMediator.sendRequest('api/warehouseitems/', 'get', null, function (data) {
@@ -10,5 +13,5 @@ var WarehouseItemsRepository = function () {
 };
 
 
-
+exports.WarehouseItemsRepository = WarehouseItemsRepository;
 

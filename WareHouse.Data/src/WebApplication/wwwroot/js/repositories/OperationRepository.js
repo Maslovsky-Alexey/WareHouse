@@ -1,6 +1,7 @@
-﻿/// <reference path="servermediator.js" />
+﻿var ServerMediator = require('./ServerMediator.js');
+
 var OperationRepository = function () {
-    serverMediator = new ServerMediator(),
+    serverMediator = new ServerMediator.ServerMediator(),
 
 
     this.addOrder = function (item, success) {
@@ -12,6 +13,5 @@ var OperationRepository = function () {
     }
 };
 
-
-
+exports.OperationRepository = OperationRepository;
 

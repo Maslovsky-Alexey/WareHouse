@@ -1,7 +1,8 @@
-﻿/// <reference path="servermediator.js" />
+﻿var ServerMediator = require('./ServerMediator.js');
+
 var AccountRepository = function () {
 
-    serverMediator = new ServerMediator(),
+    serverMediator = new ServerMediator.ServerMediator(),
 
     this.registerClient = function (username, password, success) {
         var model = {
@@ -25,7 +26,14 @@ var AccountRepository = function () {
             password: password
         };
 
-        serverMediator.sendRequest("api/account/login", 'post', JSON.stringify(model), success);
+        serverMediator.sendRequest("api/account/login", 'post', JSON.stringify(model), function (isSuccess, httpContext) {
+            if (isSuccess == "true") {
+                var token = httpContext.getResponseHeader("Authorization");
+                window.localStorage.setItem("AuthToken", token);
+            }
+            
+            success(isSuccess);
+        });
     }
 
     this.getCurrentUser = function (success) {
@@ -33,6 +41,7 @@ var AccountRepository = function () {
     }
 };
 
+exports.AccountRepository = AccountRepository;
 
 
 

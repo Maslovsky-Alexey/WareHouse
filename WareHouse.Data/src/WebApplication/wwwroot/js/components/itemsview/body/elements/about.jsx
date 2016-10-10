@@ -1,4 +1,6 @@
-﻿
+﻿var React = require('react');
+var ReactDom = require('react-dom');
+
 var About = React.createClass({
     render: function () {
         var itemInfo = this.props.itemInfo;
@@ -11,3 +13,5 @@ var About = React.createClass({
             )
     }
 });
+
+exports.About = About;

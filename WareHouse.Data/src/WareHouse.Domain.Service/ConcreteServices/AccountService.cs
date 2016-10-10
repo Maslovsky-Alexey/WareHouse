@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using WareHouse.Data.Model;
 using WareHouse.Domain.Model.ViewModel;
@@ -35,7 +36,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<UserModel> GetCurrentUser(HttpContext httpContext)
         {
-            var user = await userManager.GetUserAsync(httpContext.User);
+            var user = await userService.GetUserByName(httpContext.User.Identity.Name, false);
             
             if (user == null)
                 return null;
@@ -46,17 +47,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public async Task<bool> Login(LoginModel model)
         {
             await EnsureAddDefauleUser();
-
-            try
-            {
-                await signInManager.SignInAsync(await userService.GetUserByName(model.Username, false), true);
-            }  
-            catch
-            {
-                return false;
-            }
-
-            return true;
+              
+            return (await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false)).Succeeded;
         }
 
 
