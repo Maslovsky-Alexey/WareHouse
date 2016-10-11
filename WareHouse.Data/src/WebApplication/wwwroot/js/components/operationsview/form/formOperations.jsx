@@ -1,6 +1,7 @@
 ﻿var React = require('react');
 var ReactDom = require('react-dom');
 
+// TODO: Есть такой паттерн как Flux. Попробуй сделать свою легкую реализацию.
 var ItemRepository = require('../../../repositories/itemrepository.js');
 var OperationRepository = require('../../../repositories/operationrepository.js');
 var StatusSelect = require('./elements/statusselect.jsx');

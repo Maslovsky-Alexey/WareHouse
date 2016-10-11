@@ -35,6 +35,7 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<Client> Get(int id)
         {
+            // TODO: записи может не существовать, в таком случае нжно возвращать 404.
             return await clients.GetItem(id);
         }
 
@@ -42,6 +43,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task Post([FromBody]Client value)
         {
+            // TODO: При добавлении записей, нужно возвращать 201 или 409.
             await clients.AddWithoutRepetition(value);
         }
 
@@ -49,6 +51,7 @@ namespace WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task Delete([FromBody]Client value)
         {
+            // TODO: записи может не существовать, в таком случае нжно возвращать 404.
             await clients.RemoveClientByName(value);
         }
     }

@@ -27,7 +27,8 @@ var List = React.createClass({
         this.props.changevalue(value);
     },
 
-    add: function(e){
+    add: function (e) {
+        // TODO: Кажется это значение должно быть в props при создании компонента
         var value = $(e.target).parent().parent().find("input").val();
       
         this.props.items.push(value);
