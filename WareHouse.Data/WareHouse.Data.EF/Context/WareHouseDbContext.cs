@@ -33,6 +33,7 @@ namespace WareHouse.Data.EF.Context
             }
         }
 
+
         private void Seed()
         {
             Roles.Add(new IdentityRole("employee") { NormalizedName = "EMPLOYEE" });

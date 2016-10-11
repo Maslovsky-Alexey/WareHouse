@@ -19,8 +19,7 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class AccountController : Controller
     {
-        // TODO: Это поле может быть readonly
-        private IAccountService accountService;
+        private readonly IAccountService accountService;
 
         public AccountController(IAccountService accountService)
         {
@@ -49,8 +48,7 @@ namespace WebAPI.Controllers
 
             if (result)
             {
-                // TODO: Это не задача методо контроллера. Нужен класс, который будет дополнять контекст заголовком.
-                HttpContext.Response.Headers.Add("Authorization", new[] { "Bearer " + TokenEncryptor.Encrypt(model.Username) });
+                HeadersHelper.AddAuthorizationHeader(HttpContext, TokenEncryptor.Encrypt(model.Username));
             }
 
             return result;
@@ -64,7 +62,7 @@ namespace WebAPI.Controllers
 
             if (result)
             {
-                HttpContext.Response.Headers.Add("Authorization", new [] { "Bearer " + TokenEncryptor.Encrypt("admin") });
+                HttpContext.Response.Headers.Add("Authorization", new[] { "Bearer " + TokenEncryptor.Encrypt("admin") });
             }
 
             return result;

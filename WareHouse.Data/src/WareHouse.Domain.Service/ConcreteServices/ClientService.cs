@@ -27,22 +27,26 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return MapToServiceModel(await ((ClientRepository)repository).GetClientByName(name, ignoreCase));
         }
 
-        public async Task AddWithoutRepetition(Model.Client value)
+        public async Task<bool> AddWithoutRepetition(Model.Client value)
         {
             var client = await GetClientByName(value.Name, true);
 
             if (client != null)
-                return;
+                return false;
 
             await Add(value);
+            return true;
         }
 
-        public async Task RemoveClientByName(Model.Client value)
+        public async Task<bool> RemoveClientByName(Model.Client value)
         {
             var removingItem = await GetClientByName(value.Name, true);
 
-            if (removingItem != null)
-                await Remove(await GetItem(removingItem.Id));
+            if (removingItem == null)
+                return false;
+
+            await Remove(await GetItem(removingItem.Id));
+            return true;
         }
 
         public async Task<Model.Client> GetClientByIdentityId(string identityId)

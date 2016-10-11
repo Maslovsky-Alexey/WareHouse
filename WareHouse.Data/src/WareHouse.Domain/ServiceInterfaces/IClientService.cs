@@ -9,9 +9,9 @@ namespace WareHouse.Domain.ServiceInterfaces
     {
         Task<Model.Client> GetClientByName(string name, bool ignoreCase);
 
-        Task AddWithoutRepetition(Model.Client value);
+        Task<bool> AddWithoutRepetition(Model.Client value);
 
-        Task RemoveClientByName(Model.Client value);
+        Task<bool> RemoveClientByName(Model.Client value);
 
         Task<Model.Client> GetClientByIdentityId(string identityId);
     }

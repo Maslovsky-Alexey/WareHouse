@@ -36855,6 +36855,7 @@
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
+	// TODO: Есть такой паттерн как Flux. Попробуй сделать свою легкую реализацию.
 	var ItemRepository = __webpack_require__(547);
 	var OperationRepository = __webpack_require__(548);
 	var StatusSelect = __webpack_require__(549);
@@ -37141,7 +37142,8 @@
 	        this.props.changevalue(value);
 	    },
 
-	    add: function(e){
+	    add: function (e) {
+	        // TODO: Кажется это значение должно быть в props при создании компонента
 	        var value = $(e.target).parent().parent().find("input").val();
 	      
 	        this.props.items.push(value);
@@ -37433,13 +37435,34 @@
 
 	var Layout = React.createClass({displayName: "Layout",
 
+	    getInitialState: function getInitialState() {
+
+	        
+	    },
 
 	    render: function () {
 	            return (
 	            React.createElement("div", {className: "InputCompiler"}, 
-	                "HelloWord!", 
-	                React.createElement("div", null, 
-	                    this.props.children
+	                React.createElement("div", {className: "navbar navbar-inverse navbar-fixed-top"}, 
+	                    React.createElement("div", {className: "container"}, 
+	                        React.createElement("div", {className: "navbar-header"}, 
+	                            React.createElement("a", {className: "navbar-brand"}, "ВВарехаузе")
+	                        ), 
+	                        React.createElement("div", {className: "navbar-collapse collapse"}, 
+	                            React.createElement("ul", {className: "nav navbar-nav"}, 
+	                                React.createElement("li", null, React.createElement("a", null, "New operation"))
+	                            )
+	                        )
+	                    )
+	                ), 
+	                React.createElement("div", {className: "container body-content"}, 
+	                    React.createElement("div", {className: "row"}, 
+	                        this.props.children
+	                    ), 
+	                    React.createElement("hr", null), 
+	                    React.createElement("footer", null, 
+	                        React.createElement("p", null, "© 2016 - ВВарехаузе")
+	                    )
 	                )
 	            )
 	        );

@@ -35,24 +35,31 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<Client> Get(int id)
         {
-            // TODO: записи может не существовать, в таком случае нжно возвращать 404.
-            return await clients.GetItem(id);
+            var client = await clients.GetItem(id);
+
+            if (client == null)
+                HttpContext.Response.StatusCode = 404;
+
+            return client;
         }
 
         // POST api/values
         [HttpPost]
         public async Task Post([FromBody]Client value)
         {
-            // TODO: При добавлении записей, нужно возвращать 201 или 409.
-            await clients.AddWithoutRepetition(value);
+            var isSuccess = await clients.AddWithoutRepetition(value);
+
+            HttpContext.Response.StatusCode = isSuccess ? 201 : 409;
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public async Task Delete([FromBody]Client value)
         {
-            // TODO: записи может не существовать, в таком случае нжно возвращать 404.
-            await clients.RemoveClientByName(value);
+            var isRemoved = await clients.RemoveClientByName(value);
+
+            if (!isRemoved)
+                HttpContext.Response.StatusCode = 404;           
         }
     }
 }

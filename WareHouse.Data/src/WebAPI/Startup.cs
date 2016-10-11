@@ -46,9 +46,8 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            // TODO: Вынести в конфигурацию
             //    var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse;uid=Admin;password=123123;";    
-            var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse.Data.EF.Context.WarehouseDbContext;Integrated Security=True";
+            var connection = Configuration.GetConnectionString("DefaultConnection");
 
 
             services.AddDbContext<WareHouseDbContext>(options => options.UseSqlServer(connection));
