@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace WareHouse.MyOData
 {
+    // TODO: Реализовать через MobelBinder
     public class MyODataConfigurates
     {
         public IEnumerable<PropertyFilter> PropertiesFilter { get; set; }

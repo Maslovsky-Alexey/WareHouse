@@ -31,8 +31,11 @@ namespace WebAPI
 
         public async Task Invoke(HttpContext httpContext)
         {
+            // TODO: Если это коллекция, то название должно быть о множественном числе.
+            // TODO: IEnumerable используется несколько раз, т.е. выборка будет происходить каждый раз, при материализации этой переменной.
             var header = httpContext.Request.Headers.Where(x => x.Key == "Authorization");
 
+            //TODO: Если заголовок авторизации передан, то пользователь либо обязательно должен быть авторизован, либо ответ будет 400/401 без продолжения дальнейшей обработки. Т.е. ответ должен уйти прям отсюда.
             if (header.Count() == 1)
             {
                 await SetHttpUserContext(header, httpContext);
@@ -45,13 +48,17 @@ namespace WebAPI
         {
             var token = header.First().Value.First();
 
+            // TODO: Кажется должно быть StartWith
+            // TODO: Если передан заголовок Authorization и он не в том виде, в котором ожидается, то это 400 BadRequest
             if (token.Contains("Bearer"))
             {
                 try
                 {
+                    // TODO: Более подходит Substring
                     var name = TokenEncryptor.Decrypt(token.Replace("Bearer ", ""));
                     var user = context.Users.FirstOrDefault(x => x.UserName == name);
 
+                    // TODO: Если передан несуществущий/неправильный токен, то нужно вернуть сразу 401.
                     if (user != null)
                         httpContext.User = new GenericPrincipal(new UserIndentity(user), (await userManager.GetRolesAsync(user)).ToArray());
                 }
