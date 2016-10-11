@@ -8183,17 +8183,21 @@
 
 	var LoginView = __webpack_require__(527);
 	var ItemsView = __webpack_require__(530);
-	var OperationsView = __webpack_require__(546);
-	var AddItemsView = __webpack_require__(559);
-	var ProfileView = __webpack_require__(561);
+	var OperationsView = __webpack_require__(545);
+	var AddItemsView = __webpack_require__(554);
+	var ProfileView = __webpack_require__(556);
+	var Layout = __webpack_require__(559);
 
 	ReactDOM.render((
 	    React.createElement(ReactRouter.Router, null, 
-	        React.createElement(ReactRouter.Route, {path: "/", component: LoginView.LoginView}), 
-	        React.createElement(ReactRouter.Route, {path: "/items", component: ItemsView.ItemsView}), 
-	        React.createElement(ReactRouter.Route, {path: "/operations", component: OperationsView.OperationsView}), 
-	        React.createElement(ReactRouter.Route, {path: "/additem", component: AddItemsView.AddItemsView}), 
-	        React.createElement(ReactRouter.Route, {path: "/profile", component: ProfileView.ProfileView})
+	        React.createElement(ReactRouter.Route, {component: Layout.Layout}, 
+	            React.createElement(ReactRouter.Route, {path: "/", components: LoginView.LoginView}), 
+	            React.createElement(ReactRouter.Route, {path: "/items", component: ItemsView.ItemsView}), 
+	            React.createElement(ReactRouter.Route, {path: "/operations", component: OperationsView.OperationsView}), 
+	            React.createElement(ReactRouter.Route, {path: "/additem", component: AddItemsView.AddItemsView}), 
+	            React.createElement(ReactRouter.Route, {path: "/profile", component: ProfileView.ProfileView}), 
+	            React.createElement(ReactRouter.Route, {path: "/profile/:name", component: ProfileView.ProfileView})
+	        )
 	    )
 	), document.getElementById('root'));
 
@@ -34449,6 +34453,7 @@
 	var LoginView = React.createClass({displayName: "LoginView",
 	    accountRepository: new AccountRepository.AccountRepository(),
 
+
 	    Send: function(){
 	        var name = $("#username1").val();
 	        var password = $("#password1").val();
@@ -34467,6 +34472,7 @@
 	    },
 
 	    render: function () {
+	        
 
 	        return (
 	            React.createElement("div", {className: "login-form"}, 
@@ -34530,6 +34536,11 @@
 
 	    this.getCurrentUser = function (success) {
 	        serverMediator.sendRequest("api/account/getcurrentuser", 'get', null, success);
+	    }
+
+	    this.getUserByName = function (username, success) {
+
+	        serverMediator.sendRequest("api/account/getuserbyname/" + username, 'get', null, success);
 	    }
 	};
 
@@ -36751,8 +36762,7 @@
 	}
 
 /***/ },
-/* 545 */,
-/* 546 */
+/* 545 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//// <reference path="form/formoperations.js" />
@@ -36763,10 +36773,10 @@
 	var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var FormOperations = __webpack_require__(547);
-	var ClientRepository = __webpack_require__(548);
-	var ProviderRepository = __webpack_require__(549);
-	var List = __webpack_require__(551);
+	var FormOperations = __webpack_require__(546);
+	var ClientRepository = __webpack_require__(550);
+	var ProviderRepository = __webpack_require__(551);
+	var List = __webpack_require__(552);
 
 	var OperationsView = React.createClass({displayName: "OperationsView",
 	    listItem: '',
@@ -36839,15 +36849,15 @@
 	exports.OperationsView = OperationsView;
 
 /***/ },
-/* 547 */
+/* 546 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var ItemRepository = __webpack_require__(552);
-	var OperationRepository = __webpack_require__(553);
-	var StatusSelect = __webpack_require__(555);
+	var ItemRepository = __webpack_require__(547);
+	var OperationRepository = __webpack_require__(548);
+	var StatusSelect = __webpack_require__(549);
 
 	var FormOperations = React.createClass({displayName: "FormOperations",
 	    itemsRepos: new ItemRepository.ItemRepository(),
@@ -36947,7 +36957,114 @@
 	exports.FormOperations = FormOperations;
 
 /***/ },
+/* 547 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var ServerMediator = __webpack_require__(529);
+
+	var ItemRepository = function() {
+	    serverMediator = new ServerMediator.ServerMediator();
+
+	    this.getItems = function (success) {
+	        serverMediator.sendRequest('api/items/', 'get', null, function (data) {
+	            success(JSON.parse(data));
+	        });
+	    };
+
+	    this.getPageItems = function (success, page) {
+	        serverMediator.sendRequest('api/items/GetPage/' + page, 'get', null, function (data) {
+
+	            success(JSON.parse(data));
+	        });
+	    };
+
+	    this.getPageItemsWithFilter = function (success, page, filter) {
+	        if (filter)
+	            serverMediator.sendRequest('api/items/GetPage/' + page + '/' + filter, 'get', null, function (data) {
+	                success(JSON.parse(data));
+	            });
+	        else
+	            serverMediator.sendRequest('api/items/GetPage/' + page, 'get', null, function (data) {
+	                success(JSON.parse(data));
+	            });
+	    };
+
+	    this.addItem = function (item, success) {
+	        serverMediator.sendRequest('api/items', 'post', JSON.stringify(item), success);
+	    };
+
+	    this.removeItem = function (item, success) {
+	        serverMediator.sendRequest('api/items/updatecount', 'post', JSON.stringify(item), success);
+	    };
+	};
+
+	exports.ItemRepository = ItemRepository;
+
+
+
+
+/***/ },
 /* 548 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ServerMediator = __webpack_require__(529);
+
+	var OperationRepository = function () {
+	    serverMediator = new ServerMediator.ServerMediator(),
+
+
+	    this.addOrder = function (item, success) {
+	        serverMediator.sendRequest('api/operations/addorder', 'post', JSON.stringify(item), success);
+	    }
+
+	    this.addSupply = function (item, success) {
+	        serverMediator.sendRequest('api/operations/addsupply', 'post', JSON.stringify(item), success);
+	    }
+	};
+
+	exports.OperationRepository = OperationRepository;
+
+
+
+/***/ },
+/* 549 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */var React = __webpack_require__(299);
+	var ReactDom = __webpack_require__(300);
+
+	var StatusSelect = React.createClass({displayName: "StatusSelect",
+
+	    changeValue: function(e){
+	        var selectedItem = $(e.target).find(":selected");
+
+	        this.props.onchangevalue($(e.target).val(), selectedItem.attr('id').replace("status-", ""));
+	    },
+
+	    render: function () {
+	        var options = this.props.items.map(function (item, index) {
+	            if (index == 0)
+	                return (React.createElement("option", {key: index, id: 'status-' + item.id, active: true}, item.name));
+	            else
+	                return (React.createElement("option", {key: index, id: 'status-' + item.id}, item.name));
+	        });
+
+	        if (this.props.items && this.props.items.length > 0)
+	            this.props.onchangevalue(this.props.items[0].name, this.props.items[0].id);
+
+	        return (
+	            React.createElement("select", {className: "form-control", onChange: this.changeValue}, 
+	                options
+	            )
+	        )
+	     }
+	});
+
+	exports.StatusSelect = StatusSelect;
+
+/***/ },
+/* 550 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ServerMediator = __webpack_require__(529);
@@ -36970,7 +37087,7 @@
 	exports.ClientRepository = ClientRepository;
 
 /***/ },
-/* 549 */
+/* 551 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ServerMediator = __webpack_require__(529);
@@ -36992,14 +37109,13 @@
 	exports.ProviderRepository = ProviderRepository;
 
 /***/ },
-/* 550 */,
-/* 551 */
+/* 552 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var ListBody = __webpack_require__(557);
+	var ListBody = __webpack_require__(553);
 
 	var List = React.createClass({displayName: "List",
 	    items: [],
@@ -37067,116 +37183,7 @@
 	exports.List = List;
 
 /***/ },
-/* 552 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var ServerMediator = __webpack_require__(529);
-
-	var ItemRepository = function() {
-	    serverMediator = new ServerMediator.ServerMediator();
-
-	    this.getItems = function (success) {
-	        serverMediator.sendRequest('api/items/', 'get', null, function (data) {
-	            success(JSON.parse(data));
-	        });
-	    };
-
-	    this.getPageItems = function (success, page) {
-	        serverMediator.sendRequest('api/items/GetPage/' + page, 'get', null, function (data) {
-
-	            success(JSON.parse(data));
-	        });
-	    };
-
-	    this.getPageItemsWithFilter = function (success, page, filter) {
-	        if (filter)
-	            serverMediator.sendRequest('api/items/GetPage/' + page + '/' + filter, 'get', null, function (data) {
-	                success(JSON.parse(data));
-	            });
-	        else
-	            serverMediator.sendRequest('api/items/GetPage/' + page, 'get', null, function (data) {
-	                success(JSON.parse(data));
-	            });
-	    };
-
-	    this.addItem = function (item, success) {
-	        serverMediator.sendRequest('api/items', 'post', JSON.stringify(item), success);
-	    };
-
-	    this.removeItem = function (item, success) {
-	        serverMediator.sendRequest('api/items/updatecount', 'post', JSON.stringify(item), success);
-	    };
-	};
-
-	exports.ItemRepository = ItemRepository;
-
-
-
-
-/***/ },
 /* 553 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ServerMediator = __webpack_require__(529);
-
-	var OperationRepository = function () {
-	    serverMediator = new ServerMediator.ServerMediator(),
-
-
-	    this.addOrder = function (item, success) {
-	        serverMediator.sendRequest('api/operations/addorder', 'post', JSON.stringify(item), success);
-	    }
-
-	    this.addSupply = function (item, success) {
-	        serverMediator.sendRequest('api/operations/addsupply', 'post', JSON.stringify(item), success);
-	    }
-	};
-
-	exports.OperationRepository = OperationRepository;
-
-
-
-/***/ },
-/* 554 */,
-/* 555 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/** @jsx React.DOM */var React = __webpack_require__(299);
-	var ReactDom = __webpack_require__(300);
-
-	var StatusSelect = React.createClass({displayName: "StatusSelect",
-
-	    changeValue: function(e){
-	        var selectedItem = $(e.target).find(":selected");
-
-	        this.props.onchangevalue($(e.target).val(), selectedItem.attr('id').replace("status-", ""));
-	    },
-
-	    render: function () {
-	        var options = this.props.items.map(function (item, index) {
-	            if (index == 0)
-	                return (React.createElement("option", {key: index, id: 'status-' + item.id, active: true}, item.name));
-	            else
-	                return (React.createElement("option", {key: index, id: 'status-' + item.id}, item.name));
-	        });
-
-	        if (this.props.items && this.props.items.length > 0)
-	            this.props.onchangevalue(this.props.items[0].name, this.props.items[0].id);
-
-	        return (
-	            React.createElement("select", {className: "form-control", onChange: this.changeValue}, 
-	                options
-	            )
-	        )
-	     }
-	});
-
-	exports.StatusSelect = StatusSelect;
-
-/***/ },
-/* 556 */,
-/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -37213,15 +37220,14 @@
 	exports.ListBody = ListBody;
 
 /***/ },
-/* 558 */,
-/* 559 */
+/* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var ItemRepository = __webpack_require__(552);
-	var InputCompiler = __webpack_require__(560);
+	var ItemRepository = __webpack_require__(547);
+	var InputCompiler = __webpack_require__(555);
 
 	var AddItemsView = React.createClass({displayName: "AddItemsView",
 	    itemsRepos: new ItemRepository.ItemRepository(),
@@ -37288,7 +37294,7 @@
 	exports.AddItemsView = AddItemsView;
 
 /***/ },
-/* 560 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -37360,7 +37366,7 @@
 	exports.InputCompiler = InputCompiler;
 
 /***/ },
-/* 561 */
+/* 556 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -37374,7 +37380,11 @@
 	    isInvalidUser: true,
 
 	    getInitialState: function getInitialState() {
-	        this.accountRepository.getCurrentUser(this.onGetedUser);
+
+	        if (this.props.params.name)
+	            this.accountRepository.getUserByName(this.props.params.name, this.onGetedUser);
+	        else
+	            this.accountRepository.getCurrentUser(this.onGetedUser);
 
 	        return { profile: {}};
 	    },
@@ -37383,23 +37393,26 @@
 	        if (user == null)
 	            return;
 
+	      
 	        this.isInvalidUser = false;
-	        this.setState({ profile: user });
+	        this.setState({ profile: JSON.parse(user) });       
 	    },
+
 
 	    render: function () {
 	        if (this.isInvalidUser)
 	            return (React.createElement("div", null, "Error"));
+
 	        return (
 	            React.createElement("div", {className: "row"}, 
 	                React.createElement("div", {className: "col-xs-3"}, 
-	                    "Login: ", this.state.profile.login
+	                    React.createElement("b", null, "Login:"), " ", this.state.profile.login
 	                ), 
 	                React.createElement("div", {className: "col-xs-6"}, 
-	                    "Name: ", this.state.profile.name
+	                    React.createElement("b", null, "Name:"), " ", this.state.profile.name
 	                ), 
 	                React.createElement("div", {className: "col-xs-3"}, 
-	                    this.state.profile.isEmployee ? "Employee" : "Client"
+	                    React.createElement("b", null, this.state.profile.isEmployee ? "Employee" : "Client")
 	                )
 	            )
 	        );
@@ -37407,6 +37420,33 @@
 	});
 
 	exports.ProfileView = ProfileView;
+
+/***/ },
+/* 557 */,
+/* 558 */,
+/* 559 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */var React = __webpack_require__(299);
+	var ReactDom = __webpack_require__(300);
+
+
+	var Layout = React.createClass({displayName: "Layout",
+
+
+	    render: function () {
+	            return (
+	            React.createElement("div", {className: "InputCompiler"}, 
+	                "HelloWord!", 
+	                React.createElement("div", null, 
+	                    this.props.children
+	                )
+	            )
+	        );
+	    }
+	});
+
+	exports.Layout = Layout;
 
 /***/ }
 /******/ ]);

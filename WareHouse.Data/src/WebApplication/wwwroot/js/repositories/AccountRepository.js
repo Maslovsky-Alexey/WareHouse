@@ -39,6 +39,11 @@ var AccountRepository = function () {
     this.getCurrentUser = function (success) {
         serverMediator.sendRequest("api/account/getcurrentuser", 'get', null, success);
     }
+
+    this.getUserByName = function (username, success) {
+
+        serverMediator.sendRequest("api/account/getuserbyname/" + username, 'get', null, success);
+    }
 };
 
 exports.AccountRepository = AccountRepository;

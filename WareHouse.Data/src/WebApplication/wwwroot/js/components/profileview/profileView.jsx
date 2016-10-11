@@ -9,7 +9,11 @@ var ProfileView = React.createClass({
     isInvalidUser: true,
 
     getInitialState: function getInitialState() {
-        this.accountRepository.getCurrentUser(this.onGetedUser);
+
+        if (this.props.params.name)
+            this.accountRepository.getUserByName(this.props.params.name, this.onGetedUser);
+        else
+            this.accountRepository.getCurrentUser(this.onGetedUser);
 
         return { profile: {}};
     },
@@ -18,23 +22,26 @@ var ProfileView = React.createClass({
         if (user == null)
             return;
 
+      
         this.isInvalidUser = false;
-        this.setState({ profile: user });
+        this.setState({ profile: JSON.parse(user) });       
     },
+
 
     render: function () {
         if (this.isInvalidUser)
             return (<div>Error</div>);
+
         return (
             <div className="row">
                 <div className="col-xs-3">
-                    Login: {this.state.profile.login}
+                    <b>Login:</b> {this.state.profile.login}
                 </div>
                 <div className="col-xs-6">
-                    Name: {this.state.profile.name}
+                    <b>Name:</b> {this.state.profile.name}
                 </div>
                 <div className="col-xs-3">
-                    {this.state.profile.isEmployee ? "Employee" : "Client"}
+                    <b>{this.state.profile.isEmployee ? "Employee" : "Client"}</b>
                 </div>                            
             </div>
         );

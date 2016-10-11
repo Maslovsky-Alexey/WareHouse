@@ -9,6 +9,7 @@ var AccountRepository = require('../../repositories/accountrepository.js');
 var LoginView = React.createClass({
     accountRepository: new AccountRepository.AccountRepository(),
 
+
     Send: function(){
         var name = $("#username1").val();
         var password = $("#password1").val();
@@ -27,6 +28,7 @@ var LoginView = React.createClass({
     },
 
     render: function () {
+        
 
         return (
             <div className="login-form">   

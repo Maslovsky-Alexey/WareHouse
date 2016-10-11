@@ -71,6 +71,10 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return await MapToUserModel(await RegisterUserWithRole(model, "employee"));
         }
 
+        public async Task<UserModel> GetUserByName(string username)
+        {
+            return await MapToUserModel(await userService.GetUserByName(username, false));
+        }
 
         private async Task<ApplicationUser> RegisterUserWithRole(RegisterModel model, string role)
         {
@@ -109,5 +113,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             return (await userManager.GetRolesAsync(user)).FirstOrDefault(x => x == role) != null;
         }
+
+
     }
 }

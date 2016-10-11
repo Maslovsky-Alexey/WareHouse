@@ -16,5 +16,7 @@ namespace WareHouse.Domain.ServiceInterfaces
         Task<UserModel> RegisterEmployee(RegisterModel model);
 
         Task<UserModel> GetCurrentUser(HttpContext httpContext);
+
+        Task<UserModel> GetUserByName(string username);
     }
 }

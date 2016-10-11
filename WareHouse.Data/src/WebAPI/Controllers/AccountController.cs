@@ -74,5 +74,12 @@ namespace WebAPI.Controllers
         {
             return await accountService.GetCurrentUser(HttpContext);
         }
+
+        [HttpGet("GetUserByName/{username}")]
+        [Authorize(Roles = "employee, client")]
+        public async Task<UserModel> GetUserByName(string username)
+        {
+            return await accountService.GetUserByName(username);
+        }
     }
 }
