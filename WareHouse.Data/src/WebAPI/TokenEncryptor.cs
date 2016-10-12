@@ -7,33 +7,46 @@ using System.Threading.Tasks;
 
 namespace WebAPI
 {
-    // TODO: Не нужно использовать статический класс. Внедрять через DI. Так же DI Conainer должен обеспечивать создавние экземпляра этого класа как Singletone-а.
-    public static class TokenEncryptor
+    public class TokenEncryptor : IEncryptor
     {
-        private static Aes cipher;
+        private static TokenEncryptor tokenEncryptor;
 
-        public static string Encrypt(string text)
+        private Aes cipher;
+        public string Key { get; set; } = "";
+        public string VI { get; set; } = "";
+
+        private TokenEncryptor()
         {
-            // TODO: Нужно задать ключ шифрования ()через конструктор, для обеспечения безопасности и переносимости решения.
-            ICryptoTransform t = cipher.CreateEncryptor();
+            cipher = Aes.Create();
+        }
 
+        public static TokenEncryptor Instance
+        {
+            get
+            {
+                if (tokenEncryptor == null)
+                    tokenEncryptor = new TokenEncryptor();
+
+                return tokenEncryptor;
+            }
+        }
+
+        public string Encrypt(string text)
+        {
+            ICryptoTransform t = cipher.CreateEncryptor(Encoding.UTF8.GetBytes(Key), Encoding.UTF8.GetBytes(VI));
+            
             byte[] textInBytes = Encoding.UTF8.GetBytes(text);
             byte[] result = t.TransformFinalBlock(textInBytes, 0, textInBytes.Length);
             return Convert.ToBase64String(result);
         }
 
-        public static string Decrypt(string text)
+        public string Decrypt(string text)
         {           
-            ICryptoTransform t = cipher.CreateDecryptor();
+            ICryptoTransform t = cipher.CreateDecryptor(Encoding.UTF8.GetBytes(Key), Encoding.UTF8.GetBytes(VI));
 
             byte[] textInBytes = Convert.FromBase64String(text);
             byte[] result = t.TransformFinalBlock(textInBytes, 0, textInBytes.Length);
             return Encoding.UTF8.GetString(result);
-        }
-
-        static TokenEncryptor()
-        {
-            cipher = Aes.Create();
         }
     }
 }

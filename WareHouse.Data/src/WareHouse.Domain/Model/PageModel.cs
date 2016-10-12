@@ -8,7 +8,7 @@ namespace WareHouse.Domain.Model
 {
     public class PageModel
     {
-        public IEnumerable<Item> Items { get; set; }
+        public IEnumerable<WarehouseItem> Items { get; set; }
 
         public int NextPage { get; set; }
 

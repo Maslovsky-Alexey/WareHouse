@@ -20,10 +20,12 @@ namespace WebAPI.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountService accountService;
+        private IEncryptor encryptor;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IEncryptor encryptor)
         {
             this.accountService = accountService;
+            this.encryptor = encryptor;
         }
 
         [HttpPost("RegisterClient")]
@@ -48,7 +50,7 @@ namespace WebAPI.Controllers
 
             if (result)
             {
-                HeadersHelper.AddAuthorizationHeader(HttpContext, TokenEncryptor.Encrypt(model.Username));
+                HeadersHelper.AddAuthorizationHeader(HttpContext, encryptor.Encrypt(model.Username));
             }
 
             return result;
@@ -62,7 +64,7 @@ namespace WebAPI.Controllers
 
             if (result)
             {
-                HttpContext.Response.Headers.Add("Authorization", new[] { "Bearer " + TokenEncryptor.Encrypt("admin") });
+                HttpContext.Response.Headers.Add("Authorization", new[] { "Bearer " + encryptor.Encrypt("admin") });
             }
 
             return result;

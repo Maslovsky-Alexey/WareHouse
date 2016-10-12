@@ -33,7 +33,7 @@ var AddItemsView = React.createClass({
 
         this.itemsRepos.addItem(this.CreateItemValue(name), function () {
             sender.itemsRepos.getItems(this.onItemsGeted);
-            this.emptyControlItems($(e.target).parent().find('input'));
+            sender.emptyControlItems($(e.target).parent().find('input'));
         });                
     },
 

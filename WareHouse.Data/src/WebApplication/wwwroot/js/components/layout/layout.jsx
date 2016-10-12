@@ -6,7 +6,7 @@ var Layout = React.createClass({
 
     getInitialState: function getInitialState() {
 
-        
+        return {};
     },
 
     render: function () {

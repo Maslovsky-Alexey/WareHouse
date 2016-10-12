@@ -17,24 +17,24 @@ var Items = React.createClass({
 
     componentWillReceiveProps: function (nextProps) {
         this.nextPage = 0;
-        this.itemRepos.getItems(this.onItemsGeted, this.nextPage, nextProps.filter);
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, nextProps.filter);
     },
 
     getInitialState: function getInitialState() {
-        this.itemRepos.getItems(this.onItemsGeted, this.nextPage, this.props.filter);
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, this.props.filter);
         return { items: [] };
     },
 
     PrevPage: function PrevPage() {
-        this.itemRepos.getItems(this.onItemsGeted, this.prevPage, this.props.filter);
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.prevPage, this.props.filter);
     },
 
     NextPage: function NextPage() {
-        this.itemRepos.getItems(this.onItemsGeted, this.nextPage, this.props.filter);
+        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, this.props.filter);
     },
 
     onItemsGeted: function onItemsGeted(data) {
-        
+
         this.nextPage = data.nextPage;
         this.prevPage = data.prevPage;
         if (this.isFirst)

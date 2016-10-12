@@ -50,6 +50,7 @@ namespace WebAPI
             var connection = Configuration.GetConnectionString("DefaultConnection");
 
 
+
             services.AddDbContext<WareHouseDbContext>(options => options.UseSqlServer(connection));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -79,14 +80,24 @@ namespace WebAPI
                         .WithExposedHeaders("Authorization"));
             });
 
-            services.AddMvc();
-
+            services.AddMvc(options =>
+            {
+                options.ModelBinderProviders.Insert(0, new ODataModelBinderProvider());
+            });
+                
             var containerBuilder = new ContainerBuilder();
 
             RegistrTypes(containerBuilder);
 
+
+
             containerBuilder.Populate(services);
             this.ApplicationContainer = containerBuilder.Build();
+
+            var tokenEncryptor = ApplicationContainer.Resolve<IEncryptor>();
+
+            tokenEncryptor.Key = Configuration.GetSection("Encrypt").GetValue<string>("Key");
+            tokenEncryptor.VI = Configuration.GetSection("Encrypt").GetValue<string>("VI");
 
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(this.ApplicationContainer);
@@ -117,6 +128,9 @@ namespace WebAPI
 
             containerBuilder.RegisterType<OperationService>().As<IOperationService>();
             containerBuilder.RegisterType<AccountService>().As<IAccountService>();
+
+
+            containerBuilder.Register(c => TokenEncryptor.Instance).As<IEncryptor>().SingleInstance();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

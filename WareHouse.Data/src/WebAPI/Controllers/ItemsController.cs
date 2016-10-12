@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Cors;
 using WareHouse.Domain.Service.ConcreteServices;
 using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.MyOData;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,23 +36,15 @@ namespace WebAPI.Controllers
 
         // POST api/values
         [HttpPost]
+        [Authorize(Roles = "employee")]
         public async Task Post([FromBody]Item value)
         {
             await items.AddOrUpdateCount(value);
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody]Item value)
-        {
-            var item = await items.GetItem(id);
-
-            item.Name = value.Name;
-            item.Count = value.Count;
-        }
-
         // DELETE api/values/5
         [HttpDelete]
+        [Authorize(Roles = "employee")]
         public async Task Delete([FromBody]Item value)
         {
             await items.RemoveItem(value);
@@ -64,11 +57,5 @@ namespace WebAPI.Controllers
             await items.SubCount(value);
         }
 
-        [Route("GetPage/{page}")]
-        [HttpPost("{page}")]
-        public async Task<PageModel> GetPage(int page)
-        {
-            return await items.GetPage(page, MyOData.GetConfiguratesFromQueryString(Request.QueryString.Value));
-        }
     }
 }

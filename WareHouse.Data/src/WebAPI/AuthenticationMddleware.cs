@@ -16,29 +16,34 @@ using Microsoft.Extensions.Primitives;
 
 namespace WebAPI
 {
-    //TODO: Если запрос на авторизацию ? то как мы авторизируемся если мидлваре нам не дас пройти в контроллер ???
+ 
     public class AuthenticationMddleware
     {
         private UserManager<ApplicationUser> userManager;
         private RequestDelegate next;
         private WareHouseDbContext context;
+        private IEncryptor encryptor;
 
-        public AuthenticationMddleware(RequestDelegate next, UserManager<ApplicationUser> userManager, WareHouseDbContext context)
+        public AuthenticationMddleware(RequestDelegate next, UserManager<ApplicationUser> userManager, WareHouseDbContext context, IEncryptor encryptor)
         {
             this.next = next;
             this.userManager = userManager;
             this.context = context;
+            this.encryptor = encryptor;
         }
 
         public async Task Invoke(HttpContext httpContext)
         {
             var header = httpContext.Request.Headers.Where(x => x.Key == "Authorization").ToArray();
 
-            //TODO: Если заголовок авторизации передан, то пользователь либо обязательно должен быть авторизован, либо ответ будет 400/401 без продолжения дальнейшей обработки. Т.е. ответ должен уйти прям отсюда.
+           
             if (header.Count() == 1)
             {
                 await SetHttpUserContext(header, httpContext);
-            }                   
+            }
+
+            if (httpContext.Response.StatusCode == 400 || httpContext.Response.StatusCode == 401)
+                return;
 
             await next.Invoke(httpContext);
         }
@@ -47,22 +52,26 @@ namespace WebAPI
         {
             var token = header.First().Value.First();
 
-            // TODO: Если передан заголовок Authorization и он не в том виде, в котором ожидается, то это 400 BadRequest
             if (token.StartsWith("Bearer"))
             {
                 try
                 {
-                    var name = TokenEncryptor.Decrypt(token.Substring(6));
+                    var name = encryptor.Decrypt(token.Substring(6));
                     var user = context.Users.FirstOrDefault(x => x.UserName == name);
 
-                    // TODO: Если передан несуществущий/неправильный токен, то нужно вернуть сразу 401.
-                    if (user != null)
-                        httpContext.User = new GenericPrincipal(new UserIndentity(user), (await userManager.GetRolesAsync(user)).ToArray());
+                    if (user == null)
+                        throw new Exception();
+
+                    httpContext.User = new GenericPrincipal(new UserIndentity(user), (await userManager.GetRolesAsync(user)).ToArray());
                 }
                 catch
                 {
-
+                    httpContext.Response.StatusCode = 401;
                 }
+            }
+            else
+            {
+                httpContext.Response.StatusCode = 400;
             }
         }
     }

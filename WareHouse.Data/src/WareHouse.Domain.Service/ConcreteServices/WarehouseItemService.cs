@@ -9,6 +9,7 @@ using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.Service.ModelsMapper;
 using WareHouse.Domain.Service.ModelsMapper.Configurators;
 using WareHouse.Domain.ServiceInterfaces;
+using WareHouse.MyOData;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
@@ -61,6 +62,38 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public async Task UpdateStatus(int itemId, int itemStatusId)
         {
             await warehouseItemRepository.UpdateStatus(itemId, itemStatusId);
+        }
+
+
+        public async Task<PageModel> GetPage(int page, MyODataConfigurates config)
+        {
+            var filter = MyOData.MyOData.CompileFilters<Data.Model.WarehouseItem>(config);
+
+            var result = new PageModel();
+
+            var items = (await repository.GetAllWithFilter(filter)).Select((item) => MapToServiceModel(item));
+
+            items = MyOData.MyOData.OrderBy<WarehouseItem>(items, config);
+
+            result.Items = items.Skip(page * 6).Take(6);
+
+            result.PrevPage = GetPrevPage(page);
+            result.NextPage = GetNextPage(page, items.Count());
+            result.Max = items.Max(item => item.Count);
+            result.Min = items.Min(item => item.Count);
+
+            return result;
+        }
+
+        private int GetPrevPage(int page)
+        {
+            return page - 1 < 0 ? 0 : page - 1;
+        }
+
+        private int GetNextPage(int page, int count)
+        {
+            var maxPage = (count - 1) / 6;
+            return page + 1 > maxPage ? maxPage : page + 1;
         }
     }
 }

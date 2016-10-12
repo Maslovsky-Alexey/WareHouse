@@ -54,11 +54,11 @@ var OperationsView = React.createClass({
     },
 
     providerAdded: function(value){
-        new ProviderRepository().addProvder({ name: value }, function () { });
+        new ProviderRepository.ProviderRepository().addProvder({ name: value }, function () { });
     },
 
     clientAdded: function (value) {
-        new ClientRepository().addClient({ name: value }, function () { });
+        new ClientRepository.ClientRepository().addClient({ name: value }, function () { });
     },
 
     render: function () {

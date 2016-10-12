@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
+using WareHouse.MyOData;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -31,6 +32,14 @@ namespace WebAPI.Controllers
         public async Task Post([FromBody]WarehouseItemViewModel value)
         {
             await warehouseItems.AddOrUpdateAsViewModel(value);
+        }
+
+
+        [Route("GetPage/{page}")]
+        [HttpPost("{page}")]
+        public async Task<PageModel> GetPage(int page, [FromBody]MyODataConfigurates config)
+        {
+            return await warehouseItems.GetPage(page, config);
         }
     }
 }

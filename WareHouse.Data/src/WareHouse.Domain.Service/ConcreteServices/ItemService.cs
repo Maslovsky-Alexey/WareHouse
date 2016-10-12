@@ -55,36 +55,5 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (value.Id > 0)
                 await Remove(await GetItem(value.Id));
         }
-
-        public async Task<PageModel> GetPage(int page, MyODataConfigurates config)
-        {
-            var filter = MyOData.MyOData.CompileFilters<Data.Model.Item>(config);
-
-            var result = new PageModel();
-
-            var items = (await repository.GetAllWithFilter(filter)).Select((item) => MapToServiceModel(item));
-
-            items = MyOData.MyOData.OrderBy<Item>(items, config);
-
-            result.Items = items.Skip(page * 6).Take(6);
-
-            result.PrevPage = GetPrevPage(page);
-            result.NextPage = GetNextPage(page, items.Count());
-            result.Max = items.Max(item => item.Count);
-            result.Min = items.Min(item => item.Count);
-
-            return result;
-        }
-
-        private int GetPrevPage(int page)
-        {
-            return page - 1 < 0 ? 0 : page - 1;
-        }
-
-        private int GetNextPage(int page, int count)
-        {
-            var maxPage = (count - 1) / 6;
-            return page + 1 > maxPage ? maxPage : page + 1;
-        }
     }
 }

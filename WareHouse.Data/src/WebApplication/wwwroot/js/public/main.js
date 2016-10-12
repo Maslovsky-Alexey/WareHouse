@@ -8186,7 +8186,7 @@
 	var OperationsView = __webpack_require__(545);
 	var AddItemsView = __webpack_require__(554);
 	var ProfileView = __webpack_require__(556);
-	var Layout = __webpack_require__(559);
+	var Layout = __webpack_require__(557);
 
 	ReactDOM.render((
 	    React.createElement(ReactRouter.Router, null, 
@@ -34658,24 +34658,24 @@
 
 	    componentWillReceiveProps: function (nextProps) {
 	        this.nextPage = 0;
-	        this.itemRepos.getItems(this.onItemsGeted, this.nextPage, nextProps.filter);
+	        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, nextProps.filter);
 	    },
 
 	    getInitialState: function getInitialState() {
-	        this.itemRepos.getItems(this.onItemsGeted, this.nextPage, this.props.filter);
+	        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, this.props.filter);
 	        return { items: [] };
 	    },
 
 	    PrevPage: function PrevPage() {
-	        this.itemRepos.getItems(this.onItemsGeted, this.prevPage, this.props.filter);
+	        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.prevPage, this.props.filter);
 	    },
 
 	    NextPage: function NextPage() {
-	        this.itemRepos.getItems(this.onItemsGeted, this.nextPage, this.props.filter);
+	        this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, this.props.filter);
 	    },
 
 	    onItemsGeted: function onItemsGeted(data) {
-	        
+
 	        this.nextPage = data.nextPage;
 	        this.prevPage = data.prevPage;
 	        if (this.isFirst)
@@ -34739,6 +34739,24 @@
 	        serverMediator.sendRequest('api/warehouseitems/', 'get', null, function (data) {
 	            success(JSON.parse(data));
 	        });
+	    };
+
+	    this.getPageItems = function (success, page) {
+	        serverMediator.sendRequest('api/warehouseitems/GetPage/' + page, 'get', null, function (data) {
+
+	            success(JSON.parse(data));
+	        });
+	    };
+
+	    this.getPageItemsWithFilter = function (success, page, filter) {
+	        if (filter)
+	            serverMediator.sendRequest('api/warehouseitems/GetPage/' + page + '/' + filter, 'get', null, function (data) {
+	                success(JSON.parse(data));
+	            });
+	        else
+	            serverMediator.sendRequest('api/warehouseitems/GetPage/' + page, 'get', null, function (data) {
+	                success(JSON.parse(data));
+	            });
 	    };
 	};
 
@@ -36821,11 +36839,11 @@
 	    },
 
 	    providerAdded: function(value){
-	        new ProviderRepository().addProvder({ name: value }, function () { });
+	        new ProviderRepository.ProviderRepository().addProvder({ name: value }, function () { });
 	    },
 
 	    clientAdded: function (value) {
-	        new ClientRepository().addClient({ name: value }, function () { });
+	        new ClientRepository.ClientRepository().addClient({ name: value }, function () { });
 	    },
 
 	    render: function () {
@@ -36973,23 +36991,6 @@
 	        });
 	    };
 
-	    this.getPageItems = function (success, page) {
-	        serverMediator.sendRequest('api/items/GetPage/' + page, 'get', null, function (data) {
-
-	            success(JSON.parse(data));
-	        });
-	    };
-
-	    this.getPageItemsWithFilter = function (success, page, filter) {
-	        if (filter)
-	            serverMediator.sendRequest('api/items/GetPage/' + page + '/' + filter, 'get', null, function (data) {
-	                success(JSON.parse(data));
-	            });
-	        else
-	            serverMediator.sendRequest('api/items/GetPage/' + page, 'get', null, function (data) {
-	                success(JSON.parse(data));
-	            });
-	    };
 
 	    this.addItem = function (item, success) {
 	        serverMediator.sendRequest('api/items', 'post', JSON.stringify(item), success);
@@ -37260,7 +37261,7 @@
 
 	        this.itemsRepos.addItem(this.CreateItemValue(name), function () {
 	            sender.itemsRepos.getItems(this.onItemsGeted);
-	            this.emptyControlItems($(e.target).parent().find('input'));
+	            sender.emptyControlItems($(e.target).parent().find('input'));
 	        });                
 	    },
 
@@ -37424,9 +37425,7 @@
 	exports.ProfileView = ProfileView;
 
 /***/ },
-/* 557 */,
-/* 558 */,
-/* 559 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -37437,7 +37436,7 @@
 
 	    getInitialState: function getInitialState() {
 
-	        
+	        return {};
 	    },
 
 	    render: function () {
