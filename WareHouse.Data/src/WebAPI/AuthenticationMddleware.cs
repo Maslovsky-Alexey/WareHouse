@@ -36,7 +36,9 @@ namespace WebAPI
         {
             var header = httpContext.Request.Headers.Where(x => x.Key == "Authorization").ToArray();
 
-           
+            //await next.Invoke(httpContext);
+            //return;
+
             if (header.Count() == 1)
             {
                 await SetHttpUserContext(header, httpContext);
@@ -57,14 +59,19 @@ namespace WebAPI
                 try
                 {
                     var name = encryptor.Decrypt(token.Substring(6));
-                    var user = context.Users.FirstOrDefault(x => x.UserName == name);
+                    ApplicationUser user;
 
+                    lock (this)
+                    {
+                        user = context.Users.FirstOrDefault(x => x.UserName == name);
+                    }
+              
                     if (user == null)
                         throw new Exception();
 
                     httpContext.User = new GenericPrincipal(new UserIndentity(user), (await userManager.GetRolesAsync(user)).ToArray());
                 }
-                catch
+                catch (Exception ex)
                 {
                     httpContext.Response.StatusCode = 401;
                 }

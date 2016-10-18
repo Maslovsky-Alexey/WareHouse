@@ -9,6 +9,7 @@ namespace WareHouse.Domain.Model
     {
         public string Name { get; set; }
 
-        public WarehouseItem WarehouseItem { get; set; }
+
+        public IEnumerable<WarehouseItem> WarehouseItems { get; set; }
     }
 }

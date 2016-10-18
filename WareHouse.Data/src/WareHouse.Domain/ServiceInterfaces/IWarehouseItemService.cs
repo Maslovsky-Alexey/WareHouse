@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WareHouse.Domain.Model;
+using WareHouse.Domain.Model.ViewModel;
 using WareHouse.MyOData;
 
 namespace WareHouse.Domain.ServiceInterfaces
@@ -18,5 +19,7 @@ namespace WareHouse.Domain.ServiceInterfaces
         Task<IEnumerable<Model.WarehouseItem>> GetItemsByName(string name, bool ignoreCase);
 
         Task UpdateStatus(int itemId, int itemStatusId);
+
+        Task<WarehouseItemViewModel> GetItemByIdAsViewModel(int id);
     }
 }

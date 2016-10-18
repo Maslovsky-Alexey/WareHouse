@@ -4,6 +4,8 @@ using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using WareHouse.Data.Model;
+using System;
 
 namespace WareHouse.Data.EF.Context
 {
@@ -39,6 +41,14 @@ namespace WareHouse.Data.EF.Context
             Roles.Add(new IdentityRole("employee") { NormalizedName = "EMPLOYEE" });
             Roles.Add(new IdentityRole("client") { NormalizedName = "CLIENT" });
 
+            foreach (string name in Enum.GetNames(typeof(Status)))
+            {
+                ItemStatus.Add(new ItemStatus() {
+                    Name = name,
+                    Status = (Status)Enum.Parse(typeof(Status), name)
+                });
+            }
+       
             SaveChanges();
         }
 

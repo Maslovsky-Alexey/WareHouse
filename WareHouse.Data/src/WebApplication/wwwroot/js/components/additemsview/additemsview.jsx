@@ -1,24 +1,24 @@
 ﻿var React = require('react');
 var ReactDom = require('react-dom');
 
-var ItemRepository = require('../../repositories/itemrepository.js');
+var ItemStore = require('../../stores/itemstore.js').ItemStore;
+var Dispatcher = require('../../dispatcher/dispatcher.js').Dispatcher;
 var InputCompiler = require('../../autocompiler/inputcompiler.jsx');
 
 var AddItemsView = React.createClass({
-    itemsRepos: new ItemRepository.ItemRepository(),
+    itemStore: ItemStore,
 
-    items: [],
-
-    getInitialState: function () {
-        this.itemsRepos.getItems(this.onItemsGeted);
-
-        return {};
+    componentDidMount: function () {
+        this.itemStore.addOnChangeListener(this.onItemsGeted);
     },
 
-    onItemsGeted: function(data){
-        this.items = data;
+    getInitialState: function () {
+        return { items: this.itemStore.getItems() };
+    },
 
-        this.forceUpdate();
+    onItemsGeted: function (items) {
+        console.debug(items);
+        this.setState({ items: items });
     },
 
 
@@ -26,15 +26,12 @@ var AddItemsView = React.createClass({
         var name = $(e.target).parent().find('input').val();
 
         if (this.IsFormValid(name))
-            //TODO: Отображение сообщений должно быть унифицировано во всем проекте.
             alert('Error');
 
-        var sender = this;
-
-        this.itemsRepos.addItem(this.CreateItemValue(name), function () {
-            sender.itemsRepos.getItems(this.onItemsGeted);
-            sender.emptyControlItems($(e.target).parent().find('input'));
-        });                
+        Dispatcher.dispatch({
+            name: "add-item",
+            data: this.CreateItemValue(name)
+        });              
     },
 
     emptyControlItems: function (input_name) {
@@ -56,9 +53,10 @@ var AddItemsView = React.createClass({
     },
 
     render: function () {
+        console.debug(this.state);
         return (
             <div>
-                <InputCompiler.InputCompiler items={this.items} />
+                <InputCompiler.InputCompiler items={this.state.items} />
 
                 <button className="btn btn-success btn-block btn-sm" onClick={this.Add}>Add</button>
             </div>

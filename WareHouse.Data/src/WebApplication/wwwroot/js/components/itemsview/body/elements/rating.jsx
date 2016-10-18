@@ -1,7 +1,7 @@
 ﻿var React = require('react');
 var ReactDom = require('react-dom');
 
-var Ratings = React.createClass({
+var Rating = React.createClass({
     maxStars: 5,
 
     createStar: function(status, id){
@@ -26,4 +26,4 @@ var Ratings = React.createClass({
     }
 });
 
-exports.Ratings = Ratings;
+exports.Rating = Rating;

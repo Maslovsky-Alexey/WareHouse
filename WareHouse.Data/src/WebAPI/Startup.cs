@@ -47,14 +47,10 @@ namespace WebAPI
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             //    var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse;uid=Admin;password=123123;";    
-            var connection = Configuration.GetConnectionString("DefaultConnection");
-
-
-
-            services.AddDbContext<WareHouseDbContext>(options => options.UseSqlServer(connection));
-
+         
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<WareHouseDbContext>()
+                
                 .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
@@ -64,6 +60,7 @@ namespace WebAPI
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireDigit = false;
+                
             });
 
             // Add framework services.
@@ -105,6 +102,11 @@ namespace WebAPI
 
         private void RegistrTypes(ContainerBuilder containerBuilder)
         {
+            var connection = Configuration.GetConnectionString("DefaultConnection");
+            var builder = new DbContextOptionsBuilder<WareHouseDbContext>().UseSqlServer(connection);
+
+            containerBuilder.Register<WareHouseDbContext>(context => { return new WareHouseDbContext(builder.Options); }).InstancePerDependency();
+
             containerBuilder.RegisterType<ClientRepository>().As<BaseRepository<WareHouse.Data.Model.Client>>();
             containerBuilder.RegisterType<ClientService>().As<IClientService>();
 

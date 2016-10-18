@@ -35,7 +35,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             var status = await itemStatusService.GetStatus(Data.Model.Status.ProcessingSupply);
 
-            await warehouseItemService.Add(new WarehouseItem
+            var result = await warehouseItemService.Add(new WarehouseItem
             {
                 Count = item.Count,
                 ItemId = item.ItemId,

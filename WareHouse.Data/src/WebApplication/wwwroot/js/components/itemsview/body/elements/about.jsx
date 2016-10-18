@@ -4,6 +4,7 @@ var ReactDom = require('react-dom');
 var About = React.createClass({
     render: function () {
         var itemInfo = this.props.itemInfo;
+        console.debug(itemInfo);
         return (
             <div className="caption">
                 <h4 className="pull-right">count: {itemInfo.count}</h4>

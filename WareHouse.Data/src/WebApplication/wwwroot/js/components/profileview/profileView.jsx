@@ -6,7 +6,6 @@ var AccountRepository = require('../../repositories/accountrepository.js');
 
 var ProfileView = React.createClass({
     accountRepository: new AccountRepository.AccountRepository(),
-    isInvalidUser: true,
 
     getInitialState: function getInitialState() {
 
@@ -15,21 +14,21 @@ var ProfileView = React.createClass({
         else
             this.accountRepository.getCurrentUser(this.onGetedUser);
 
-        return { profile: {}};
+        return { profile: {}, isInvalidUser: true};
     },
 
-    onGetedUser: function (user){
+    onGetedUser: function (user) {
+      
         if (user == null)
             return;
 
-      
-        this.isInvalidUser = false;
-        this.setState({ profile: JSON.parse(user) });       
+        this.setState({ profile: user, isInvalidUser: false });
     },
 
 
     render: function () {
-        if (this.isInvalidUser)
+
+        if (this.state.isInvalidUser)
             return (<div>Error</div>);
 
         return (

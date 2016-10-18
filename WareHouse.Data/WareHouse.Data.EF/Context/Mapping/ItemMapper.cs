@@ -8,10 +8,7 @@ namespace WareHouse.Data.EF.Context.Mapping
     {
         public void Map(EntityTypeBuilder<Item> typeBuilder)
         {
-            typeBuilder
-                .HasOne(p => p.WarehouseItem)
-                .WithOne(p => p.Item)
-                .HasForeignKey<Model.WarehouseItem>(p => p.ItemId);        
+     
         }
     }
 }

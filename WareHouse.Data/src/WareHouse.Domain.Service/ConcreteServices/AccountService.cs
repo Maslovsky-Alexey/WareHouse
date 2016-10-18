@@ -59,6 +59,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 await userManager.CreateAsync(new ApplicationUser { UserName = "admin" }, "admin");
                 var a = await userManager.AddToRoleAsync(await userManager.FindByNameAsync("admin"), "employee");
             }
+
+            await employeeService.Add(new Model.Employee
+            {
+                Name = "Administrator",
+                UserId = (await userService.GetUserByName("admin", false)).Id
+            });
         }
 
         public async Task<UserModel> RegisterClient(RegisterModel model)

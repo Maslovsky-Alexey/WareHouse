@@ -40,19 +40,28 @@ namespace WareHouse.Data.EF.Repository
         {
             var count = 0;
 
- 
-                await Task.Factory.StartNew(() => table.Add(item));
-                count = await SaveChanges();
+            await Task.Factory.StartNew(() => table.Add(item));
 
+            try
+            {
+                count = await SaveChanges();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message + '\n' + e.InnerException);
+                return OperationStatus.Error;
+            }
+       
 
             return count > 0 ? OperationStatus.Added : OperationStatus.NotAdded;
         }
 
         public async Task<OperationStatus> Remove(T item)
         {
+            await Task.Factory.StartNew(() => table.Remove(item));
+
             try
-            {
-                await Task.Factory.StartNew(() => table.Remove(item));
+            {             
                 await SaveChanges();
             }
             catch
@@ -74,7 +83,8 @@ namespace WareHouse.Data.EF.Repository
         }
 
         protected async Task<int> SaveChanges()
-        {
+        {         
+            
             return await context.SaveChangesAsync();
         }
     }

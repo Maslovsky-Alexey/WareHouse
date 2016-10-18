@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
+using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
@@ -16,11 +17,15 @@ namespace WareHouse.Domain.Service.ConcreteServices
     public class WarehouseItemService : BaseService<Domain.Model.WarehouseItem, Data.Model.WarehouseItem>, IWarehouseItemService
     {
         IWarehouseItemRepository warehouseItemRepository;
+        IItemService itemService;
+        IItemStatusService statusService;
 
-        public WarehouseItemService(BaseRepository<Data.Model.WarehouseItem> repository) : base(repository, 
+        public WarehouseItemService(BaseRepository<Data.Model.WarehouseItem> repository, IItemService itemService, IItemStatusService statusService) : base(repository, 
             new ModelsMapper<Data.Model.WarehouseItem, Domain.Model.WarehouseItem>(new WarehouseItemMapConfigurator()))
         {
             warehouseItemRepository = (IWarehouseItemRepository)repository;
+            this.itemService = itemService;
+            this.statusService = statusService;
         }
 
         public async Task AddOrUpdateAsViewModel(WarehouseItemViewModel model)
@@ -33,10 +38,10 @@ namespace WareHouse.Domain.Service.ConcreteServices
             }
             else
             {
-                item = new WarehouseItem();
-                item.Item = new Item { Name = model.Name };
+                item = new Model.WarehouseItem();
+                item.Item = new Model.Item { Name = model.Name };
                 item.Count = model.Count;
-                item.Status = new ItemStatus { Id = model.StatusId, Name = model.Status };
+                item.Status = new Model.ItemStatus { Id = model.StatusId, Name = model.Status };
 
                 await Add(item);
             }
@@ -44,17 +49,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<IEnumerable<WarehouseItemViewModel>> GetAllAsViewModel()
         {
-            return (await ((WarehouseItemRepository)repository).GetAll()).Select(item => new WarehouseItemViewModel
-            {
-                ItemId = item.Item.Id,
-                Name = item.Item.Name,
-                Count = item.Count,
-                Status = item.Status.Name,
-                StatusId = item.Status.Id
-            });
+            return (await ((WarehouseItemRepository)repository).GetAll())
+                .Select(async x => await MapToViewModel(x))
+                .Select(x => x.Result);
         }
 
-        public async Task<IEnumerable<WarehouseItem>> GetItemsByName(string name, bool ignoreCase)
+        public async Task<IEnumerable<Model.WarehouseItem>> GetItemsByName(string name, bool ignoreCase)
         {
             return (await((WarehouseItemRepository)repository).GetItemsByName(name, ignoreCase)).Select(item => MapToServiceModel(item));
         }
@@ -67,15 +67,20 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<PageModel> GetPage(int page, MyODataConfigurates config)
         {
-            var filter = MyOData.MyOData.CompileFilters<Data.Model.WarehouseItem>(config);
+            var filter = MyOData.MyOData.CompileFilters<Data.Model.WarehouseItem>(config);  // TODO: Спросить как реализовать фильтрацию по полю в поле (Нужно использовать не WarehouseItem а WarehouseItemViewModel ) Может нужно делат филтрацию не в репозитории ?? а для вью моделм ?
 
             var result = new PageModel();
 
-            var items = (await repository.GetAllWithFilter(filter)).Select((item) => MapToServiceModel(item));
+            IEnumerable<WarehouseItemViewModel> items = (await repository.GetAllWithFilter(filter))
+                .Select(async x => await MapToViewModel(x))
+                .Select(x => x.Result);
 
-            items = MyOData.MyOData.OrderBy<WarehouseItem>(items, config);
+            if (items.Count() == 0)
+                return result;
 
-            result.Items = items.Skip(page * 6).Take(6);
+            items = MyOData.MyOData.OrderBy<WarehouseItemViewModel>(items, config);
+
+            result.Items = (items.Skip(page * 6).Take(6));
 
             result.PrevPage = GetPrevPage(page);
             result.NextPage = GetNextPage(page, items.Count());
@@ -83,6 +88,23 @@ namespace WareHouse.Domain.Service.ConcreteServices
             result.Min = items.Min(item => item.Count);
 
             return result;
+        }
+
+        public async Task<WarehouseItemViewModel> GetItemByIdAsViewModel(int id)
+        {
+            return await MapToViewModel(await repository.GetItem(id));
+        }
+
+        private async Task<WarehouseItemViewModel> MapToViewModel(Data.Model.WarehouseItem item)
+        {
+            return new WarehouseItemViewModel
+            {
+                Count = item.Count,
+                ItemId = item.ItemId,
+                Name = (await itemService.GetItem(item.ItemId)).Name,
+                StatusId = item.StatusId,
+                Status = (await statusService.GetItem(item.StatusId)).Name
+            };
         }
 
         private int GetPrevPage(int page)

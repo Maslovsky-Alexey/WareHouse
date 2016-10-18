@@ -71,7 +71,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("GetCurrentUser")]
-        [Authorize(Roles = "employee")]
+
         public async Task<UserModel> GetCurrentUser()
         {
             return await accountService.GetCurrentUser(HttpContext);

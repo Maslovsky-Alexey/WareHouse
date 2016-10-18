@@ -8181,29 +8181,27 @@
 	var ReactDom = __webpack_require__(300);
 	var ReactRouter = __webpack_require__(464);
 
-	var LoginView = __webpack_require__(527);
-	var ItemsView = __webpack_require__(530);
-	var OperationsView = __webpack_require__(545);
-	var AddItemsView = __webpack_require__(554);
-	var ProfileView = __webpack_require__(556);
-	var Layout = __webpack_require__(557);
+	var LoginView = __webpack_require__(527).LoginView;
+	var ItemsView = __webpack_require__(530).ItemsView;
+	var OperationsView = __webpack_require__(545).OperationsView;
+	var AddItemsView = __webpack_require__(557).AddItemsView;
+	var ProfileView = __webpack_require__(560).ProfileView;
+	var Layout = __webpack_require__(561).Layout;
+	var ConcreteItemView = __webpack_require__(563).ConcreteItemView;
 
 	ReactDOM.render((
 	    React.createElement(ReactRouter.Router, null, 
-	        React.createElement(ReactRouter.Route, {component: Layout.Layout}, 
-	            React.createElement(ReactRouter.Route, {path: "/", components: LoginView.LoginView}), 
-	            React.createElement(ReactRouter.Route, {path: "/items", component: ItemsView.ItemsView}), 
-	            React.createElement(ReactRouter.Route, {path: "/operations", component: OperationsView.OperationsView}), 
-	            React.createElement(ReactRouter.Route, {path: "/additem", component: AddItemsView.AddItemsView}), 
-	            React.createElement(ReactRouter.Route, {path: "/profile", component: ProfileView.ProfileView}), 
-	            React.createElement(ReactRouter.Route, {path: "/profile/:name", component: ProfileView.ProfileView})
+	        React.createElement(ReactRouter.Route, {component: Layout}, 
+	            React.createElement(ReactRouter.Route, {path: "/", components: LoginView}), 
+	            React.createElement(ReactRouter.Route, {path: "/items", component: ItemsView}), 
+	            React.createElement(ReactRouter.Route, {path: "/operations", component: OperationsView}), 
+	            React.createElement(ReactRouter.Route, {path: "/additem", component: AddItemsView}), 
+	            React.createElement(ReactRouter.Route, {path: "/profile", component: ProfileView}), 
+	            React.createElement(ReactRouter.Route, {path: "/profile/:name", component: ProfileView}), 
+	            React.createElement(ReactRouter.Route, {path: "/item/:id", component: ConcreteItemView})
 	        )
 	    )
 	), document.getElementById('root'));
-
-
-
-
 
 /***/ },
 /* 299 */
@@ -34448,11 +34446,20 @@
 	var ReactDom = __webpack_require__(300);
 
 	var AccountRepository = __webpack_require__(528);
-
+	var Redirecter = __webpack_require__(562).Redirecter;
 
 	var LoginView = React.createClass({displayName: "LoginView",
 	    accountRepository: new AccountRepository.AccountRepository(),
 
+
+	    componentDidMount: function () {
+	      
+	        this.accountRepository.getCurrentUser(function (user) {
+	            console.debug(user);
+	            if (user != null)
+	                Redirecter.redirect('/items');
+	        })
+	    },
 
 	    Send: function(){
 	        var name = $("#username1").val();
@@ -34466,9 +34473,9 @@
 	        console.debug(isSuccess);
 
 	        if (isSuccess == true)
-	            alert("YAHOOO!");
+	            Redirecter.redirect('/items');
 	        else
-	            alert("OOOPPS :( "); //TODO: измменить на нормальное отображение
+	            alert("OOOPPS :( ");
 	    },
 
 	    render: function () {
@@ -34535,12 +34542,22 @@
 	    }
 
 	    this.getCurrentUser = function (success) {
-	        serverMediator.sendRequest("api/account/getcurrentuser", 'get', null, success);
+	        serverMediator.sendRequest("api/account/getcurrentuser", 'get', null, function (data) {
+	            if (data == '')
+	                data = 'null';
+	    
+	            success(JSON.parse(data));
+	        });
 	    }
 
 	    this.getUserByName = function (username, success) {
 
-	        serverMediator.sendRequest("api/account/getuserbyname/" + username, 'get', null, success);
+	        serverMediator.sendRequest("api/account/getuserbyname/" + username, 'get', null, function (data) {
+	            if (data == '')
+	                data = 'null';
+
+	            success(JSON.parse(data));
+	        });
 	    }
 	};
 
@@ -34569,7 +34586,8 @@
 	        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 	        xhr.setRequestHeader('Accept', 'application/json');
 	        //xhr.setRequestHeader('Accept-Charset', 'utf-8');
-	        xhr.setRequestHeader('Authorization', window.localStorage.getItem("AuthToken"));
+	        if (window.localStorage.getItem("AuthToken") != null)
+	            xhr.setRequestHeader('Authorization', window.localStorage.getItem("AuthToken"));
 
 	        xhr.onload = function (a, b) {
 	            success(xhr.response, xhr);
@@ -34687,20 +34705,22 @@
 
 	    render: function () {
 	        var data = this.state.items;
-	        var newsTemplate = data.map(function (item, index) {
-	            return (
-	                React.createElement("div", {className: "col-sm-4 col-lg-4 col-md-4", key: index }, 
-	                    React.createElement("div", {className: "thumbnail"}, 
-	                        React.createElement("img", {src: item.imgSrc ? item.imgSrc : 'http://placehold.it/320x150', alt: ""}), 
-	                        React.createElement(About.About, {itemInfo: item }), 
-	                        React.createElement("div", {className: "ratings"}, 
-	                            React.createElement("p", {className: "pull-right"}, item.views ? item.views : 0, " reviews"), 
-	                            React.createElement(Ratings.Ratings, {starscount: item.starscount ? item.starscount : 0})
+
+	        if (data != null)
+	            var newsTemplate = data.map(function (item, index) {
+	                return (
+	                    React.createElement("div", {className: "col-sm-4 col-lg-4 col-md-4", key: index }, 
+	                        React.createElement("div", {className: "thumbnail"}, 
+	                            React.createElement("img", {src: item.imgSrc ? item.imgSrc : 'http://placehold.it/320x150', alt: ""}), 
+	                            React.createElement(About.About, {itemInfo: item }), 
+	                            React.createElement("div", {className: "ratings"}, 
+	                                React.createElement("p", {className: "pull-right"}, item.views ? item.views : 0, " reviews"), 
+	                                React.createElement(Rating.Rating, {starscount: item.starscount ? item.starscount : 0})
+	                            )
 	                        )
 	                    )
 	                )
-	            )
-	        })
+	            });
 
 	        return (
 	            React.createElement("div", null, 
@@ -34743,14 +34763,20 @@
 
 	    this.getPageItems = function (success, page) {
 	        serverMediator.sendRequest('api/warehouseitems/GetPage/' + page, 'get', null, function (data) {
+	            if (data == '')
+	                data = 'null';
 
 	            success(JSON.parse(data));
 	        });
 	    };
 
 	    this.getPageItemsWithFilter = function (success, page, filter) {
+	        console.debug(filter);
 	        if (filter)
 	            serverMediator.sendRequest('api/warehouseitems/GetPage/' + page + '/' + filter, 'get', null, function (data) {
+	                if (data == '')
+	                    data = 'null';
+
 	                success(JSON.parse(data));
 	            });
 	        else
@@ -34758,6 +34784,15 @@
 	                success(JSON.parse(data));
 	            });
 	    };
+
+	    this.getItemById = function(id, success){
+	        serverMediator.sendRequest('api/warehouseitems/GetItemById/' + id, 'get', null, function (data) {
+	            if (data == '')
+	                data = 'null';
+
+	            success(JSON.parse(data));
+	        });
+	    }
 	};
 
 
@@ -34775,6 +34810,7 @@
 	var About = React.createClass({displayName: "About",
 	    render: function () {
 	        var itemInfo = this.props.itemInfo;
+	        console.debug(itemInfo);
 	        return (
 	            React.createElement("div", {className: "caption"}, 
 	                React.createElement("h4", {className: "pull-right"}, "count: ", itemInfo.count), 
@@ -34795,7 +34831,7 @@
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var Ratings = React.createClass({displayName: "Ratings",
+	var Rating = React.createClass({displayName: "Rating",
 	    maxStars: 5,
 
 	    createStar: function(status, id){
@@ -34820,7 +34856,7 @@
 	    }
 	});
 
-	exports.Ratings = Ratings;
+	exports.Rating = Rating;
 
 
 /***/ },
@@ -34910,7 +34946,7 @@
 	                                    maxValue: this.props.maxcount, 
 	                                    minValue: this.props.mincount, 
 	                                    value: this.values, 
-	                                    onChange: this.handleValuesChange.bind(this), 
+	                                    onChange: this.handleValuesChange, 
 	                                    labelSuffix: " count"})
 
 	                    ), 
@@ -36783,33 +36819,30 @@
 /* 545 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM *//// <reference path="form/formoperations.js" />
-
-	/// <reference path="../../repositories/clientrepository.js" />
-	/// <reference path="../../repositories/providerrepository.js" />
-
-	var React = __webpack_require__(299);
+	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
 	var FormOperations = __webpack_require__(546);
-	var ClientRepository = __webpack_require__(550);
-	var ProviderRepository = __webpack_require__(551);
-	var List = __webpack_require__(552);
+	var Dispatcher = __webpack_require__(550).Dispatcher;
+	var ClientStore = __webpack_require__(551).ClientStore;
+	var ProviderStore = __webpack_require__(553).ProviderStore;
+	var List = __webpack_require__(555);
 
 	var OperationsView = React.createClass({displayName: "OperationsView",
 	    listItem: '',
-	    providerRepos: new ProviderRepository.ProviderRepository(),
-	    clientRepos: new ClientRepository.ClientRepository(),
 
-	    providers: [],
-	    clients: [],
 	    supplymode: true,
 
-	    getInitialState: function(){
-	        this.clientRepos.getClients(this.onClientsGeted);
-	        this.providerRepos.getProviders(this.onProvidersGeted);
+	    componentDidMount: function () {
+	        ClientStore.addOnChangeListener(this.onClientsGeted);
+	        ProviderStore.addOnChangeListener(this.onProvidersGeted);
+	    },
 
-	        return {};
+	    getInitialState: function(){
+	        var clients = ClientStore.getClients(this.onClientsGeted).map(function(item)  {return item.name;});
+	        var providers = ProviderStore.getProviders(this.onProvidersGeted).map(function(item)  {return item.name;});
+
+	        return { clients: clients, providers: providers };
 	    },
 
 	    SelectedListItem: function(item){
@@ -36818,19 +36851,11 @@
 	    },
 
 	    onProvidersGeted: function (data) {
-	        this.providers = data.map(function (item) {
-	            return item.name;
-	        });
-
-	        this.forceUpdate();
+	        this.setState({ clients: this.state.clients, providers: data.map(function(item)  {return item.name;}) });
 	    },
 
 	    onClientsGeted: function (data) {
-	        this.clients = data.map(function (item) {
-	            return item.name;
-	        });
-
-	        this.forceUpdate();
+	        this.setState({ clients: data.map(function(item)  {return item.name;}), providers: this.state.providers });
 	    },
 
 	    modeChange: function(isSupply){
@@ -36838,12 +36863,18 @@
 	        this.forceUpdate();
 	    },
 
-	    providerAdded: function(value){
-	        new ProviderRepository.ProviderRepository().addProvder({ name: value }, function () { });
+	    providerAdded: function (value) {
+	        Dispatcher.dispatch({
+	            name: 'add-provider',
+	            data: { name: value }
+	        });
 	    },
 
 	    clientAdded: function (value) {
-	        new ClientRepository.ClientRepository().addClient({ name: value }, function () { });
+	        Dispatcher.dispatch({
+	            name: 'add-client',
+	            data: { name: value }
+	        });
 	    },
 
 	    render: function () {
@@ -36851,13 +36882,13 @@
 	        return (
 	            React.createElement("div", {className: "row"}, 
 	                React.createElement("div", {className: "col-xs-3"}, 
-	                    React.createElement(List.List, {title: "Providers", side: "left", active: this.supplymode, changevalue: this.SelectedListItem, items: this.providers, onadded: this.providerAdded})
+	                    React.createElement(List.List, {title: "Providers", side: "left", active: this.supplymode, changevalue: this.SelectedListItem, items: this.state.providers, onadded: this.providerAdded})
 	                ), 
 	                React.createElement("div", {className: "col-xs-6"}, 
 	                    React.createElement(FormOperations.FormOperations, {actor: this.listItem, changeMode: this.modeChange})
 	                ), 
 	                React.createElement("div", {className: "col-xs-3"}, 
-	                    React.createElement(List.List, {title: "Clients", side: "right", active: !this.supplymode, changevalue: this.selectedlistitem, items: this.clients, onadded: this.clientAdded})
+	                    React.createElement(List.List, {title: "Clients", side: "right", active: !this.supplymode, changevalue: this.selectedlistitem, items: this.state.clients, onadded: this.clientAdded})
 	                )
 	            )
 	        );
@@ -37067,6 +37098,72 @@
 
 /***/ },
 /* 550 */
+/***/ function(module, exports) {
+
+	var callbackList = [];
+
+	var Dispatcher = {
+
+	    register: function (callback) {
+	        callbackList.push(callback);
+	        return callbackList.length - 1;
+	    },
+
+	    dispatch: function (payload) {
+	        callbackList.forEach((callback) => callback(payload));
+	    }
+	};
+
+	exports.Dispatcher = Dispatcher;
+
+/***/ },
+/* 551 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(550).Dispatcher;
+	var ClientRepository = __webpack_require__(552).ClientRepository;
+
+	var clients = [];
+	var clientRepository = new ClientRepository();
+	var onChangeListeners = [];
+
+	clientRepository.getClients((data) => {
+	    clients = data;
+	    onChangeListeners.forEach((callback) => callback(clients));
+	});
+
+	function addClient(client) {
+	    clientRepository.addProvder(client, function () {
+	        clientRepository.getClients(function (data) {
+	            clients = data;
+
+	            onChangeListeners.forEach((callback) => callback(clients));
+	        });
+	    });
+	};
+
+
+	var ClientStore = {
+	    addOnChangeListener: function(callback){
+	        onChangeListeners.push(callback);
+	    },
+
+	    getClients: function () {
+	        return clients;
+	    }
+	};
+
+	Dispatcher.register(function (payload) {
+	    if (payload.name == 'add-client') {
+	        addClient(payload.data);
+	    }    
+	});
+
+
+	exports.ClientStore = ClientStore;
+
+/***/ },
+/* 552 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ServerMediator = __webpack_require__(529);
@@ -37089,7 +37186,53 @@
 	exports.ClientRepository = ClientRepository;
 
 /***/ },
-/* 551 */
+/* 553 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(550).Dispatcher;
+	var ProviderRepository = __webpack_require__(554).ProviderRepository;
+
+	var providers = [];
+	var providerRepository = new ProviderRepository();
+	var onChangeListeners = [];
+
+	providerRepository.getProviders((data) => {
+	    providers = data;
+	    onChangeListeners.forEach((callback) => callback(providers));
+	});
+
+	function addProvder(provider) {
+	    providerRepository.addProvder(provider, function () {
+	        providerRepository.getProviders(function (data) {
+	            providers = data;
+
+	            onChangeListeners.forEach((callback) => callback(providers));
+	        });
+	    });
+	};
+
+
+	var ProviderStore = {
+	    addOnChangeListener: function(callback){
+	        onChangeListeners.push(callback);
+	    },
+
+	    getProviders: function () {
+	        return providers;
+	    }
+	};
+
+	Dispatcher.register(function (payload) {
+	    if (payload.name == 'add-provider') {
+	        addProvder(payload.data);
+	    }    
+	});
+
+
+	exports.ProviderStore = ProviderStore;
+
+/***/ },
+/* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ServerMediator = __webpack_require__(529);
@@ -37111,13 +37254,13 @@
 	exports.ProviderRepository = ProviderRepository;
 
 /***/ },
-/* 552 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var ListBody = __webpack_require__(553);
+	var ListBody = __webpack_require__(556);
 
 	var List = React.createClass({displayName: "List",
 	    items: [],
@@ -37186,7 +37329,7 @@
 	exports.List = List;
 
 /***/ },
-/* 553 */
+/* 556 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -37223,30 +37366,30 @@
 	exports.ListBody = ListBody;
 
 /***/ },
-/* 554 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var ItemRepository = __webpack_require__(547);
-	var InputCompiler = __webpack_require__(555);
+	var ItemStore = __webpack_require__(558).ItemStore;
+	var Dispatcher = __webpack_require__(550).Dispatcher;
+	var InputCompiler = __webpack_require__(559);
 
 	var AddItemsView = React.createClass({displayName: "AddItemsView",
-	    itemsRepos: new ItemRepository.ItemRepository(),
+	    itemStore: ItemStore,
 
-	    items: [],
-
-	    getInitialState: function () {
-	        this.itemsRepos.getItems(this.onItemsGeted);
-
-	        return {};
+	    componentDidMount: function () {
+	        this.itemStore.addOnChangeListener(this.onItemsGeted);
 	    },
 
-	    onItemsGeted: function(data){
-	        this.items = data;
+	    getInitialState: function () {
+	        return { items: this.itemStore.getItems() };
+	    },
 
-	        this.forceUpdate();
+	    onItemsGeted: function (items) {
+	        console.debug(items);
+	        this.setState({ items: items });
 	    },
 
 
@@ -37254,15 +37397,12 @@
 	        var name = $(e.target).parent().find('input').val();
 
 	        if (this.IsFormValid(name))
-	            //TODO: Отображение сообщений должно быть унифицировано во всем проекте.
 	            alert('Error');
 
-	        var sender = this;
-
-	        this.itemsRepos.addItem(this.CreateItemValue(name), function () {
-	            sender.itemsRepos.getItems(this.onItemsGeted);
-	            sender.emptyControlItems($(e.target).parent().find('input'));
-	        });                
+	        Dispatcher.dispatch({
+	            name: "add-item",
+	            data: this.CreateItemValue(name)
+	        });              
 	    },
 
 	    emptyControlItems: function (input_name) {
@@ -37284,9 +37424,10 @@
 	    },
 
 	    render: function () {
+	        console.debug(this.state);
 	        return (
 	            React.createElement("div", null, 
-	                React.createElement(InputCompiler.InputCompiler, {items: this.items}), 
+	                React.createElement(InputCompiler.InputCompiler, {items: this.state.items}), 
 
 	                React.createElement("button", {className: "btn btn-success btn-block btn-sm", onClick: this.Add}, "Add")
 	            )
@@ -37297,7 +37438,53 @@
 	exports.AddItemsView = AddItemsView;
 
 /***/ },
-/* 555 */
+/* 558 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(550).Dispatcher;
+	var ItemRepository = __webpack_require__(547).ItemRepository;
+
+	var items = [];
+	var itemRepository = new ItemRepository();
+	var onChangeListeners = [];
+
+	itemRepository.getItems((data) => {
+	    items = data;
+	    onChangeListeners.forEach((callback) => callback(items));
+	});
+
+	function addItem(item) {
+	    itemRepository.addItem(item, function () {
+	        itemRepository.getItems(function (data) {
+	            items = data;
+
+	            onChangeListeners.forEach((callback) => callback(items));
+	        });
+	    });
+	};
+
+
+	var ItemStore = {
+	    addOnChangeListener: function(callback){
+	        onChangeListeners.push(callback);
+	    },
+
+	    getItems: function () {
+	        return items;
+	    }
+	};
+
+	Dispatcher.register(function (payload) {
+	    if (payload.name == 'add-item') {
+	        addItem(payload.data);
+	    }    
+	});
+
+
+	exports.ItemStore = ItemStore;
+
+/***/ },
+/* 559 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -37369,7 +37556,7 @@
 	exports.InputCompiler = InputCompiler;
 
 /***/ },
-/* 556 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -37380,7 +37567,6 @@
 
 	var ProfileView = React.createClass({displayName: "ProfileView",
 	    accountRepository: new AccountRepository.AccountRepository(),
-	    isInvalidUser: true,
 
 	    getInitialState: function getInitialState() {
 
@@ -37389,21 +37575,21 @@
 	        else
 	            this.accountRepository.getCurrentUser(this.onGetedUser);
 
-	        return { profile: {}};
+	        return { profile: {}, isInvalidUser: true};
 	    },
 
-	    onGetedUser: function (user){
+	    onGetedUser: function (user) {
+	      
 	        if (user == null)
 	            return;
 
-	      
-	        this.isInvalidUser = false;
-	        this.setState({ profile: JSON.parse(user) });       
+	        this.setState({ profile: user, isInvalidUser: false });
 	    },
 
 
 	    render: function () {
-	        if (this.isInvalidUser)
+
+	        if (this.state.isInvalidUser)
 	            return (React.createElement("div", null, "Error"));
 
 	        return (
@@ -37425,12 +37611,12 @@
 	exports.ProfileView = ProfileView;
 
 /***/ },
-/* 557 */
+/* 561 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
-
+	var Link = __webpack_require__(464).Link;
 
 	var Layout = React.createClass({displayName: "Layout",
 
@@ -37449,7 +37635,10 @@
 	                        ), 
 	                        React.createElement("div", {className: "navbar-collapse collapse"}, 
 	                            React.createElement("ul", {className: "nav navbar-nav"}, 
-	                                React.createElement("li", null, React.createElement("a", null, "New operation"))
+	                                React.createElement("li", null, React.createElement(Link, {to: "/operations"}, "New operation")), 
+	                                React.createElement("li", null, React.createElement(Link, {to: "/additem"}, "Add item")), 
+	                                React.createElement("li", null, React.createElement(Link, {to: "/items"}, "Items")), 
+	                                React.createElement("li", null, React.createElement(Link, {to: "/profile"}, "Profile"))
 	                            )
 	                        )
 	                    )
@@ -37469,6 +37658,67 @@
 	});
 
 	exports.Layout = Layout;
+
+/***/ },
+/* 562 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var browserHistory = __webpack_require__(464).browserHistory;
+
+	var Redirecter = {
+	    
+	    redirect: function (url) {
+	        //browserHistory.push(url);
+	        window.location.href = "/#" + url;
+	    }
+	};
+
+	exports.Redirecter = Redirecter;
+
+/***/ },
+/* 563 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM */var React = __webpack_require__(299);
+	var ReactDom = __webpack_require__(300);
+
+	var WarehouseItemsRepository = __webpack_require__(532).WarehouseItemsRepository;
+
+	var ConcreteItemView = React.createClass({displayName: "ConcreteItemView",
+	    itemRepos: new WarehouseItemsRepository(),
+
+	    getInitialState: function getInitialState() {
+	        this.itemRepos.getItemById(this.props.params.id, this.onItemGeted);
+	        return { item: null };
+	    },
+
+	    onItemGeted: function (item) {
+	        if (item == null)
+	            return;
+
+	        this.setState({ item: item });
+	    },
+
+	    render: function () {
+	        if (this.state.item == null)
+	            return (React.createElement("div", null, "Item not found"));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("div", {className: "col-sm-5"}, 
+	                    React.createElement("div", {className: "concrete-item-info"}, "Name: ", this.state.item.name), 
+	                    React.createElement("div", {className: "concrete-item-info"}, "Count: ", this.state.item.count), 
+	                    React.createElement("div", {className: "concrete-item-info"}, "Status: ", this.state.item.status), 
+	                    React.createElement("button", {className: "form-control btn-success"}, "Confirm supply"), 
+	                    React.createElement("button", {className: "form-control btn-danger"}, "Return supply")
+	                )
+
+	            )
+	        );
+	    }
+	});
+
+	exports.ConcreteItemView = ConcreteItemView;
 
 /***/ }
 /******/ ]);

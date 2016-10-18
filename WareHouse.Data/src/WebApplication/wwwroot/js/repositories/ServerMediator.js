@@ -13,7 +13,8 @@ var ServerMediator = function () {
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.setRequestHeader('Accept', 'application/json');
         //xhr.setRequestHeader('Accept-Charset', 'utf-8');
-        xhr.setRequestHeader('Authorization', window.localStorage.getItem("AuthToken"));
+        if (window.localStorage.getItem("AuthToken") != null)
+            xhr.setRequestHeader('Authorization', window.localStorage.getItem("AuthToken"));
 
         xhr.onload = function (a, b) {
             success(xhr.response, xhr);

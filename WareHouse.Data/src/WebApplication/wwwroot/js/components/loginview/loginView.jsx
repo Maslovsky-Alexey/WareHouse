@@ -4,11 +4,20 @@ var React = require('react');
 var ReactDom = require('react-dom');
 
 var AccountRepository = require('../../repositories/accountrepository.js');
-
+var Redirecter = require('../../helpers/redirecter.js').Redirecter;
 
 var LoginView = React.createClass({
     accountRepository: new AccountRepository.AccountRepository(),
 
+
+    componentDidMount: function () {
+      
+        this.accountRepository.getCurrentUser(function (user) {
+            console.debug(user);
+            if (user != null)
+                Redirecter.redirect('/items');
+        })
+    },
 
     Send: function(){
         var name = $("#username1").val();
@@ -22,9 +31,9 @@ var LoginView = React.createClass({
         console.debug(isSuccess);
 
         if (isSuccess == true)
-            alert("YAHOOO!");
+            Redirecter.redirect('/items');
         else
-            alert("OOOPPS :( "); //TODO: измменить на нормальное отображение
+            alert("OOOPPS :( ");
     },
 
     render: function () {

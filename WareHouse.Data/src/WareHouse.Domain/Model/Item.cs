@@ -10,7 +10,5 @@ namespace WareHouse.Domain.Model
         public string Name { get; set; }
 
         public int Count { get; set; }
-
-        public WarehouseItem WarehouseItem { get; set; }
     }
 }

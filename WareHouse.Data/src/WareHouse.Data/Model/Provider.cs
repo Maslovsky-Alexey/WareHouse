@@ -9,5 +9,6 @@ namespace WareHouse.Data.Model
     {
         public string Name { get; set; }
 
+        public IEnumerable<Supply> Supplies { get; set; }
     }
 }

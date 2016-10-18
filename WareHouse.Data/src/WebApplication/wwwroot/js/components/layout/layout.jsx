@@ -1,6 +1,6 @@
 ﻿var React = require('react');
 var ReactDom = require('react-dom');
-
+var Link = require('react-router').Link;
 
 var Layout = React.createClass({
 
@@ -19,7 +19,10 @@ var Layout = React.createClass({
                         </div>
                         <div className="navbar-collapse collapse">
                             <ul className="nav navbar-nav">
-                                <li><a>New operation</a></li>
+                                <li><Link to="/operations">New operation</Link></li>
+                                <li><Link to="/additem">Add item</Link></li>
+                                <li><Link to="/items">Items</Link></li>
+                                <li><Link to="/profile">Profile</Link></li>
                             </ul>
                         </div>
                     </div>

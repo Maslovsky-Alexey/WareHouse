@@ -37,12 +37,22 @@ var AccountRepository = function () {
     }
 
     this.getCurrentUser = function (success) {
-        serverMediator.sendRequest("api/account/getcurrentuser", 'get', null, success);
+        serverMediator.sendRequest("api/account/getcurrentuser", 'get', null, function (data) {
+            if (data == '')
+                data = 'null';
+    
+            success(JSON.parse(data));
+        });
     }
 
     this.getUserByName = function (username, success) {
 
-        serverMediator.sendRequest("api/account/getuserbyname/" + username, 'get', null, success);
+        serverMediator.sendRequest("api/account/getuserbyname/" + username, 'get', null, function (data) {
+            if (data == '')
+                data = 'null';
+
+            success(JSON.parse(data));
+        });
     }
 };
 

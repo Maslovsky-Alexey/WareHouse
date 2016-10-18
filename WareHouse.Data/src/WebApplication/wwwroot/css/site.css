@@ -31,3 +31,9 @@
     display: none
   }
 }
+
+.concrete-item-info{
+    font-weight: 900;
+    font-size: 28px;
+    color: #2e6ccf;
+}

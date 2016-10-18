@@ -81,7 +81,7 @@ var FilterForm = React.createClass({
                                     maxValue={this.props.maxcount}
                                     minValue={this.props.mincount}
                                     value={this.values}
-                                    onChange={this.handleValuesChange.bind(this)}
+                                    onChange={this.handleValuesChange}
                                     labelSuffix={" count"} />
 
                     </div>

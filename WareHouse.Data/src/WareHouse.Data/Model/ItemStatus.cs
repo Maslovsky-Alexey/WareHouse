@@ -20,7 +20,7 @@ namespace WareHouse.Data.Model
     {
         public string Name { get; set; }
 
-        public WarehouseItem WarehouseItem { get; set; }
+        public IEnumerable<WarehouseItem> WarehouseItems { get; set; }
 
         public Status Status { get; set; }
     }

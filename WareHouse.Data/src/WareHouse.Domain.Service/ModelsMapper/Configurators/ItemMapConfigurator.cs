@@ -11,7 +11,11 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
         public IMapper ConfigurateEF()
         {
             return new MapperConfiguration(cfg => cfg.CreateMap<Domain.Model.Item, Data.Model.Item>()
-                .ForMember((Data.Model.Item obj) => obj.WarehouseItem,
+                .ForMember((Data.Model.Item obj) => obj.WarehouseItems,
+                    obj => obj.Ignore())
+                .ForMember((Data.Model.Item obj) => obj.Orders,
+                    obj => obj.Ignore())
+                .ForMember((Data.Model.Item obj) => obj.Supplies,
                     obj => obj.Ignore())
             ).CreateMapper();
         }
@@ -19,8 +23,6 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
         public IMapper ConfigurateService()
         {
             return new MapperConfiguration(cfg => cfg.CreateMap<Data.Model.Item, Domain.Model.Item>()
-                .ForMember((Domain.Model.Item obj) => obj.WarehouseItem,
-                    obj => obj.Ignore())
             ).CreateMapper();
         }
     }

@@ -11,7 +11,15 @@ namespace WareHouse.Data.EF.Context.Mapping
     {
         public void Map(EntityTypeBuilder<Model.WarehouseItem> typeBuilder)
         {
+            typeBuilder
+                .HasOne(p => p.Item)
+                .WithMany(p => p.WarehouseItems)
+                .HasForeignKey((Model.WarehouseItem p) => p.ItemId);
 
+            typeBuilder
+                .HasOne(p => p.Status)
+                .WithMany(p => p.WarehouseItems)
+                .HasForeignKey((Model.WarehouseItem p) => p.StatusId);
         }
     }
 }

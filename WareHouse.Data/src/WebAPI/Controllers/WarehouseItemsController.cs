@@ -7,6 +7,7 @@ using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.MyOData;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,12 +24,14 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IEnumerable<WarehouseItemViewModel>> Get()
         {
             return await warehouseItems.GetAllAsViewModel();
         }
 
         [HttpPost]
+        [Authorize(Roles = "employee")]
         public async Task Post([FromBody]WarehouseItemViewModel value)
         {
             await warehouseItems.AddOrUpdateAsViewModel(value);
@@ -36,10 +39,19 @@ namespace WebAPI.Controllers
 
 
         [Route("GetPage/{page}")]
-        [HttpPost("{page}")]
+        [HttpGet("{page}")]
+        [Authorize]
         public async Task<PageModel> GetPage(int page, [FromBody]MyODataConfigurates config)
         {
             return await warehouseItems.GetPage(page, config);
+        }
+
+        [Route("GetItemById/{id}")]
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<WarehouseItemViewModel> GetItemById(int id)
+        {
+            return await warehouseItems.GetItemByIdAsViewModel(id);
         }
     }
 }

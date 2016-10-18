@@ -46,20 +46,22 @@ var Items = React.createClass({
 
     render: function () {
         var data = this.state.items;
-        var newsTemplate = data.map(function (item, index) {
-            return (
-                <div className="col-sm-4 col-lg-4 col-md-4" key={index }>
-                    <div className="thumbnail">
-                        <img src={item.imgSrc ? item.imgSrc : 'http://placehold.it/320x150'} alt="" />
-                        <About.About itemInfo={item } />
-                        <div className="ratings">
-                            <p className="pull-right">{item.views ? item.views : 0} reviews</p>
-                            <Ratings.Ratings starscount={item.starscount ? item.starscount : 0 } />
+
+        if (data != null)
+            var newsTemplate = data.map(function (item, index) {
+                return (
+                    <div className="col-sm-4 col-lg-4 col-md-4" key={index }>
+                        <div className="thumbnail">
+                            <img src={item.imgSrc ? item.imgSrc : 'http://placehold.it/320x150'} alt="" />
+                            <About.About itemInfo={item } />
+                            <div className="ratings">
+                                <p className="pull-right">{item.views ? item.views : 0} reviews</p>
+                                <Rating.Rating starscount={item.starscount ? item.starscount : 0 } />
+                            </div>
                         </div>
                     </div>
-                </div>
-            )
-        })
+                )
+            });
 
         return (
             <div>
