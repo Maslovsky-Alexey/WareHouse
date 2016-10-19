@@ -13,13 +13,13 @@ namespace WareHouse.Data.EF.Context.Mapping
         {
             typeBuilder
                 .HasOne(p => p.Item)
-                .WithMany(p => p.WarehouseItems)
-                .HasForeignKey((Model.WarehouseItem p) => p.ItemId);
+                .WithMany()
+                .HasForeignKey(p => p.ItemId);
 
             typeBuilder
                 .HasOne(p => p.Status)
-                .WithMany(p => p.WarehouseItems)
-                .HasForeignKey((Model.WarehouseItem p) => p.StatusId);
+                .WithMany()
+                .HasForeignKey(p => p.StatusId);
         }
     }
 }

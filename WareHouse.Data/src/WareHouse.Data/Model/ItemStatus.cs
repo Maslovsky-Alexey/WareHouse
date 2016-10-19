@@ -7,21 +7,15 @@ namespace WareHouse.Data.Model
 {
     public enum Status
     {
-        UnknowItem = 0,
-        ProcessingSupply,
-        ProcessingOrder,
-        OrderFailed,
-        SupplyFailed,
-        OrederSuccess,
-        SupplySuccess
+        Processing,
+        Success,
+        Failure
     }
 
     public class ItemStatus : BaseModel
     {
         public string Name { get; set; }
 
-        public IEnumerable<WarehouseItem> WarehouseItems { get; set; }
-
-        public Status Status { get; set; }
+        public virtual Status Status { get; set; }
     }
 }

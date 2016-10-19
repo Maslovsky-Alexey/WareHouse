@@ -19,10 +19,10 @@ namespace WebAPI
  
     public class AuthenticationMddleware
     {
-        private UserManager<ApplicationUser> userManager;
-        private RequestDelegate next;
-        private WareHouseDbContext context;
-        private IEncryptor encryptor;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly RequestDelegate next;
+        private readonly WareHouseDbContext context;
+        private readonly IEncryptor encryptor;
 
         public AuthenticationMddleware(RequestDelegate next, UserManager<ApplicationUser> userManager, WareHouseDbContext context, IEncryptor encryptor)
         {

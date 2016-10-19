@@ -8,8 +8,5 @@ namespace WareHouse.Data.Model
 {
     public class ApplicationUser : IdentityUser
     {
-        public Employee Employee { get; set; }
-
-        public Client Client { get; set; }
     }
 }

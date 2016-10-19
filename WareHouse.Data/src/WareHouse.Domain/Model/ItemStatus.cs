@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WareHouse.Data.Model;
 
 namespace WareHouse.Domain.Model
 {
@@ -9,7 +10,6 @@ namespace WareHouse.Domain.Model
     {
         public string Name { get; set; }
 
-
-        public IEnumerable<WarehouseItem> WarehouseItems { get; set; }
+        public virtual Status Status { get; set; }
     }
 }

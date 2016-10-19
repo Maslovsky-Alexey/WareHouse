@@ -13,11 +13,11 @@ namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class AccountService : IAccountService
     {
-        private IClientService clientService;
-        private IEmployeeService employeeService;
-        private SignInManager<ApplicationUser> signInManager;
-        private UserManager<ApplicationUser> userManager;
-        private IUserService userService;
+        private readonly IClientService clientService;
+        private readonly IEmployeeService employeeService;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IUserService userService;
 
         public AccountService(
             UserManager<ApplicationUser> userManager,
@@ -57,7 +57,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (await userManager.FindByNameAsync("admin") == null)
             {
                 await userManager.CreateAsync(new ApplicationUser { UserName = "admin" }, "admin");
-                var a = await userManager.AddToRoleAsync(await userManager.FindByNameAsync("admin"), "employee");
+                await userManager.AddToRoleAsync(await userManager.FindByNameAsync("admin"), "employee");
             }
 
             await employeeService.Add(new Model.Employee

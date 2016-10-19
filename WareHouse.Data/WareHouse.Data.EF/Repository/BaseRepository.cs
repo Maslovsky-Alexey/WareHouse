@@ -21,12 +21,12 @@ namespace WareHouse.Data.EF.Repository
             this.table = context.Set<T>();           
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAll()
         {
             return await table.ToArrayAsync();           
         }
 
-        public async Task<IEnumerable<T>> GetAllWithFilter(Expression<Func<T, bool>> filter)
+        public virtual async Task<IEnumerable<T>> GetAllWithFilter(Expression<Func<T, bool>> filter)
         {           
             return await Task<IEnumerable<T>>.Factory.StartNew(() => table.Where(filter));
         }

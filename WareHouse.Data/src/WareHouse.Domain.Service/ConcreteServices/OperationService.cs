@@ -2,75 +2,92 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WareHouse.Data.Model;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
+using Order = WareHouse.Domain.Model.Order;
+using Supply = WareHouse.Domain.Model.Supply;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class OperationService : IOperationService
     {
-        private IWarehouseItemService warehouseItemService;
+        private readonly IWarehouseItemService warehouseItemService;
 
-        private IItemStatusService itemStatusService;
+        private readonly IItemStatusService itemStatusService;
+        private readonly ISupplyService supplyService;
+        private readonly IOrderService orderService;
 
 
-        public OperationService(IWarehouseItemService warehouseItemService, IItemStatusService itemStatusService)
+        public OperationService(IWarehouseItemService warehouseItemService, IItemStatusService itemStatusService, ISupplyService supplyService, IOrderService orderService)
         {
+            this.orderService = orderService;
+            this.supplyService = supplyService;
             this.itemStatusService = itemStatusService;
             this.warehouseItemService = warehouseItemService;
         }
 
         public async Task AddOrder(OrderViewModel item)
         {
-            await warehouseItemService.Add(new WarehouseItem
+            await orderService.Add(new Order
             {
+                ClientId = item.ClientId,
+                EmployeeId = item.EmployeeId,
+                ItemId = item.ItemId,
+                StatusId = (await itemStatusService.GetStatus(Data.Model.Status.Processing)).Id,
                 Count = item.Count,
-                Item = new Item { Id = item.ItemId },
-                Status = await itemStatusService.GetStatus(Data.Model.Status.ProcessingOrder)
+                DateTime = DateTime.Now
             });
         }
 
         public async Task AddSupply(SupplyViewModel item)
         {
-            var status = await itemStatusService.GetStatus(Data.Model.Status.ProcessingSupply);
-
-            var result = await warehouseItemService.Add(new WarehouseItem
+            await supplyService.Add(new Supply
             {
-                Count = item.Count,
+                ProviderId = item.ProviderId,
+                EmployeeId = item.EmployeeId,
                 ItemId = item.ItemId,
-                StatusId = status.Id
+                StatusId = (await itemStatusService.GetStatus(Data.Model.Status.Processing)).Id,
+                Count = item.Count,
+                DateTime = DateTime.Now
             });
         }
 
         public async Task ConfirmOrder(int itemId)
         {
-            await UpdateItemStatus(itemId, Data.Model.Status.OrederSuccess);
+            await orderService.UpdateOrderStatus(itemId, await GetStatusId(Status.Success));
+
+            
         }
 
         public async Task ConfirmSupply(int itemId)
         {
-            await UpdateItemStatus(itemId, Data.Model.Status.SupplySuccess);
+            await supplyService.UpdateSupplyStatus(itemId, await GetStatusId(Status.Success));
+
+            var supply = await supplyService.GetItem(itemId);
+
+            await warehouseItemService.Add(new Model.WarehouseItem
+            {
+                Count = supply.Count,
+                ItemId = supply.ItemId
+            });
         }
+    
 
         public async Task ReturnOrder(int itemId)
         {
-            await UpdateItemStatus(itemId, Data.Model.Status.OrderFailed);
+            await orderService.UpdateOrderStatus(itemId, await GetStatusId(Status.Failure));
         }
 
         public async Task ReturnSupply(int itemId)
         {
-            await UpdateItemStatus(itemId, Data.Model.Status.SupplyFailed);
+            await supplyService.UpdateSupplyStatus(itemId, await GetStatusId(Status.Failure));
         }
 
-        private async Task UpdateItemStatus(int itemId, Data.Model.Status status)
+        private async Task<int> GetStatusId(Data.Model.Status status)
         {
-            var a = warehouseItemService.GetItem(itemId);
-
-            if (a == null)
-                return;
-
-            await warehouseItemService.UpdateStatus(itemId, (await itemStatusService.GetStatus(status)).Id);
+            return (await itemStatusService.GetStatus(status)).Id;
         }
     }
 }

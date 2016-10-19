@@ -107,12 +107,28 @@ namespace WareHouse.MyOData
             return result;
         }
 
-        private static object GetPropertyValue<T>(T obj, string propertyName)
+        private static object GetPropertyValue(object obj, string propertyName)
+        {
+            if (propertyName.Contains('.'))
+            {
+                var propName = GetFirstPropertyName(propertyName);
+                
+                return GetPropertyValue(GetProperty(obj, propName).GetValue(obj, null), propertyName.Remove(0, propName.Length + 1));
+            }
+                
+            return GetProperty(obj, propertyName).GetValue(obj, null);
+        }
+
+        private static PropertyInfo GetProperty(object obj, string propertyName)
         {
             var typeInfo = obj.GetType().GetTypeInfo();
 
-            var property = typeInfo.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            return property.GetValue(obj, null);
+            return typeInfo.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        }
+
+        private static string GetFirstPropertyName(string propertyName)
+        {
+            return propertyName.Substring(0, propertyName.IndexOf('.'));
         }
 
         private static IEnumerable<PropertyFilter> GetPropertiesFilter(string source)

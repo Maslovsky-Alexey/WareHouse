@@ -28,57 +28,50 @@ namespace WareHouse.Domain.Service.ConcreteServices
             this.statusService = statusService;
         }
 
-        public async Task AddOrUpdateAsViewModel(WarehouseItemViewModel model)
+        public async Task AddOrUpdateAsViewModel(Model.WarehouseItem model)
         {
-            var item = (await GetItemsByName(model.Name, true)).FirstOrDefault(x => x.Status.Id == model.StatusId);
+            var item = (await GetItemsByName(model.Item.Name, true)).FirstOrDefault();
 
             if (item != null)
             {
-                item.Item.Count = model.Count;
+                item.Count = model.Count;
             }
             else
             {
-                item = new Model.WarehouseItem();
-                item.Item = new Model.Item { Name = model.Name };
-                item.Count = model.Count;
-                item.Status = new Model.ItemStatus { Id = model.StatusId, Name = model.Status };
-
-                await Add(item);
+                await Add(model);
             }
         }
 
         public async Task<IEnumerable<WarehouseItemViewModel>> GetAllAsViewModel()
         {
-            return (await ((WarehouseItemRepository)repository).GetAll())
-                .Select(async x => await MapToViewModel(x))
-                .Select(x => x.Result);
+            return (await ((WarehouseItemRepository) repository).GetAll())
+                .Select(MapToViewModel);
         }
 
         public async Task<IEnumerable<Model.WarehouseItem>> GetItemsByName(string name, bool ignoreCase)
         {
-            return (await((WarehouseItemRepository)repository).GetItemsByName(name, ignoreCase)).Select(item => MapToServiceModel(item));
-        }
-
-        public async Task UpdateStatus(int itemId, int itemStatusId)
-        {
-            await warehouseItemRepository.UpdateStatus(itemId, itemStatusId);
+            return (await((WarehouseItemRepository)repository).GetItemsByName(name, ignoreCase)).Select(MapToServiceModel);
         }
 
 
         public async Task<PageModel> GetPage(int page, MyODataConfigurates config)
         {
-            var filter = MyOData.MyOData.CompileFilters<Data.Model.WarehouseItem>(config);  // TODO: Спросить как реализовать фильтрацию по полю в поле (Нужно использовать не WarehouseItem а WarehouseItemViewModel ) Может нужно делат филтрацию не в репозитории ?? а для вью моделм ?
-
-            var result = new PageModel();
+            var filter = MyOData.MyOData.CompileFilters<Data.Model.WarehouseItem>(config);
 
             IEnumerable<WarehouseItemViewModel> items = (await repository.GetAllWithFilter(filter))
-                .Select(async x => await MapToViewModel(x))
-                .Select(x => x.Result);
+                .Select(MapToViewModel);
 
-            if (items.Count() == 0)
-                return result;
+            if (!items.Any())
+                return new PageModel();
 
             items = MyOData.MyOData.OrderBy<WarehouseItemViewModel>(items, config);
+
+            return GetPage(items, page);
+        }
+
+        private PageModel GetPage(IEnumerable<WarehouseItemViewModel> items, int page)
+        {
+            var result = new PageModel();
 
             result.Items = (items.Skip(page * 6).Take(6));
 
@@ -92,18 +85,16 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<WarehouseItemViewModel> GetItemByIdAsViewModel(int id)
         {
-            return await MapToViewModel(await repository.GetItem(id));
+            return MapToViewModel(await repository.GetItem(id));
         }
 
-        private async Task<WarehouseItemViewModel> MapToViewModel(Data.Model.WarehouseItem item)
+        private WarehouseItemViewModel MapToViewModel(Data.Model.WarehouseItem item)
         {
             return new WarehouseItemViewModel
             {
                 Count = item.Count,
                 ItemId = item.ItemId,
-                Name = (await itemService.GetItem(item.ItemId)).Name,
-                StatusId = item.StatusId,
-                Status = (await statusService.GetItem(item.StatusId)).Name
+                Name = item.Item.Name
             };
         }
 

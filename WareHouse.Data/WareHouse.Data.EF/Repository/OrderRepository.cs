@@ -15,6 +15,23 @@ namespace WareHouse.Data.EF.Repository
         {
 
         }
+        public override async Task<IEnumerable<Order>> GetAll()
+        {
+            return await table
+                .Include(x => x.Item)
+                .Include(x => x.Status)
+                .Include(x => x.Client)
+                .Include(x => x.Employee)
+                .ToListAsync();
+        }
 
+        public async Task UpdateOrderStatus(int id, int statusId)
+        {
+            var order = await GetItem(id);
+
+            order.StatusId = statusId;
+
+            await SaveChanges();
+        }
     }
 }

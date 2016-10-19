@@ -12,9 +12,5 @@ namespace WareHouse.Domain.Model.ViewModel
         public int ItemId { get; set; }
 
         public int Count { get; set; }
-
-        public string Status { get; set; }
-
-        public int StatusId { get; set; }
     }
 }

@@ -14,11 +14,9 @@ namespace WareHouse.Domain.ServiceInterfaces
 
         Task<IEnumerable<Model.ViewModel.WarehouseItemViewModel>> GetAllAsViewModel();
 
-        Task AddOrUpdateAsViewModel(Model.ViewModel.WarehouseItemViewModel model);
+        Task AddOrUpdateAsViewModel(Model.WarehouseItem model);
 
         Task<IEnumerable<Model.WarehouseItem>> GetItemsByName(string name, bool ignoreCase);
-
-        Task UpdateStatus(int itemId, int itemStatusId);
 
         Task<WarehouseItemViewModel> GetItemByIdAsViewModel(int id);
     }

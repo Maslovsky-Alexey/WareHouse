@@ -30,13 +30,6 @@ namespace WebAPI.Controllers
             return await warehouseItems.GetAllAsViewModel();
         }
 
-        [HttpPost]
-        [Authorize(Roles = "employee")]
-        public async Task Post([FromBody]WarehouseItemViewModel value)
-        {
-            await warehouseItems.AddOrUpdateAsViewModel(value);
-        }
-
 
         [Route("GetPage/{page}")]
         [HttpGet("{page}")]

@@ -28,9 +28,9 @@ namespace WareHouse.Data.EF.Repository
             }            
         }
 
-        public async Task<int> UpdateCount(int itemID, int deltaCount)
+        public async Task<int> UpdateCount(int itemId, int deltaCount)
         {
-            var item = await GetItem(itemID);
+            var item = await GetItem(itemId);
             item.Count += deltaCount;
 
             await SaveChanges();

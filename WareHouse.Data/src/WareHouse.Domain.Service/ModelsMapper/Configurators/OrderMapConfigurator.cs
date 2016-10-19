@@ -19,6 +19,8 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
                     obj => obj.ResolveUsing(src => new ModelsMapper<Data.Model.Client, Domain.Model.Client>(new ClientMapConfigurator()).MapEF(src.Client)))
                 .ForMember((Data.Model.Order obj) => obj.Employee,
                     obj => obj.ResolveUsing(src => new ModelsMapper<Data.Model.Employee, Domain.Model.Employee>(new EmployeeMapConfigurator()).MapEF(src.Employee)))
+                .ForMember((Data.Model.Order obj) => obj.Status,
+                    obj => obj.ResolveUsing(src => new ModelsMapper<Data.Model.ItemStatus, Domain.Model.ItemStatus>(new ItemStatusMapConfigurator()).MapEF(src.Status)))
             ).CreateMapper();
         }
 
@@ -32,6 +34,8 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
                     obj => obj.ResolveUsing(src => new ModelsMapper<Data.Model.Item, Domain.Model.Item>(new ItemMapConfigurator()).MapService(src.Item)))
                 .ForMember((Domain.Model.Order obj) => obj.Employee,
                     obj => obj.ResolveUsing(src => new ModelsMapper<Data.Model.Employee, Domain.Model.Employee>(new ItemMapConfigurator()).MapService(src.Employee)))
+                .ForMember((Domain.Model.Order obj) => obj.Status,
+                    obj => obj.ResolveUsing(src => new ModelsMapper<Data.Model.ItemStatus, Domain.Model.ItemStatus>(new ItemStatusMapConfigurator()).MapService(src.Status)))
             ).CreateMapper();
         }
     }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Context;
 using WareHouse.Data.Model;
@@ -28,22 +29,17 @@ namespace WareHouse.Data.EF.Repository
             }
         }
 
-        new public async Task<IEnumerable<WarehouseItem>> GetAll()
+        public override async Task<IEnumerable<WarehouseItem>> GetAll()
         {
-            return await context.WarehouseItem.Include(x => x.Item).Include(x => x.Status).ToListAsync();
+            return await context.WarehouseItem
+                .Include(x => x.Item)
+                .Include(x => x.Status)
+                .ToListAsync();
         }
 
-        public async Task UpdateStatus(int itemId, int itemStatusId)
+        public override async Task<IEnumerable<WarehouseItem>> GetAllWithFilter(Expression<Func<WarehouseItem, bool>> filter)
         {
-            var oldItem = await GetItem(itemId);
-
-            if (oldItem == null)
-                return;
-
-            oldItem.StatusId = itemStatusId;
-
-            
-            await SaveChanges();
+            return (await GetAll()).AsQueryable().Where(filter);
         }
     }
 }

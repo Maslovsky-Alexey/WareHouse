@@ -9,9 +9,9 @@ namespace WareHouse.Data.EF.Context.Mapping
         public void Map(EntityTypeBuilder<Employee> typeBuilder)
         {
             typeBuilder
-                .Property(employee => employee.Name)
-                .HasDefaultValue("Noname")
-                .HasMaxLength(25);
+                .HasOne(p => p.User)
+                .WithOne()
+                .HasForeignKey<Employee>(p => p.UserId);
 
         }
     }

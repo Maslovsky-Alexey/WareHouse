@@ -1,7 +1,7 @@
 ﻿var React = require('react');
 var ReactDom = require('react-dom');
 
-// TODO: Есть такой паттерн как Flux. Попробуй сделать свою легкую реализацию.
+
 var ItemRepository = require('../../../repositories/itemrepository.js');
 var OperationRepository = require('../../../repositories/operationrepository.js');
 var StatusSelect = require('./elements/statusselect.jsx');
@@ -41,14 +41,12 @@ var FormOperations = React.createClass({
             return;
         }
 
-        var item = this.CreateItemValue(this.itemId, input_count.val());
-
         var sender = this;
         if (this.state.supplymode) {
-            this.warehouseItems.addSupply(item, function () { sender.emptyControlItems(input_name, input_count); });
+            this.warehouseItems.addSupply(this.CreateSupplyModel(this.itemId, input_count.val()), function () { sender.emptyControlItems(input_name, input_count); });
         }
         else {
-            this.warehouseItems.addOrder(item, function () { sender.emptyControlItems(input_name, input_count); });
+            this.warehouseItems.addOrder(this.CreateOrderModel(this.itemId, input_count.val()), function () { sender.emptyControlItems(input_name, input_count); });
         }
     },
 
@@ -56,17 +54,28 @@ var FormOperations = React.createClass({
         input_count.val('');
     },
 
-    CreateItemValue: function (id, count) {       
+    CreateSupplyModel: function (id, count) {
         return {
             count: count,
-            itemId: id
+            itemId: id,
+            providerId: this.props.actor,
+            employeeId: 1
+        };
+    },
+
+    CreateOrderModel: function (id, count) {
+        return {
+            count: count,
+            itemId: id,
+            clientId: this.props.actor,
+            employeeId: 1
         };
     },
 
     IsFormValid: function (count) {
         var countValue = parseInt(count.val());
 
-        return !this.IsEmptyString(count.val()) && !Number.isNaN(countValue) && countValue > 0 && !this.IsEmptyString(this.props.actor);
+        return !this.IsEmptyString(count.val()) && !Number.isNaN(countValue) && countValue > 0 && this.props.actor > -1;
     },
 
     IsEmptyString: function (str) {

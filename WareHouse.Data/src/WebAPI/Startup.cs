@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 using WareHouse.Data.EF.Context;
-using Autofac;
+using WareHouse.Data.EF.Repository;
+using WareHouse.Data.Model;
+using WareHouse.Data.Repository;
 using WareHouse.Domain.Service.ConcreteServices;
 using WareHouse.Domain.ServiceInterfaces;
-using Autofac.Extensions.DependencyInjection;
-using Autofac.Core;
-using WareHouse.Data.EF.Repository;
-using WareHouse.Data.Repository;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using WareHouse.Data.Model;
 
 namespace WebAPI
 {
@@ -27,15 +23,12 @@ namespace WebAPI
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile("appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
 
             if (env.IsDevelopment())
-            {
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
-            }
+                builder.AddApplicationInsightsSettings(true);
             Configuration = builder.Build();
         }
 
@@ -47,10 +40,9 @@ namespace WebAPI
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             //    var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse;uid=Admin;password=123123;";    
-         
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<WareHouseDbContext>()
-                
                 .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
@@ -60,7 +52,6 @@ namespace WebAPI
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireDigit = false;
-                
             });
 
             // Add framework services.
@@ -77,19 +68,15 @@ namespace WebAPI
                         .WithExposedHeaders("Authorization"));
             });
 
-            services.AddMvc(options =>
-            {
-                options.ModelBinderProviders.Insert(0, new ODataModelBinderProvider());
-            });
-                
+            services.AddMvc(options => { options.ModelBinderProviders.Insert(0, new ODataModelBinderProvider()); });
+
             var containerBuilder = new ContainerBuilder();
 
             RegistrTypes(containerBuilder);
 
 
-
             containerBuilder.Populate(services);
-            this.ApplicationContainer = containerBuilder.Build();
+            ApplicationContainer = containerBuilder.Build();
 
             var tokenEncryptor = ApplicationContainer.Resolve<IEncryptor>();
 
@@ -97,7 +84,7 @@ namespace WebAPI
             tokenEncryptor.VI = Configuration.GetSection("Encrypt").GetValue<string>("VI");
 
             // Create the IServiceProvider based on the container.
-            return new AutofacServiceProvider(this.ApplicationContainer);
+            return new AutofacServiceProvider(ApplicationContainer);
         }
 
         private void RegistrTypes(ContainerBuilder containerBuilder)
@@ -105,28 +92,35 @@ namespace WebAPI
             var connection = Configuration.GetConnectionString("DefaultConnection");
             var builder = new DbContextOptionsBuilder<WareHouseDbContext>().UseSqlServer(connection);
 
-            containerBuilder.Register<WareHouseDbContext>(context => { return new WareHouseDbContext(builder.Options); }).InstancePerDependency();
+            containerBuilder.Register(context => { return new WareHouseDbContext(builder.Options); })
+                .InstancePerDependency();
 
-            containerBuilder.RegisterType<ClientRepository>().As<BaseRepository<WareHouse.Data.Model.Client>>();
+            containerBuilder.RegisterType<ClientRepository>().As<BaseRepository<Client>>();
             containerBuilder.RegisterType<ClientService>().As<IClientService>();
 
-            containerBuilder.RegisterType<ItemRepository>().As<BaseRepository<WareHouse.Data.Model.Item>>();
+            containerBuilder.RegisterType<ItemRepository>().As<BaseRepository<Item>>();
             containerBuilder.RegisterType<ItemService>().As<IItemService>();
 
-            containerBuilder.RegisterType<ProviderRepository>().As<BaseRepository<WareHouse.Data.Model.Provider>>();
+            containerBuilder.RegisterType<ProviderRepository>().As<BaseRepository<Provider>>();
             containerBuilder.RegisterType<ProviderService>().As<IProviderService>();
 
-            containerBuilder.RegisterType<EmployeeRepository>().As<BaseRepository<WareHouse.Data.Model.Employee>>();
+            containerBuilder.RegisterType<EmployeeRepository>().As<BaseRepository<Employee>>();
             containerBuilder.RegisterType<EmployeeService>().As<IEmployeeService>();
 
-            containerBuilder.RegisterType<ItemStatusRepository>().As<BaseRepository<WareHouse.Data.Model.ItemStatus>>();
+            containerBuilder.RegisterType<ItemStatusRepository>().As<BaseRepository<ItemStatus>>();
             containerBuilder.RegisterType<ItemStatusService>().As<IItemStatusService>();
 
-            containerBuilder.RegisterType<WarehouseItemRepository>().As<BaseRepository<WareHouse.Data.Model.WarehouseItem>>();
+            containerBuilder.RegisterType<WarehouseItemRepository>().As<BaseRepository<WarehouseItem>>();
             containerBuilder.RegisterType<WarehouseItemService>().As<IWarehouseItemService>();
 
             containerBuilder.RegisterType<UserRepository>().As<IUserRepository>();
             containerBuilder.RegisterType<UserService>().As<IUserService>();
+
+            containerBuilder.RegisterType<OrderRepository>().As<BaseRepository<Order>>();
+            containerBuilder.RegisterType<OrderService>().As<IOrderService>();
+
+            containerBuilder.RegisterType<SupplyRepository>().As<BaseRepository<Supply>>();
+            containerBuilder.RegisterType<SupplyService>().As<ISupplyService>();
 
             containerBuilder.RegisterType<OperationService>().As<IOperationService>();
             containerBuilder.RegisterType<AccountService>().As<IAccountService>();
@@ -166,8 +160,8 @@ namespace WebAPI
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    "default",
+                    "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

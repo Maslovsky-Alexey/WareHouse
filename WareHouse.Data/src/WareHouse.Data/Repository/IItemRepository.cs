@@ -10,6 +10,6 @@ namespace WareHouse.Data.Repository
     {
         Task<Item> GetItemByName(string name, bool ignoreCase);
 
-        Task<int> UpdateCount(int itemID, int deltaCount);
+        Task<int> UpdateCount(int itemId, int deltaCount);
     }
 }

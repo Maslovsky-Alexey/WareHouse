@@ -10,18 +10,23 @@ namespace WareHouse.Data.EF.Context.Mapping
         {
             typeBuilder
                 .HasOne(p => p.Item)
-                .WithMany(p => p.Supplies)
-                .HasForeignKey((Model.Supply p) => p.ItemId);
+                .WithMany()
+                .HasForeignKey(p => p.ItemId);
 
             typeBuilder
                 .HasOne(p => p.Employee)
-                .WithMany(p => p.Supplies)
-                .HasForeignKey((Model.Supply p) => p.EmployeeId);
+                .WithMany()
+                .HasForeignKey(p => p.EmployeeId);
 
             typeBuilder
                 .HasOne(p => p.Provider)
-                .WithMany(p => p.Supplies)
-                .HasForeignKey((Model.Supply p) => p.ProviderId);
+                .WithMany()
+                .HasForeignKey(p => p.ProviderId);
+
+            typeBuilder
+                .HasOne(p => p.Status)
+                .WithMany()
+                .HasForeignKey(p => p.StatusId);
         }
     }
 }

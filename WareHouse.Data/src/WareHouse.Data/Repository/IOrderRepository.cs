@@ -8,6 +8,6 @@ namespace WareHouse.Data.Repository
 {
     public interface IOrderRepository : IRepository<Model.Order>
     {
-
+        Task UpdateOrderStatus(int id, int statusId);
     }
 }

@@ -11,7 +11,7 @@ clientRepository.getClients((data) => {
 });
 
 function addClient(client) {
-    clientRepository.addProvder(client, function () {
+    clientRepository.addClient(client, function () {
         clientRepository.getClients(function (data) {
             clients = data;
 

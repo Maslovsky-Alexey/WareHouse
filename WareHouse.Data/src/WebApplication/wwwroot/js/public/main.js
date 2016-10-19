@@ -8182,11 +8182,11 @@
 	var ReactRouter = __webpack_require__(464);
 
 	var LoginView = __webpack_require__(527).LoginView;
-	var ItemsView = __webpack_require__(530).ItemsView;
-	var OperationsView = __webpack_require__(545).OperationsView;
-	var AddItemsView = __webpack_require__(557).AddItemsView;
-	var ProfileView = __webpack_require__(560).ProfileView;
-	var Layout = __webpack_require__(561).Layout;
+	var ItemsView = __webpack_require__(531).ItemsView;
+	var OperationsView = __webpack_require__(546).OperationsView;
+	var AddItemsView = __webpack_require__(558).AddItemsView;
+	var ProfileView = __webpack_require__(561).ProfileView;
+	var Layout = __webpack_require__(562).Layout;
 	var ConcreteItemView = __webpack_require__(563).ConcreteItemView;
 
 	ReactDOM.render((
@@ -34446,7 +34446,7 @@
 	var ReactDom = __webpack_require__(300);
 
 	var AccountRepository = __webpack_require__(528);
-	var Redirecter = __webpack_require__(562).Redirecter;
+	var Redirecter = __webpack_require__(530).Redirecter;
 
 	var LoginView = React.createClass({displayName: "LoginView",
 	    accountRepository: new AccountRepository.AccountRepository(),
@@ -34605,11 +34605,27 @@
 /* 530 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var browserHistory = __webpack_require__(464).browserHistory;
+
+	var Redirecter = {
+	    
+	    redirect: function (url) {
+	        //browserHistory.push(url);
+	        window.location.href = "/#" + url;
+	    }
+	};
+
+	exports.Redirecter = Redirecter;
+
+/***/ },
+/* 531 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var Items = __webpack_require__(531);
-	var FilterForm = __webpack_require__(535);
+	var Items = __webpack_require__(532);
+	var FilterForm = __webpack_require__(536);
 
 	var ItemsView = React.createClass({displayName: "ItemsView",
 
@@ -34621,7 +34637,8 @@
 	        var filter = "?";
 
 	        if (searchName != null && searchName.length > 0)
-	            filter += "$property1=name&$filter1=" + searchName;
+	            filter += "$property1=item.name&$filter1=" + searchName;
+
 
 	        if (minCount != null && maxCount != null)
 	            filter += "&$property2=count&$morethan2=" + (minCount - 1) + "&$lessthan2=" + (maxCount + 1);
@@ -34654,7 +34671,7 @@
 	exports.ItemsView = ItemsView;
 
 /***/ },
-/* 531 */
+/* 532 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM *//// <reference path="elements/about.js" />
@@ -34663,10 +34680,10 @@
 	var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var WarehouseItemsRepository = __webpack_require__(532);
+	var WarehouseItemsRepository = __webpack_require__(533);
 
-	var About = __webpack_require__(533);
-	var Rating = __webpack_require__(534);
+	var About = __webpack_require__(534);
+	var Rating = __webpack_require__(535);
 
 	var Items = React.createClass({displayName: "Items",
 	    nextPage: 0,
@@ -34745,7 +34762,7 @@
 
 
 /***/ },
-/* 532 */
+/* 533 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="servermediator.js" />
@@ -34801,7 +34818,7 @@
 
 
 /***/ },
-/* 533 */
+/* 534 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -34825,7 +34842,7 @@
 
 
 /***/ },
-/* 534 */
+/* 535 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -34860,14 +34877,14 @@
 
 
 /***/ },
-/* 535 */
+/* 536 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
 	var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var InputRange = __webpack_require__(536);
+	var InputRange = __webpack_require__(537);
 
 	var FilterForm = React.createClass({displayName: "FilterForm",
 	    values: {min: 0, max: 0},
@@ -34969,7 +34986,7 @@
 	exports.FilterForm = FilterForm;
 
 /***/ },
-/* 536 */
+/* 537 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -34984,7 +35001,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _InputRange = __webpack_require__(537);
+	var _InputRange = __webpack_require__(538);
 
 	var _InputRange2 = _interopRequireDefault(_InputRange);
 
@@ -35006,7 +35023,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 537 */
+/* 538 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -35033,29 +35050,29 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Slider = __webpack_require__(538);
+	var _Slider = __webpack_require__(539);
 
 	var _Slider2 = _interopRequireDefault(_Slider);
 
-	var _Track = __webpack_require__(541);
+	var _Track = __webpack_require__(542);
 
 	var _Track2 = _interopRequireDefault(_Track);
 
-	var _Label = __webpack_require__(539);
+	var _Label = __webpack_require__(540);
 
 	var _Label2 = _interopRequireDefault(_Label);
 
-	var _defaultClassNames = __webpack_require__(542);
+	var _defaultClassNames = __webpack_require__(543);
 
 	var _defaultClassNames2 = _interopRequireDefault(_defaultClassNames);
 
-	var _valueTransformer = __webpack_require__(543);
+	var _valueTransformer = __webpack_require__(544);
 
 	var _valueTransformer2 = _interopRequireDefault(_valueTransformer);
 
-	var _util = __webpack_require__(540);
+	var _util = __webpack_require__(541);
 
-	var _propTypes = __webpack_require__(544);
+	var _propTypes = __webpack_require__(545);
 
 	/**
 	 * A map for storing internal members
@@ -35784,7 +35801,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 538 */
+/* 539 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -35811,11 +35828,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Label = __webpack_require__(539);
+	var _Label = __webpack_require__(540);
 
 	var _Label2 = _interopRequireDefault(_Label);
 
-	var _util = __webpack_require__(540);
+	var _util = __webpack_require__(541);
 
 	/**
 	 * Get the owner document of slider
@@ -36041,7 +36058,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 539 */
+/* 540 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -36132,7 +36149,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 540 */
+/* 541 */
 /***/ function(module, exports) {
 
 	/**
@@ -36372,7 +36389,7 @@
 	}
 
 /***/ },
-/* 541 */
+/* 542 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -36399,7 +36416,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _util = __webpack_require__(540);
+	var _util = __webpack_require__(541);
 
 	/**
 	 * Get the CSS styles for an active track
@@ -36535,7 +36552,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 542 */
+/* 543 */
 /***/ function(module, exports) {
 
 	/**
@@ -36574,7 +36591,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 543 */
+/* 544 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -36587,7 +36604,7 @@
 	  value: true
 	});
 
-	var _util = __webpack_require__(540);
+	var _util = __webpack_require__(541);
 
 	/**
 	 * Convert position into percentage value
@@ -36762,7 +36779,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 544 */
+/* 545 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -36776,7 +36793,7 @@
 	});
 	exports.maxMinValuePropType = maxMinValuePropType;
 
-	var _util = __webpack_require__(540);
+	var _util = __webpack_require__(541);
 
 	/**
 	 * A prop type accepting a range of numeric values or a single numeric value
@@ -36816,21 +36833,19 @@
 	}
 
 /***/ },
-/* 545 */
+/* 546 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var FormOperations = __webpack_require__(546);
-	var Dispatcher = __webpack_require__(550).Dispatcher;
-	var ClientStore = __webpack_require__(551).ClientStore;
-	var ProviderStore = __webpack_require__(553).ProviderStore;
-	var List = __webpack_require__(555);
+	var FormOperations = __webpack_require__(547);
+	var Dispatcher = __webpack_require__(551).Dispatcher;
+	var ClientStore = __webpack_require__(552).ClientStore;
+	var ProviderStore = __webpack_require__(554).ProviderStore;
+	var List = __webpack_require__(556);
 
 	var OperationsView = React.createClass({displayName: "OperationsView",
-	    listItem: '',
-
 	    supplymode: true,
 
 	    componentDidMount: function () {
@@ -36842,20 +36857,23 @@
 	        var clients = ClientStore.getClients(this.onClientsGeted).map(function(item)  {return item.name;});
 	        var providers = ProviderStore.getProviders(this.onProvidersGeted).map(function(item)  {return item.name;});
 
-	        return { clients: clients, providers: providers };
+	        return { clients: clients, providers: providers, listItem: -1 };
 	    },
 
-	    SelectedListItem: function(item){
-	        this.listItem = item;
-	        this.forceUpdate();
+	    SelectedListItem: function(item) {
+	        this.setState({
+	            clients: this.state.clients,
+	            providers: this.state.providers,
+	            listItem: item
+	        });
 	    },
 
 	    onProvidersGeted: function (data) {
-	        this.setState({ clients: this.state.clients, providers: data.map(function(item)  {return item.name;}) });
+	        this.setState({ clients: this.state.clients, providers: data });
 	    },
 
 	    onClientsGeted: function (data) {
-	        this.setState({ clients: data.map(function(item)  {return item.name;}), providers: this.state.providers });
+	        this.setState({ clients: data, providers: this.state.providers });
 	    },
 
 	    modeChange: function(isSupply){
@@ -36885,10 +36903,10 @@
 	                    React.createElement(List.List, {title: "Providers", side: "left", active: this.supplymode, changevalue: this.SelectedListItem, items: this.state.providers, onadded: this.providerAdded})
 	                ), 
 	                React.createElement("div", {className: "col-xs-6"}, 
-	                    React.createElement(FormOperations.FormOperations, {actor: this.listItem, changeMode: this.modeChange})
+	                    React.createElement(FormOperations.FormOperations, {actor: this.state.listItem, changeMode: this.modeChange})
 	                ), 
 	                React.createElement("div", {className: "col-xs-3"}, 
-	                    React.createElement(List.List, {title: "Clients", side: "right", active: !this.supplymode, changevalue: this.selectedlistitem, items: this.state.clients, onadded: this.clientAdded})
+	                    React.createElement(List.List, {title: "Clients", side: "right", active: !this.supplymode, changevalue: this.SelectedListItem, items: this.state.clients, onadded: this.clientAdded})
 	                )
 	            )
 	        );
@@ -36898,16 +36916,16 @@
 	exports.OperationsView = OperationsView;
 
 /***/ },
-/* 546 */
+/* 547 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	// TODO: Есть такой паттерн как Flux. Попробуй сделать свою легкую реализацию.
-	var ItemRepository = __webpack_require__(547);
-	var OperationRepository = __webpack_require__(548);
-	var StatusSelect = __webpack_require__(549);
+
+	var ItemRepository = __webpack_require__(548);
+	var OperationRepository = __webpack_require__(549);
+	var StatusSelect = __webpack_require__(550);
 
 	var FormOperations = React.createClass({displayName: "FormOperations",
 	    itemsRepos: new ItemRepository.ItemRepository(),
@@ -36944,14 +36962,12 @@
 	            return;
 	        }
 
-	        var item = this.CreateItemValue(this.itemId, input_count.val());
-
 	        var sender = this;
 	        if (this.state.supplymode) {
-	            this.warehouseItems.addSupply(item, function () { sender.emptyControlItems(input_name, input_count); });
+	            this.warehouseItems.addSupply(this.CreateSupplyModel(this.itemId, input_count.val()), function () { sender.emptyControlItems(input_name, input_count); });
 	        }
 	        else {
-	            this.warehouseItems.addOrder(item, function () { sender.emptyControlItems(input_name, input_count); });
+	            this.warehouseItems.addOrder(this.CreateOrderModel(this.itemId, input_count.val()), function () { sender.emptyControlItems(input_name, input_count); });
 	        }
 	    },
 
@@ -36959,17 +36975,28 @@
 	        input_count.val('');
 	    },
 
-	    CreateItemValue: function (id, count) {       
+	    CreateSupplyModel: function (id, count) {
 	        return {
 	            count: count,
-	            itemId: id
+	            itemId: id,
+	            providerId: this.props.actor,
+	            employeeId: 1
+	        };
+	    },
+
+	    CreateOrderModel: function (id, count) {
+	        return {
+	            count: count,
+	            itemId: id,
+	            clientId: this.props.actor,
+	            employeeId: 1
 	        };
 	    },
 
 	    IsFormValid: function (count) {
 	        var countValue = parseInt(count.val());
 
-	        return !this.IsEmptyString(count.val()) && !Number.isNaN(countValue) && countValue > 0 && !this.IsEmptyString(this.props.actor);
+	        return !this.IsEmptyString(count.val()) && !Number.isNaN(countValue) && countValue > 0 && this.props.actor > -1;
 	    },
 
 	    IsEmptyString: function (str) {
@@ -37007,7 +37034,7 @@
 	exports.FormOperations = FormOperations;
 
 /***/ },
-/* 547 */
+/* 548 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -37038,7 +37065,7 @@
 
 
 /***/ },
-/* 548 */
+/* 549 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ServerMediator = __webpack_require__(529);
@@ -37061,7 +37088,7 @@
 
 
 /***/ },
-/* 549 */
+/* 550 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -37097,7 +37124,7 @@
 	exports.StatusSelect = StatusSelect;
 
 /***/ },
-/* 550 */
+/* 551 */
 /***/ function(module, exports) {
 
 	var callbackList = [];
@@ -37117,11 +37144,11 @@
 	exports.Dispatcher = Dispatcher;
 
 /***/ },
-/* 551 */
+/* 552 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Dispatcher = __webpack_require__(550).Dispatcher;
-	var ClientRepository = __webpack_require__(552).ClientRepository;
+	var Dispatcher = __webpack_require__(551).Dispatcher;
+	var ClientRepository = __webpack_require__(553).ClientRepository;
 
 	var clients = [];
 	var clientRepository = new ClientRepository();
@@ -37133,7 +37160,7 @@
 	});
 
 	function addClient(client) {
-	    clientRepository.addProvder(client, function () {
+	    clientRepository.addClient(client, function () {
 	        clientRepository.getClients(function (data) {
 	            clients = data;
 
@@ -37163,7 +37190,7 @@
 	exports.ClientStore = ClientStore;
 
 /***/ },
-/* 552 */
+/* 553 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ServerMediator = __webpack_require__(529);
@@ -37186,11 +37213,11 @@
 	exports.ClientRepository = ClientRepository;
 
 /***/ },
-/* 553 */
+/* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Dispatcher = __webpack_require__(550).Dispatcher;
-	var ProviderRepository = __webpack_require__(554).ProviderRepository;
+	var Dispatcher = __webpack_require__(551).Dispatcher;
+	var ProviderRepository = __webpack_require__(555).ProviderRepository;
 
 	var providers = [];
 	var providerRepository = new ProviderRepository();
@@ -37232,7 +37259,7 @@
 	exports.ProviderStore = ProviderStore;
 
 /***/ },
-/* 554 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ServerMediator = __webpack_require__(529);
@@ -37254,55 +37281,51 @@
 	exports.ProviderRepository = ProviderRepository;
 
 /***/ },
-/* 555 */
+/* 556 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var ListBody = __webpack_require__(556);
+	var ListBody = __webpack_require__(557);
 
 	var List = React.createClass({displayName: "List",
-	    items: [],
-	    filter: "",
+	    myTextInput: {},
+
+	    getInitialState: function () {       
+	        return { filter: "", items: [] };
+	    },
 
 	    search: function (text) {
-	        this.filter = text;
-
-	        this.forceUpdate();
+	        this.setState({ filter: text, items: this.state.items });
 	    },
 
 	    changeSearchText: function (e) {
 	        var value = $(e.target).val();
 	        this.search(value);
-	        this.props.changevalue(value);
+	        this.props.changevalue("");
 	    },
 
-	    click: function (e) {
-	        var value = $(e.target).text();
-
-	        $(e.target).parent().parent().find("input").val(value);
-	        this.search(value);
-	        this.props.changevalue(value);
+	    click: function (id, name) {
+	        this.myTextInput.val(name);
+	        this.props.changevalue(id);
 	    },
 
 	    add: function (e) {
-	        // TODO: Кажется это значение должно быть в props при создании компонента
-	        var value = $(e.target).parent().parent().find("input").val();
-	      
-	        this.props.items.push(value);
+	        var value = this.myTextInput.val();
+	        this.myTextInput.val("");
 
 	        if (this.props.onadded)
 	            this.props.onadded(value);
 
-	        this.props.changevalue(value);
+	        this.props.changevalue("");
+	    },
 
-	        this.forceUpdate();
+	    componentWillReceiveProps: function(nextProps) {
+	        this.setState({ filter: this.state.filter, items: nextProps.items });
 	    },
 
 	    render: function () {
-	        this.items = this.props.items;
-
 	        var classname = "people-list " + this.props.side + (this.props.active ? " valid" : " invalid");
 	        this.side = this.props.side;
 
@@ -37313,13 +37336,13 @@
 	                        this.props.title
 	                    ), 
 	                     React.createElement("div", {className: "input-group"}, 
-	                        React.createElement("input", {type: "text", className: "form-control people-list-input", onKeyUp: this.changeSearchText, disabled: !this.props.active}), 
+	                        React.createElement("input", {type: "text", className: "form-control people-list-input", onKeyUp: this.changeSearchText, disabled: !this.props.active, ref: function(ref)  {return this.myTextInput = $(ref);}.bind(this)}), 
 	                        React.createElement("span", {className: "input-group-btn"}, 
 	                            React.createElement("button", {className: "btn btn-default btn-xs", type: "button", onClick: this.add}, "Add")
 	                        )
 	                     )
 	                ), 
-	                React.createElement(ListBody.ListBody, {values: this.items, click: this.click, hidden: !this.props.active, filter: this.filter})
+	                React.createElement(ListBody.ListBody, {values: this.state.items, click: this.click, hidden: !this.props.active, filter: this.state.filter})
 	            )
 	        );
 	    }
@@ -37329,7 +37352,7 @@
 	exports.List = List;
 
 /***/ },
-/* 556 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -37344,16 +37367,18 @@
 	        var itemclick = this.props.click;
 	        var filter = this.props.filter;
 
-	        var itemsTemplate = data.map(function (item, index) {
-	            if (!item.toLowerCase().includes(filter.toLowerCase()))
+	        var itemsTemplate = data.map(function(item, index) {
+	            if (!item.name.toLowerCase().includes(filter.toLowerCase()))
 	                return;
 
+	            var id = "actor-" + item.id;
+
 	            return (
-	                React.createElement("div", {className: "people-list-item", key: index, onClick: itemclick}, 
-	                    item
+	                React.createElement("div", {className: "people-list-item", key: index, onClick: function()  {return itemclick(item.id, item.name);}}, 
+	                    item.name
 	                )
-	            )
-	        })
+	            );
+	        });
 
 	        return (
 	            React.createElement("div", {className: "people-list-body"}, 
@@ -37366,15 +37391,15 @@
 	exports.ListBody = ListBody;
 
 /***/ },
-/* 557 */
+/* 558 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var ItemStore = __webpack_require__(558).ItemStore;
-	var Dispatcher = __webpack_require__(550).Dispatcher;
-	var InputCompiler = __webpack_require__(559);
+	var ItemStore = __webpack_require__(559).ItemStore;
+	var Dispatcher = __webpack_require__(551).Dispatcher;
+	var InputCompiler = __webpack_require__(560);
 
 	var AddItemsView = React.createClass({displayName: "AddItemsView",
 	    itemStore: ItemStore,
@@ -37438,11 +37463,11 @@
 	exports.AddItemsView = AddItemsView;
 
 /***/ },
-/* 558 */
+/* 559 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Dispatcher = __webpack_require__(550).Dispatcher;
-	var ItemRepository = __webpack_require__(547).ItemRepository;
+	var Dispatcher = __webpack_require__(551).Dispatcher;
+	var ItemRepository = __webpack_require__(548).ItemRepository;
 
 	var items = [];
 	var itemRepository = new ItemRepository();
@@ -37484,7 +37509,7 @@
 	exports.ItemStore = ItemStore;
 
 /***/ },
-/* 559 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -37556,7 +37581,7 @@
 	exports.InputCompiler = InputCompiler;
 
 /***/ },
-/* 560 */
+/* 561 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */
@@ -37611,7 +37636,7 @@
 	exports.ProfileView = ProfileView;
 
 /***/ },
-/* 561 */
+/* 562 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
@@ -37660,29 +37685,13 @@
 	exports.Layout = Layout;
 
 /***/ },
-/* 562 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var browserHistory = __webpack_require__(464).browserHistory;
-
-	var Redirecter = {
-	    
-	    redirect: function (url) {
-	        //browserHistory.push(url);
-	        window.location.href = "/#" + url;
-	    }
-	};
-
-	exports.Redirecter = Redirecter;
-
-/***/ },
 /* 563 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
-	var WarehouseItemsRepository = __webpack_require__(532).WarehouseItemsRepository;
+	var WarehouseItemsRepository = __webpack_require__(533).WarehouseItemsRepository;
 
 	var ConcreteItemView = React.createClass({displayName: "ConcreteItemView",
 	    itemRepos: new WarehouseItemsRepository(),

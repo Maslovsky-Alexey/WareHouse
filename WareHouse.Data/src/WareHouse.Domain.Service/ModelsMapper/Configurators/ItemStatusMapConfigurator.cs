@@ -12,16 +12,14 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
         public IMapper ConfigurateEF()
         {
             return new MapperConfiguration(cfg => cfg.CreateMap<Domain.Model.ItemStatus, Data.Model.ItemStatus>()
-                .ForMember((Data.Model.ItemStatus obj) => obj.WarehouseItems,
-                    obj => obj.Ignore())
+
             ).CreateMapper();
         }
 
         public IMapper ConfigurateService()
         {
             return new MapperConfiguration(cfg => cfg.CreateMap<Data.Model.ItemStatus, Domain.Model.ItemStatus>()
-                .ForMember((Domain.Model.ItemStatus obj) => obj.WarehouseItems,
-                    obj => obj.Ignore())
+
             ).CreateMapper();
         }
     }
