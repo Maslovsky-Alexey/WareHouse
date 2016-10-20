@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WareHouse.Domain.Service.ConcreteServices;
 using WareHouse.Data.EF.Context;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Domain.Model;
+using WareHouse.Domain.Service.ConcreteServices;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,7 +13,7 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class ProvidersController : Controller
     {
-        private ProviderService providers;
+        private readonly ProviderService providers;
 
         public ProvidersController(WareHouseDbContext context)
         {
@@ -38,15 +36,14 @@ namespace WebAPI.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task Post([FromBody]Provider value) 
+        public async Task Post([FromBody] Provider value)
         {
             await providers.AddWithoutRepetition(value);
-
         }
 
         // DELETE api/values/5
         [HttpDelete]
-        public async Task Delete([FromBody]Provider value)
+        public async Task Delete([FromBody] Provider value)
         {
             await providers.RemoveProviderByName(value);
         }

@@ -1,6 +1,5 @@
-﻿using WareHouse.Data.Model;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using WareHouse.Data.Model;
 
 namespace WareHouse.Data.EF.Context.Mapping
 {
@@ -9,24 +8,24 @@ namespace WareHouse.Data.EF.Context.Mapping
         public void Map(EntityTypeBuilder<Order> typeBuilder)
         {
             typeBuilder
-               .HasOne(p => p.Item)
-               .WithMany()
-               .HasForeignKey((Model.Order p) => p.ItemId);
+                .HasOne(p => p.Item)
+                .WithMany()
+                .HasForeignKey(p => p.ItemId);
 
             typeBuilder
                 .HasOne(p => p.Employee)
                 .WithMany()
-                .HasForeignKey((Model.Order p) => p.EmployeeId);
+                .HasForeignKey(p => p.EmployeeId);
 
             typeBuilder
                 .HasOne(p => p.Client)
                 .WithMany()
-                .HasForeignKey((Model.Order p) => p.ClientId);
+                .HasForeignKey(p => p.ClientId);
 
             typeBuilder
                 .HasOne(p => p.Status)
                 .WithMany()
-                .HasForeignKey((Model.Order p) => p.StatusId);
+                .HasForeignKey(p => p.StatusId);
         }
     }
 }

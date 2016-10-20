@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using WareHouse.Domain.Model;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IClientService : IService<Domain.Model.Client, Data.Model.Client>
+    public interface IClientService : IService<Client, Data.Model.Client>
     {
-        Task<Model.Client> GetClientByName(string name, bool ignoreCase);
+        Task<Client> GetClientByName(string name, bool ignoreCase);
 
-        Task<bool> AddWithoutRepetition(Model.Client value);
+        Task<bool> AddWithoutRepetition(Client value);
 
-        Task<bool> RemoveClientByName(Model.Client value);
+        Task<bool> RemoveClientByName(Client value);
 
-        Task<Model.Client> GetClientByIdentityId(string identityId);
+        Task<Client> GetClientByIdentityId(string identityId);
     }
 }

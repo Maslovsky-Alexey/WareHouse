@@ -1,25 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using WareHouse.Data.Model;
 
 namespace WareHouse.Data.EF.Context.Mapping
 {
-    public class WarehouseItemMapper : IMapper<Model.WarehouseItem>
+    public class WarehouseItemMapper : IMapper<WarehouseItem>
     {
-        public void Map(EntityTypeBuilder<Model.WarehouseItem> typeBuilder)
+        public void Map(EntityTypeBuilder<WarehouseItem> typeBuilder)
         {
             typeBuilder
                 .HasOne(p => p.Item)
                 .WithMany()
                 .HasForeignKey(p => p.ItemId);
-
-            typeBuilder
-                .HasOne(p => p.Status)
-                .WithMany()
-                .HasForeignKey(p => p.StatusId);
         }
     }
 }

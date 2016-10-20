@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IService<ServiceModel, EFModel> 
-        where EFModel : Data.Model.BaseModel
-        where ServiceModel : Domain.Model.BaseModel
+    public interface IService<ServiceModel, EFModel>
+        where EFModel : BaseModel
+        where ServiceModel : Model.BaseModel
     {
         Task<IEnumerable<ServiceModel>> GetAll();
 

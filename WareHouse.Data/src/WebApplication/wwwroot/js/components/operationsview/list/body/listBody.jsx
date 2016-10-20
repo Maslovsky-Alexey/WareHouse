@@ -1,8 +1,8 @@
-﻿var React = require('react');
-var ReactDom = require('react-dom');
+﻿var React = require("react");
+var ReactDom = require("react-dom");
 
 var ListBody = React.createClass({
-    render: function () {
+    render: function() {
         if (this.props.hidden)
             return (<div></div>);
 

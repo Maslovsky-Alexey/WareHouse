@@ -1,8 +1,8 @@
 ﻿
-var React = require('react');
-var ReactDom = require('react-dom');
+var React = require("react");
+var ReactDom = require("react-dom");
 
-var AccountRepository = require('../../repositories/accountrepository.js');
+var AccountRepository = require("../../repositories/accountrepository.js");
 
 var ProfileView = React.createClass({
     accountRepository: new AccountRepository.AccountRepository(),
@@ -14,11 +14,11 @@ var ProfileView = React.createClass({
         else
             this.accountRepository.getCurrentUser(this.onGetedUser);
 
-        return { profile: {}, isInvalidUser: true};
+        return { profile: {}, isInvalidUser: true };
     },
 
-    onGetedUser: function (user) {
-      
+    onGetedUser: function(user) {
+
         if (user == null)
             return;
 
@@ -26,7 +26,7 @@ var ProfileView = React.createClass({
     },
 
 
-    render: function () {
+    render: function() {
 
         if (this.state.isInvalidUser)
             return (<div>Error</div>);
@@ -41,7 +41,7 @@ var ProfileView = React.createClass({
                 </div>
                 <div className="col-xs-3">
                     <b>{this.state.profile.isEmployee ? "Employee" : "Client"}</b>
-                </div>                            
+                </div>
             </div>
         );
     }

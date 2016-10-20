@@ -17,7 +17,8 @@ var LoginView = React.createClass({
     loginSuccess: function loginSuccess(isSuccess) {
         isSuccess = isSuccess == "true";
         console.debug(isSuccess);
-        if (isSuccess == true) alert("YAHOOO!"); else alert("OOOPPS :( "); //TODO: измменить на нормальное отображение
+        if (isSuccess == true) alert("YAHOOO!");
+        else alert("OOOPPS :( "); //TODO: измменить на нормальное отображение
     },
 
     render: function render() {
@@ -43,7 +44,8 @@ var LoginView = React.createClass({
                     { htmlFor: "password1" },
                     "Password"
                 ),
-                React.createElement("input", { type: "password", className: "form-control", id: "password1", placeholder: "Password" })
+                React.createElement("input",
+                    { type: "password", className: "form-control", id: "password1", placeholder: "Password" })
             ),
             React.createElement(
                 "button",
@@ -54,4 +56,4 @@ var LoginView = React.createClass({
     }
 });
 
-ReactDOM.render(React.createElement(LoginView, null), document.getElementById('root'));
+ReactDOM.render(React.createElement(LoginView, null), document.getElementById("root"));

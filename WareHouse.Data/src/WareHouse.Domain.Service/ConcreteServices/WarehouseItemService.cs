@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
-using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
@@ -14,32 +12,24 @@ using WareHouse.MyOData;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
-    public class WarehouseItemService : BaseService<Domain.Model.WarehouseItem, Data.Model.WarehouseItem>, IWarehouseItemService
+    public class WarehouseItemService : BaseService<WarehouseItem, Data.Model.WarehouseItem>, IWarehouseItemService
     {
-        IWarehouseItemRepository warehouseItemRepository;
-        IItemService itemService;
-        IItemStatusService statusService;
+        private readonly IWarehouseItemRepository warehouseItemRepository;
 
-        public WarehouseItemService(BaseRepository<Data.Model.WarehouseItem> repository, IItemService itemService, IItemStatusService statusService) : base(repository, 
-            new ModelsMapper<Data.Model.WarehouseItem, Domain.Model.WarehouseItem>(new WarehouseItemMapConfigurator()))
+        public WarehouseItemService(BaseRepository<Data.Model.WarehouseItem> repository) : base(repository,
+            new ModelsMapper<Data.Model.WarehouseItem, WarehouseItem>(new WarehouseItemMapConfigurator()))
         {
-            warehouseItemRepository = (IWarehouseItemRepository)repository;
-            this.itemService = itemService;
-            this.statusService = statusService;
+            warehouseItemRepository = (IWarehouseItemRepository) repository;
         }
 
-        public async Task AddOrUpdateAsViewModel(Model.WarehouseItem model)
+        public async Task AddOrUpdateAsViewModel(WarehouseItem model)
         {
             var item = (await GetItemsByName(model.Item.Name, true)).FirstOrDefault();
 
             if (item != null)
-            {
                 item.Count = model.Count;
-            }
             else
-            {
                 await Add(model);
-            }
         }
 
         public async Task<IEnumerable<WarehouseItemViewModel>> GetAllAsViewModel()
@@ -48,9 +38,10 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 .Select(MapToViewModel);
         }
 
-        public async Task<IEnumerable<Model.WarehouseItem>> GetItemsByName(string name, bool ignoreCase)
+        public async Task<IEnumerable<WarehouseItem>> GetItemsByName(string name, bool ignoreCase)
         {
-            return (await((WarehouseItemRepository)repository).GetItemsByName(name, ignoreCase)).Select(MapToServiceModel);
+            return
+                (await ((WarehouseItemRepository) repository).GetItemsByName(name, ignoreCase)).Select(MapToServiceModel);
         }
 
 
@@ -58,34 +49,33 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             var filter = MyOData.MyOData.CompileFilters<Data.Model.WarehouseItem>(config);
 
-            IEnumerable<WarehouseItemViewModel> items = (await repository.GetAllWithFilter(filter))
+            var items = (await repository.GetAllWithFilter(filter))
                 .Select(MapToViewModel);
 
             if (!items.Any())
                 return new PageModel();
 
-            items = MyOData.MyOData.OrderBy<WarehouseItemViewModel>(items, config);
+            items = MyOData.MyOData.OrderBy(items, config);
 
             return GetPage(items, page);
-        }
-
-        private PageModel GetPage(IEnumerable<WarehouseItemViewModel> items, int page)
-        {
-            var result = new PageModel();
-
-            result.Items = (items.Skip(page * 6).Take(6));
-
-            result.PrevPage = GetPrevPage(page);
-            result.NextPage = GetNextPage(page, items.Count());
-            result.Max = items.Max(item => item.Count);
-            result.Min = items.Min(item => item.Count);
-
-            return result;
         }
 
         public async Task<WarehouseItemViewModel> GetItemByIdAsViewModel(int id)
         {
             return MapToViewModel(await repository.GetItem(id));
+        }
+
+        private PageModel GetPage(IEnumerable<WarehouseItemViewModel> items, int page)
+        {
+            return new PageModel
+            {
+                Items = items.Skip(page*6).Take(6),
+                PrevPage = GetPrevPage(page),
+                NextPage = GetNextPage(page, items.Count()),
+                Max = items.Max(item => item.Count),
+                Min = items.Min(item => item.Count)
+            };
+            ;
         }
 
         private WarehouseItemViewModel MapToViewModel(Data.Model.WarehouseItem item)
@@ -105,7 +95,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         private int GetNextPage(int page, int count)
         {
-            var maxPage = (count - 1) / 6;
+            var maxPage = (count - 1)/6;
             return page + 1 > maxPage ? maxPage : page + 1;
         }
     }

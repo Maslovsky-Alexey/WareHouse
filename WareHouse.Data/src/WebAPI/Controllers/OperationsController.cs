@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
+using WareHouse.Domain.ServiceInterfaces;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,7 +11,7 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class OperationsController : Controller
     {
-        private IOperationService operationService;
+        private readonly IOperationService operationService;
 
         public OperationsController(IOperationService operationService)
         {
@@ -23,14 +20,14 @@ namespace WebAPI.Controllers
 
         [Route("AddSupply")]
         [HttpPost]
-        public async Task AddSupply([FromBody]SupplyViewModel value)
+        public async Task AddSupply([FromBody] SupplyViewModel value)
         {
             await operationService.AddSupply(value);
         }
 
         [Route("AddOrder")]
         [HttpPost]
-        public async Task AddOrder([FromBody]OrderViewModel value)
+        public async Task AddOrder([FromBody] OrderViewModel value)
         {
             await operationService.AddOrder(value);
         }
@@ -61,6 +58,13 @@ namespace WebAPI.Controllers
         public async Task ReturnSupply(int id)
         {
             await operationService.ReturnSupply(id);
+        }
+
+        [Route("AddItemWithoutRepetition")]
+        [HttpPost]
+        public async Task AddItemWithoutRepetition([FromBody] Item value)
+        {
+            await operationService.AddItemWithoutRepetition(value);
         }
     }
 }

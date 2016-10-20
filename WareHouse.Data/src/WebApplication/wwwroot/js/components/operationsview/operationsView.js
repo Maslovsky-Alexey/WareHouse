@@ -8,7 +8,7 @@
 var OperartionsView = React.createClass({
     displayName: "OperartionsView",
 
-    listItem: '',
+    listItem: "",
     providerRepos: new ProviderRepository(),
     clientRepos: new ClientRepository(),
 
@@ -29,7 +29,7 @@ var OperartionsView = React.createClass({
     },
 
     onProvidersGeted: function onProvidersGeted(data) {
-        this.providers = data.map(function (item) {
+        this.providers = data.map(function(item) {
             return item.name;
         });
 
@@ -37,7 +37,7 @@ var OperartionsView = React.createClass({
     },
 
     onClientsGeted: function onClientsGeted(data) {
-        this.clients = data.map(function (item) {
+        this.clients = data.map(function(item) {
             return item.name;
         });
 
@@ -50,11 +50,11 @@ var OperartionsView = React.createClass({
     },
 
     providerAdded: function providerAdded(value) {
-        new ProviderRepository().addProvder({ name: value }, function () { });
+        new ProviderRepository().addProvder({ name: value }, function() {});
     },
 
     clientAdded: function clientAdded(value) {
-        new ClientRepository().addClient({ name: value }, function () { });
+        new ClientRepository().addClient({ name: value }, function() {});
     },
 
     render: function render() {
@@ -65,7 +65,15 @@ var OperartionsView = React.createClass({
             React.createElement(
                 "div",
                 { className: "col-xs-3" },
-                React.createElement(List, { title: "Providers", side: "left", active: this.supplymode, changevalue: this.SelectedListItem, items: this.providers, onadded: this.providerAdded })
+                React.createElement(List,
+                {
+                    title: "Providers",
+                    side: "left",
+                    active: this.supplymode,
+                    changevalue: this.SelectedListItem,
+                    items: this.providers,
+                    onadded: this.providerAdded
+                })
             ),
             React.createElement(
                 "div",
@@ -75,10 +83,18 @@ var OperartionsView = React.createClass({
             React.createElement(
                 "div",
                 { className: "col-xs-3" },
-                React.createElement(List, { title: "Clients", side: "right", active: !this.supplymode, changevalue: this.selectedlistitem, items: this.clients, onadded: this.clientAdded })
+                React.createElement(List,
+                {
+                    title: "Clients",
+                    side: "right",
+                    active: !this.supplymode,
+                    changevalue: this.selectedlistitem,
+                    items: this.clients,
+                    onadded: this.clientAdded
+                })
             )
         );
     }
 });
 
-ReactDOM.render(React.createElement(OperartionsView, null), document.getElementById('root'));
+ReactDOM.render(React.createElement(OperartionsView, null), document.getElementById("root"));

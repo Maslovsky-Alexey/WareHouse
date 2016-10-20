@@ -60,7 +60,13 @@ var List = React.createClass({
                 React.createElement(
                     "div",
                     { className: "input-group" },
-                    React.createElement("input", { type: "text", className: "form-control people-list-input", onKeyUp: this.changeSearchText, disabled: !this.props.active }),
+                    React.createElement("input",
+                    {
+                        type: "text",
+                        className: "form-control people-list-input",
+                        onKeyUp: this.changeSearchText,
+                        disabled: !this.props.active
+                    }),
                     React.createElement(
                         "span",
                         { className: "input-group-btn" },
@@ -72,7 +78,8 @@ var List = React.createClass({
                     )
                 )
             ),
-            React.createElement(ListBody, { values: this.items, click: this.click, hidden: !this.props.active, filter: this.filter })
+            React.createElement(ListBody,
+                { values: this.items, click: this.click, hidden: !this.props.active, filter: this.filter })
         );
     }
 

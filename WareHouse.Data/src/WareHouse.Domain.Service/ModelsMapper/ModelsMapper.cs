@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WareHouse.Domain.Service.ModelsMapper.Configurators;
+﻿using WareHouse.Domain.Service.ModelsMapper.Configurators;
 
 namespace WareHouse.Domain.Service.ModelsMapper
 {
     public class ModelsMapper<EFmodel, ServiceModel>
     {
-        private IMapConfigurator configurator;
+        private readonly IMapConfigurator configurator;
 
         public ModelsMapper(IMapConfigurator configurator)
         {
@@ -16,7 +12,7 @@ namespace WareHouse.Domain.Service.ModelsMapper
         }
 
         public ServiceModel MapService(EFmodel source)
-        {           
+        {
             return configurator.ConfigurateService().Map<ServiceModel>(source);
         }
 

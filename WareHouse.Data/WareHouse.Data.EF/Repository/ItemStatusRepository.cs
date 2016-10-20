@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using WareHouse.Data.Repository;
-using WareHouse.Data.Model;
 using WareHouse.Data.EF.Context;
-
+using WareHouse.Data.Model;
+using WareHouse.Data.Repository;
 
 namespace WareHouse.Data.EF.Repository
 {

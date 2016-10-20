@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace WebAPI
 {
@@ -11,9 +8,7 @@ namespace WebAPI
     {
         private static TokenEncryptor tokenEncryptor;
 
-        private Aes cipher;
-        public string Key { get; set; } = "";
-        public string VI { get; set; } = "";
+        private readonly Aes cipher;
 
         private TokenEncryptor()
         {
@@ -31,21 +26,24 @@ namespace WebAPI
             }
         }
 
+        public string Key { get; set; } = "";
+        public string VI { get; set; } = "";
+
         public string Encrypt(string text)
         {
-            ICryptoTransform t = cipher.CreateEncryptor(Encoding.UTF8.GetBytes(Key), Encoding.UTF8.GetBytes(VI));
-            
-            byte[] textInBytes = Encoding.UTF8.GetBytes(text);
-            byte[] result = t.TransformFinalBlock(textInBytes, 0, textInBytes.Length);
+            var t = cipher.CreateEncryptor(Encoding.UTF8.GetBytes(Key), Encoding.UTF8.GetBytes(VI));
+
+            var textInBytes = Encoding.UTF8.GetBytes(text);
+            var result = t.TransformFinalBlock(textInBytes, 0, textInBytes.Length);
             return Convert.ToBase64String(result);
         }
 
         public string Decrypt(string text)
-        {           
-            ICryptoTransform t = cipher.CreateDecryptor(Encoding.UTF8.GetBytes(Key), Encoding.UTF8.GetBytes(VI));
+        {
+            var t = cipher.CreateDecryptor(Encoding.UTF8.GetBytes(Key), Encoding.UTF8.GetBytes(VI));
 
-            byte[] textInBytes = Convert.FromBase64String(text);
-            byte[] result = t.TransformFinalBlock(textInBytes, 0, textInBytes.Length);
+            var textInBytes = Convert.FromBase64String(text);
+            var result = t.TransformFinalBlock(textInBytes, 0, textInBytes.Length);
             return Encoding.UTF8.GetString(result);
         }
     }

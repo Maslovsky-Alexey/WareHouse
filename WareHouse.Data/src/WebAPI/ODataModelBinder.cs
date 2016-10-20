@@ -1,19 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using WareHouse.MyOData;
 
 namespace WebAPI
 {
     public class ODataModelBinder : IModelBinder
     {
-        SimpleTypeModelBinder baseBinder;
+        private SimpleTypeModelBinder baseBinder;
 
         public ODataModelBinder(Type type)
-        {       
+        {
             baseBinder = new SimpleTypeModelBinder(type);
         }
 
@@ -21,7 +19,9 @@ namespace WebAPI
         {
             if (bindingContext.ModelType == typeof(MyODataConfigurates))
             {
-                bindingContext.Result = ModelBindingResult.Success(MyOData.GetConfiguratesFromQueryString(bindingContext.HttpContext.Request.QueryString.Value));
+                bindingContext.Result =
+                    ModelBindingResult.Success(
+                        MyOData.GetConfiguratesFromQueryString(bindingContext.HttpContext.Request.QueryString.Value));
                 return;
             }
 

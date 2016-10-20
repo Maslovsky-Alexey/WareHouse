@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
 using WareHouse.Domain.ServiceInterfaces;
@@ -10,7 +7,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class UserService : IUserService
     {
-        private IUserRepository userRepository;
+        private readonly IUserRepository userRepository;
 
         public UserService(IUserRepository userRepository)
         {

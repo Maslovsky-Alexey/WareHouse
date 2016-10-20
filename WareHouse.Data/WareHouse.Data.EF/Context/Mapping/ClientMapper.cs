@@ -1,6 +1,5 @@
-﻿using WareHouse.Data.Model;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using WareHouse.Data.Model;
 
 namespace WareHouse.Data.EF.Context.Mapping
 {

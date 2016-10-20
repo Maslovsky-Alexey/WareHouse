@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WareHouse.Domain.Model;
+﻿using System.Threading.Tasks;
+using WareHouse.Data.Model;
+using ItemStatus = WareHouse.Domain.Model.ItemStatus;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IItemStatusService : IService<Domain.Model.ItemStatus, Data.Model.ItemStatus>
+    public interface IItemStatusService : IService<ItemStatus, Data.Model.ItemStatus>
     {
-        Task<ItemStatus> GetStatus(Data.Model.Status status);
+        Task<ItemStatus> GetStatus(Status status);
     }
 }

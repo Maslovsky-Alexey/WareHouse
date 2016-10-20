@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using System.Linq.Expressions;
+﻿using AutoMapper;
+using WareHouse.Domain.Model;
 
 namespace WareHouse.Domain.Service.ModelsMapper.Configurators
 {
@@ -12,22 +8,26 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
         public IMapper ConfigurateEF()
         {
             return new MapperConfiguration(cfg => cfg
-                .CreateMap<Domain.Model.WarehouseItem, Data.Model.WarehouseItem>()
-                .ForMember((Data.Model.WarehouseItem obj) => obj.Status, 
-                    obj => obj.ResolveUsing(src => new ModelsMapper<Data.Model.ItemStatus, Domain.Model.ItemStatus>(new ItemStatusMapConfigurator()).MapEF(src.Status)))
-                .ForMember((Data.Model.WarehouseItem obj) => obj.Item,
-                    obj => obj.ResolveUsing(src => new ModelsMapper<Data.Model.Item, Domain.Model.Item>(new ItemMapConfigurator()).MapEF(src.Item)))
+                    .CreateMap<WarehouseItem, Data.Model.WarehouseItem>()
+                    .ForMember(obj => obj.Item,
+                        obj =>
+                            obj.ResolveUsing(
+                                src =>
+                                    new ModelsMapper<Data.Model.Item, Item>(new ItemMapConfigurator()).MapEF(
+                                        src.Item)))
             ).CreateMapper();
         }
 
         public IMapper ConfigurateService()
         {
             return new MapperConfiguration(cfg => cfg
-                .CreateMap<Data.Model.WarehouseItem, Domain.Model.WarehouseItem>()
-                .ForMember((Domain.Model.WarehouseItem obj) => obj.Status,
-                    obj => obj.ResolveUsing(src => new ModelsMapper<Data.Model.ItemStatus, Domain.Model.ItemStatus>(new ItemStatusMapConfigurator()).MapService(src.Status)))
-                .ForMember((Domain.Model.WarehouseItem obj) => obj.Item,
-                    obj => obj.ResolveUsing(src => new ModelsMapper<Data.Model.Item, Domain.Model.Item>(new ItemMapConfigurator()).MapService(src.Item)))
+                    .CreateMap<Data.Model.WarehouseItem, WarehouseItem>()
+                    .ForMember(obj => obj.Item,
+                        obj =>
+                            obj.ResolveUsing(
+                                src =>
+                                    new ModelsMapper<Data.Model.Item, Item>(new ItemMapConfigurator()).MapService(
+                                        src.Item)))
             ).CreateMapper();
         }
     }

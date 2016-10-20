@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WareHouse.Data.EF.Context;
-using WareHouse.Data.EF.Context.Mapping;
+﻿using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
-using WareHouse.Data.Model;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Service.ModelsMapper;
 using WareHouse.Domain.Service.ModelsMapper.Configurators;
@@ -13,21 +7,19 @@ using WareHouse.Domain.ServiceInterfaces;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
-
-    public class ClientService : BaseService<Domain.Model.Client, Data.Model.Client>, IClientService
+    public class ClientService : BaseService<Client, Data.Model.Client>, IClientService
     {
-        public ClientService(BaseRepository<Data.Model.Client> repository) : base(repository, 
-            new ModelsMapper<Data.Model.Client, Domain.Model.Client>(new ClientMapConfigurator()))
+        public ClientService(BaseRepository<Data.Model.Client> repository) : base(repository,
+            new ModelsMapper<Data.Model.Client, Client>(new ClientMapConfigurator()))
         {
-         
         }
 
-        public async Task<Model.Client> GetClientByName(string name, bool ignoreCase)
+        public async Task<Client> GetClientByName(string name, bool ignoreCase)
         {
-            return MapToServiceModel(await ((ClientRepository)repository).GetClientByName(name, ignoreCase));
+            return MapToServiceModel(await ((ClientRepository) repository).GetClientByName(name, ignoreCase));
         }
 
-        public async Task<bool> AddWithoutRepetition(Model.Client value)
+        public async Task<bool> AddWithoutRepetition(Client value)
         {
             var client = await GetClientByName(value.Name, true);
 
@@ -38,7 +30,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return true;
         }
 
-        public async Task<bool> RemoveClientByName(Model.Client value)
+        public async Task<bool> RemoveClientByName(Client value)
         {
             var removingItem = await GetClientByName(value.Name, true);
 
@@ -49,9 +41,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return true;
         }
 
-        public async Task<Model.Client> GetClientByIdentityId(string identityId)
+        public async Task<Client> GetClientByIdentityId(string identityId)
         {
-            return MapToServiceModel(await((ClientRepository)repository).GetClientByIdentityId(identityId));
+            return MapToServiceModel(await ((ClientRepository) repository).GetClientByIdentityId(identityId));
         }
     }
 }

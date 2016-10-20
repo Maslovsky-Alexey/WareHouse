@@ -1,30 +1,25 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using WareHouse.Domain.ServiceInterfaces;
-using WareHouse.Data.EF.Context;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
-using WareHouse.Data.Model;
-using System.Security.Claims;
 using System.Security.Principal;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Primitives;
+using WareHouse.Data.EF.Context;
+using WareHouse.Data.Model;
 
 namespace WebAPI
 {
- 
     public class AuthenticationMddleware
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly RequestDelegate next;
         private readonly WareHouseDbContext context;
         private readonly IEncryptor encryptor;
+        private readonly RequestDelegate next;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public AuthenticationMddleware(RequestDelegate next, UserManager<ApplicationUser> userManager, WareHouseDbContext context, IEncryptor encryptor)
+        public AuthenticationMddleware(RequestDelegate next, UserManager<ApplicationUser> userManager,
+            WareHouseDbContext context, IEncryptor encryptor)
         {
             this.next = next;
             this.userManager = userManager;
@@ -40,22 +35,20 @@ namespace WebAPI
             //return;
 
             if (header.Count() == 1)
-            {
                 await SetHttpUserContext(header, httpContext);
-            }
 
-            if (httpContext.Response.StatusCode == 400 || httpContext.Response.StatusCode == 401)
+            if ((httpContext.Response.StatusCode == 400) || (httpContext.Response.StatusCode == 401))
                 return;
 
             await next.Invoke(httpContext);
         }
 
-        private async Task SetHttpUserContext(IEnumerable<KeyValuePair<string, StringValues>> header, HttpContext httpContext)
+        private async Task SetHttpUserContext(IEnumerable<KeyValuePair<string, StringValues>> header,
+            HttpContext httpContext)
         {
             var token = header.First().Value.First();
 
             if (token.StartsWith("Bearer"))
-            {
                 try
                 {
                     var name = encryptor.Decrypt(token.Substring(6));
@@ -65,21 +58,19 @@ namespace WebAPI
                     {
                         user = context.Users.FirstOrDefault(x => x.UserName == name);
                     }
-              
+
                     if (user == null)
                         throw new Exception();
 
-                    httpContext.User = new GenericPrincipal(new UserIndentity(user), (await userManager.GetRolesAsync(user)).ToArray());
+                    httpContext.User = new GenericPrincipal(new UserIndentity(user),
+                        (await userManager.GetRolesAsync(user)).ToArray());
                 }
                 catch (Exception ex)
                 {
                     httpContext.Response.StatusCode = 401;
                 }
-            }
             else
-            {
                 httpContext.Response.StatusCode = 400;
-            }
         }
     }
 }

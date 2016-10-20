@@ -1,5 +1,5 @@
-﻿var Dispatcher = require('../dispatcher/dispatcher.js').Dispatcher;
-var ClientRepository = require('../repositories/clientrepository.js').ClientRepository;
+﻿var Dispatcher = require("../dispatcher/dispatcher.js").Dispatcher;
+var ClientRepository = require("../repositories/clientrepository.js").ClientRepository;
 
 var clients = [];
 var clientRepository = new ClientRepository();
@@ -11,30 +11,31 @@ clientRepository.getClients((data) => {
 });
 
 function addClient(client) {
-    clientRepository.addClient(client, function () {
-        clientRepository.getClients(function (data) {
-            clients = data;
+    clientRepository.addClient(client,
+        function() {
+            clientRepository.getClients(function(data) {
+                clients = data;
 
-            onChangeListeners.forEach((callback) => callback(clients));
+                onChangeListeners.forEach((callback) => callback(clients));
+            });
         });
-    });
 };
 
 
 var ClientStore = {
-    addOnChangeListener: function(callback){
+    addOnChangeListener: function(callback) {
         onChangeListeners.push(callback);
     },
 
-    getClients: function () {
+    getClients: function() {
         return clients;
     }
 };
 
-Dispatcher.register(function (payload) {
-    if (payload.name == 'add-client') {
+Dispatcher.register(function(payload) {
+    if (payload.name == "add-client") {
         addClient(payload.data);
-    }    
+    }
 });
 
 

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+using WareHouse.Domain.Model;
 
 namespace WareHouse.Domain.Service.ModelsMapper.Configurators
 {
@@ -10,12 +7,12 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
     {
         public IMapper ConfigurateEF()
         {
-            return new MapperConfiguration(cfg => cfg.CreateMap<Domain.Model.Client, Data.Model.Client>()).CreateMapper();
+            return new MapperConfiguration(cfg => cfg.CreateMap<Client, Data.Model.Client>()).CreateMapper();
         }
 
         public IMapper ConfigurateService()
         {
-            return new MapperConfiguration(cfg => cfg.CreateMap<Data.Model.Client, Domain.Model.Client>()).CreateMapper();
+            return new MapperConfiguration(cfg => cfg.CreateMap<Data.Model.Client, Client>()).CreateMapper();
         }
     }
 }

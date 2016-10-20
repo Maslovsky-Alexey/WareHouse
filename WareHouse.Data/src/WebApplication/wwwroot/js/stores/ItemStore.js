@@ -1,8 +1,12 @@
-﻿var Dispatcher = require('../dispatcher/dispatcher.js').Dispatcher;
-var ItemRepository = require('../repositories/itemrepository.js').ItemRepository;
+﻿var Dispatcher = require("../dispatcher/dispatcher.js").Dispatcher;
+
+var OperationRepository = require("../repositories/operationrepository.js").OperationRepository;
+var ItemRepository = require("../repositories/itemrepository.js").ItemRepository;
 
 var items = [];
 var itemRepository = new ItemRepository();
+var operationRepository = new OperationRepository();
+
 var onChangeListeners = [];
 
 itemRepository.getItems((data) => {
@@ -11,30 +15,31 @@ itemRepository.getItems((data) => {
 });
 
 function addItem(item) {
-    itemRepository.addItem(item, function () {
-        itemRepository.getItems(function (data) {
-            items = data;
+    operationRepository.addItemWithoutRepetition(item,
+        function() {
+            itemRepository.getItems(function(data) {
+                items = data;
 
-            onChangeListeners.forEach((callback) => callback(items));
+                onChangeListeners.forEach((callback) => callback(items));
+            });
         });
-    });
 };
 
 
 var ItemStore = {
-    addOnChangeListener: function(callback){
+    addOnChangeListener: function(callback) {
         onChangeListeners.push(callback);
     },
 
-    getItems: function () {
+    getItems: function() {
         return items;
     }
 };
 
-Dispatcher.register(function (payload) {
-    if (payload.name == 'add-item') {
+Dispatcher.register(function(payload) {
+    if (payload.name === "add-item") {
         addItem(payload.data);
-    }    
+    }
 });
 
 

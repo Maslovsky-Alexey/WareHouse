@@ -19,8 +19,8 @@ var About = React.createClass({
                 null,
                 React.createElement(
                     "a",
-                    { href: itemInfo.link ? itemInfo.link : '#' },
-                    itemInfo.name ? itemInfo.name : 'Noname'
+                    { href: itemInfo.link ? itemInfo.link : "#" },
+                    itemInfo.name ? itemInfo.name : "Noname"
                 )
             ),
             React.createElement(

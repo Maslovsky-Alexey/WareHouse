@@ -1,7 +1,7 @@
-﻿var React = require('react');
-var ReactDom = require('react-dom');
+﻿var React = require("react");
+var ReactDom = require("react-dom");
 
-var WarehouseItemsRepository = require('../../repositories/warehouseitemrepository.js').WarehouseItemsRepository;
+var WarehouseItemsRepository = require("../../repositories/warehouseitemrepository.js").WarehouseItemsRepository;
 
 var ConcreteItemView = React.createClass({
     itemRepos: new WarehouseItemsRepository(),
@@ -11,14 +11,14 @@ var ConcreteItemView = React.createClass({
         return { item: null };
     },
 
-    onItemGeted: function (item) {
+    onItemGeted: function(item) {
         if (item == null)
             return;
 
         this.setState({ item: item });
     },
 
-    render: function () {
+    render: function() {
         if (this.state.item == null)
             return (<div>Item not found</div>);
 

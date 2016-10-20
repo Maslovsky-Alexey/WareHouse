@@ -51,18 +51,20 @@ var FormOperations = React.createClass({
 
         var sender = this;
         if (this.state.supplymode) {
-            this.warehouseItems.addSupply(item, function () {
-                sender.emptyControlItems(input_name, input_count);
-            });
+            this.warehouseItems.addSupply(item,
+                function() {
+                    sender.emptyControlItems(input_name, input_count);
+                });
         } else {
-            this.warehouseItems.addOrder(item, function () {
-                sender.emptyControlItems(input_name, input_count);
-            });
+            this.warehouseItems.addOrder(item,
+                function() {
+                    sender.emptyControlItems(input_name, input_count);
+                });
         }
     },
 
     emptyControlItems: function emptyControlItems(input_name, input_count) {
-        input_count.val('');
+        input_count.val("");
     },
 
     CreateItemValue: function CreateItemValue(id, count) {
@@ -75,7 +77,10 @@ var FormOperations = React.createClass({
     IsFormValid: function IsFormValid(count) {
         var countValue = parseInt(count.val());
 
-        return !this.IsEmptyString(count.val()) && !Number.isNaN(countValue) && countValue > 0 && !this.IsEmptyString(this.props.actor);
+        return !this.IsEmptyString(count.val()) &&
+            !Number.isNaN(countValue) &&
+            countValue > 0 &&
+            !this.IsEmptyString(this.props.actor);
     },
 
     IsEmptyString: function IsEmptyString(str) {
@@ -98,13 +103,29 @@ var FormOperations = React.createClass({
             React.createElement(
                 "label",
                 { className: "radio-inline radioleft" },
-                React.createElement("input", { type: "radio", name: "inlineRadioOptions", id: "supply", value: "supply", onChange: this.modeChange, checked: this.state.supplymode }),
+                React.createElement("input",
+                {
+                    type: "radio",
+                    name: "inlineRadioOptions",
+                    id: "supply",
+                    value: "supply",
+                    onChange: this.modeChange,
+                    checked: this.state.supplymode
+                }),
                 " Supply"
             ),
             React.createElement(
                 "label",
                 { className: "radio-inline radioright" },
-                React.createElement("input", { type: "radio", name: "inlineRadioOptions", id: "order", value: "order", onChange: this.modeChange, checked: !this.state.supplymode }),
+                React.createElement("input",
+                {
+                    type: "radio",
+                    name: "inlineRadioOptions",
+                    id: "order",
+                    value: "order",
+                    onChange: this.modeChange,
+                    checked: !this.state.supplymode
+                }),
                 " Order"
             ),
             React.createElement(StatusSelect, { items: this.items, onchangevalue: this.itemSelected }),

@@ -43,14 +43,15 @@ var Items = React.createClass({
 
     render: function render() {
         var data = this.state.items;
-        var newsTemplate = data.map(function (item, index) {
+        var newsTemplate = data.map(function(item, index) {
             return React.createElement(
                 "div",
                 { className: "col-sm-4 col-lg-4 col-md-4", key: index },
                 React.createElement(
                     "div",
                     { className: "thumbnail" },
-                    React.createElement("img", { src: item.imgSrc ? item.imgSrc : 'http://placehold.it/320x150', alt: "" }),
+                    React.createElement("img",
+                        { src: item.imgSrc ? item.imgSrc : "http://placehold.it/320x150", alt: "" }),
                     React.createElement(About, { itemInfo: item }),
                     React.createElement(
                         "div",

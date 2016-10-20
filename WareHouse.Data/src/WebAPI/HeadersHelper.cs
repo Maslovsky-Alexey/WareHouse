@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace WebAPI.Controllers
 {
@@ -7,7 +6,7 @@ namespace WebAPI.Controllers
     {
         public static void AddAuthorizationHeader(HttpContext httpContext, string token)
         {
-            httpContext.Response.Headers.Add("Authorization", new[] { "Bearer " + token });
+            httpContext.Response.Headers.Add("Authorization", new[] {"Bearer " + token});
         }
     }
 }

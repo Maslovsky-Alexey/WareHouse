@@ -1,18 +1,18 @@
-﻿var React = require('react');
-var ReactDom = require('react-dom');
+﻿var React = require("react");
+var ReactDom = require("react-dom");
 
 var Rating = React.createClass({
     maxStars: 5,
 
-    createStar: function(status, id){
-        if (status){
-            return (<span className="fa fa-star" key={id}></span>)
+    createStar: function(status, id) {
+        if (status) {
+            return (<span className="fa fa-star" key={id}></span>);
         }
 
-        return (<span className="fa fa-star-o" key={id}></span>)
+        return (<span className="fa fa-star-o" key={id}></span>);
     },
 
-    generateStarsRating: function(starscount){
+    generateStarsRating: function(starscount) {
         var stars = [];
 
         for (var i = 0; i < this.maxStars; i++)
@@ -21,8 +21,8 @@ var Rating = React.createClass({
         return stars;
     },
 
-    render: function () {
-        return (<p>{this.generateStarsRating(this.props.starscount)}</p>)
+    render: function() {
+        return (<p>{this.generateStarsRating(this.props.starscount)}</p>);
     }
 });
 

@@ -1,11 +1,11 @@
-﻿'use strict';
+﻿"use strict";
 
 /// <reference path="../../../repositories/itemrepository.js" />
 
 /// <reference path="../../../autocompiler/inputcompiler.js" />
 
 var AddItemsView = React.createClass({
-    displayName: 'AddItemsView',
+    displayName: "AddItemsView",
 
     itemsRepos: new ItemRepository(),
 
@@ -24,20 +24,21 @@ var AddItemsView = React.createClass({
     },
 
     Add: function Send(e) {
-        var name = $(e.target).parent().find('input').val();
+        var name = $(e.target).parent().find("input").val();
 
-        if (this.IsEmptyString(name)) alert('Error');
+        if (this.IsEmptyString(name)) alert("Error");
 
         var sender = this;
         var target = $(e.target);
-        this.itemsRepos.addItem(this.CreateItemValue(name), function () {
-            sender.itemsRepos.getItems(sender.onItemsGeted);
-            target.parent().find('input').val('');
-        });
+        this.itemsRepos.addItem(this.CreateItemValue(name),
+            function() {
+                sender.itemsRepos.getItems(sender.onItemsGeted);
+                target.parent().find("input").val("");
+            });
     },
 
     emptyControlItems: function emptyControlItems(input_name) {
-        input_name.val('');
+        input_name.val("");
     },
 
     CreateItemValue: function CreateItemValue(name) {
@@ -52,16 +53,16 @@ var AddItemsView = React.createClass({
 
     render: function render() {
         return React.createElement(
-            'div',
+            "div",
             null,
             React.createElement(InputCompiler, { items: this.items }),
             React.createElement(
-                'button',
-                { className: 'btn btn-success btn-block btn-sm', onClick: this.Add },
-                'Add'
+                "button",
+                { className: "btn btn-success btn-block btn-sm", onClick: this.Add },
+                "Add"
             )
         );
     }
 });
 
-ReactDOM.render(React.createElement(AddItemsView, null), document.getElementById('root'));
+ReactDOM.render(React.createElement(AddItemsView, null), document.getElementById("root"));

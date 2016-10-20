@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
+using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.MyOData;
-using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,7 +14,7 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class WarehouseItemsController : Controller
     {
-        private IWarehouseItemService warehouseItems;
+        private readonly IWarehouseItemService warehouseItems;
 
         public WarehouseItemsController(IWarehouseItemService warehouseItems)
         {
@@ -34,7 +32,7 @@ namespace WebAPI.Controllers
         [Route("GetPage/{page}")]
         [HttpGet("{page}")]
         [Authorize]
-        public async Task<PageModel> GetPage(int page, [FromBody]MyODataConfigurates config)
+        public async Task<PageModel> GetPage(int page, [FromBody] MyODataConfigurates config)
         {
             return await warehouseItems.GetPage(page, config);
         }

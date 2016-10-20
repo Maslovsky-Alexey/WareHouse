@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using WareHouse.Data.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
+using Employee = WareHouse.Domain.Model.Employee;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
@@ -37,7 +35,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public async Task<UserModel> GetCurrentUser(HttpContext httpContext)
         {
             var user = await userService.GetUserByName(httpContext.User.Identity.Name, false);
-            
+
             if (user == null)
                 return null;
 
@@ -47,24 +45,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public async Task<bool> Login(LoginModel model)
         {
             await EnsureAddDefauleUser();
-              
+
             return (await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false)).Succeeded;
-        }
-
-
-        private async Task EnsureAddDefauleUser()
-        {
-            if (await userManager.FindByNameAsync("admin") == null)
-            {
-                await userManager.CreateAsync(new ApplicationUser { UserName = "admin" }, "admin");
-                await userManager.AddToRoleAsync(await userManager.FindByNameAsync("admin"), "employee");
-            }
-
-            await employeeService.Add(new Model.Employee
-            {
-                Name = "Administrator",
-                UserId = (await userService.GetUserByName("admin", false)).Id
-            });
         }
 
         public async Task<UserModel> RegisterClient(RegisterModel model)
@@ -82,9 +64,25 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return await MapToUserModel(await userService.GetUserByName(username, false));
         }
 
+
+        private async Task EnsureAddDefauleUser()
+        {
+            if (await userManager.FindByNameAsync("admin") == null)
+            {
+                await userManager.CreateAsync(new ApplicationUser {UserName = "admin"}, "admin");
+                await userManager.AddToRoleAsync(await userManager.FindByNameAsync("admin"), "employee");
+            }
+
+            await employeeService.Add(new Employee
+            {
+                Name = "Administrator",
+                UserId = (await userService.GetUserByName("admin", false)).Id
+            });
+        }
+
         private async Task<ApplicationUser> RegisterUserWithRole(RegisterModel model, string role)
         {
-            var user = new ApplicationUser { UserName = model.Username };
+            var user = new ApplicationUser {UserName = model.Username};
             var result = await userManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
@@ -109,7 +107,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             if (await UserHasRole(user, "employee"))
                 return (await employeeService.GetEmployeeByIdentityId(user.Id)).Name;
-            else if (await UserHasRole(user, "client"))
+            if (await UserHasRole(user, "client"))
                 return (await clientService.GetClientByIdentityId(user.Id)).Name;
 
             return null;
@@ -119,7 +117,5 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             return (await userManager.GetRolesAsync(user)).FirstOrDefault(x => x == role) != null;
         }
-
-
     }
 }

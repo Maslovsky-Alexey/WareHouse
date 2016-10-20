@@ -1,13 +1,12 @@
 ﻿var callbackList = [];
 
 var Dispatcher = {
-
-    register: function (callback) {
+    register: function(callback) {
         callbackList.push(callback);
         return callbackList.length - 1;
     },
 
-    dispatch: function (payload) {
+    dispatch: function(payload) {
         callbackList.forEach((callback) => callback(payload));
     }
 };

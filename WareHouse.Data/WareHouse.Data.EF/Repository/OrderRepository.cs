@@ -1,11 +1,9 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using WareHouse.Data.Repository;
-using WareHouse.Data.Model;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using WareHouse.Data.EF.Context;
+using WareHouse.Data.Model;
+using WareHouse.Data.Repository;
 
 namespace WareHouse.Data.EF.Repository
 {
@@ -13,8 +11,8 @@ namespace WareHouse.Data.EF.Repository
     {
         public OrderRepository(WareHouseDbContext context) : base(context)
         {
-
         }
+
         public override async Task<IEnumerable<Order>> GetAll()
         {
             return await table

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WareHouse.Data.Model;
 
 namespace WareHouse.Data.Repository
 {
-    public interface IEmployeeRepository : IRepository<Model.Employee>
+    public interface IEmployeeRepository : IRepository<Employee>
     {
         Task<Employee> GetEmployeeByName(string name, bool ignoreCase);
 

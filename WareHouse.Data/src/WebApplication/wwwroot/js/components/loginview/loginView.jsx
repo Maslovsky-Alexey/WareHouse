@@ -1,46 +1,46 @@
 ﻿
 
-var React = require('react');
-var ReactDom = require('react-dom');
+var React = require("react");
+var ReactDom = require("react-dom");
 
-var AccountRepository = require('../../repositories/accountrepository.js');
-var Redirecter = require('../../helpers/redirecter.js').Redirecter;
+var AccountRepository = require("../../repositories/accountrepository.js");
+var Redirecter = require("../../helpers/redirecter.js").Redirecter;
 
 var LoginView = React.createClass({
     accountRepository: new AccountRepository.AccountRepository(),
 
 
-    componentDidMount: function () {
-      
-        this.accountRepository.getCurrentUser(function (user) {
+    componentDidMount: function() {
+
+        this.accountRepository.getCurrentUser(function(user) {
             console.debug(user);
             if (user != null)
-                Redirecter.redirect('/items');
-        })
+                Redirecter.redirect("/items");
+        });
     },
 
-    Send: function(){
+    Send: function() {
         var name = $("#username1").val();
         var password = $("#password1").val();
 
         this.accountRepository.login(name, password, this.loginSuccess);
     },
 
-    loginSuccess: function(isSuccess){
+    loginSuccess: function(isSuccess) {
         isSuccess = isSuccess == "true";
         console.debug(isSuccess);
 
         if (isSuccess == true)
-            Redirecter.redirect('/items');
+            Redirecter.redirect("/items");
         else
             alert("OOOPPS :( ");
     },
 
-    render: function () {
-        
+    render: function() {
+
 
         return (
-            <div className="login-form">   
+            <div className="login-form">
                 <div className="form-group">
                     <label htmlFor="username1">Username</label>
                     <input className="form-control" id="username1" placeholder="Username"/>

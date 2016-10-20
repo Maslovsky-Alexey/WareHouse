@@ -15,20 +15,21 @@ var ProfileView = React.createClass({
     },
 
     onGetedUser: function onGetedUser(user) {
-        if (user == null)    
+        if (user == null)
             return;
-        
+
         this.isInvalidUser = false;
         console.debug(JSON.stringify(user));
         this.setState({ profile: user });
     },
 
     render: function render() {
-        if (this.isInvalidUser) return React.createElement(
-            "div",
-            null,
-            "Error"
-        );
+        if (this.isInvalidUser)
+            return React.createElement(
+                "div",
+                null,
+                "Error"
+            );
         return React.createElement(
             "div",
             { className: "row" },
@@ -53,4 +54,4 @@ var ProfileView = React.createClass({
     }
 });
 
-ReactDOM.render(React.createElement(ProfileView, null), document.getElementById('root'));
+ReactDOM.render(React.createElement(ProfileView, null), document.getElementById("root"));
