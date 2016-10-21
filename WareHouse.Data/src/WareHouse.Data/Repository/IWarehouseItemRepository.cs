@@ -6,6 +6,8 @@ namespace WareHouse.Data.Repository
 {
     public interface IWarehouseItemRepository : IRepository<WarehouseItem>
     {
-        Task<IEnumerable<WarehouseItem>> GetItemsByName(string name, bool ignoreCase);
+        Task<WarehouseItem> GetItemByName(string name, bool ignoreCase);
+
+        Task<bool> UpdateCount(int warehouseItemId, int deltaCount);
     }
 }

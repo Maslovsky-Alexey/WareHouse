@@ -8,5 +8,7 @@ namespace WareHouse.Data.Repository
         Task<Employee> GetEmployeeByName(string name, bool ignoreCase);
 
         Task<Employee> GetEmployeeByIdentityId(string identityId);
+
+        Task<Employee> AssignWithApplicationUser(int employeeId, string userId);
     }
 }

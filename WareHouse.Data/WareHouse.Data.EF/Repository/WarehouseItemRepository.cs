@@ -17,11 +17,12 @@ namespace WareHouse.Data.EF.Repository
             this.context = context;
         }
 
-        public async Task<IEnumerable<WarehouseItem>> GetItemsByName(string name, bool ignoreCase)
+        public async Task<WarehouseItem> GetItemByName(string name, bool ignoreCase)
         {
             if (ignoreCase)
-                return await context.WarehouseItem.Where(x => x.Item.Name.ToLower() == name.ToLower()).ToArrayAsync();
-            return await context.WarehouseItem.Where(x => x.Item.Name == name).ToArrayAsync();
+                return await context.WarehouseItem.FirstOrDefaultAsync(x => x.Item.Name.ToLower() == name.ToLower());
+
+            return await context.WarehouseItem.FirstOrDefaultAsync(x => x.Item.Name == name);
         }
 
         public override async Task<IEnumerable<WarehouseItem>> GetAll()
@@ -35,6 +36,18 @@ namespace WareHouse.Data.EF.Repository
             Expression<Func<WarehouseItem, bool>> filter)
         {
             return (await GetAll()).AsQueryable().Where(filter);
+        }
+
+        public async Task<bool> UpdateCount(int warehouseItemId, int deltaCount)
+        {
+            var item = await GetItem(warehouseItemId);
+
+            if (item == null)
+                return false;
+
+            item.Count += deltaCount;
+
+            return (await SaveChanges()) > 0;
         }
     }
 }

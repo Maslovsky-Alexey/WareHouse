@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WareHouse.Data.EF.Context;
 using WareHouse.Data.Model;
@@ -11,6 +12,18 @@ namespace WareHouse.Data.EF.Repository
         public ClientRepository(WareHouseDbContext context) : base(context)
         {
             this.context = context;
+        }
+
+        public async Task<Client> AssignWithApplicationUser(int clientId, string userId)
+        {
+            var client = await GetItem(clientId);
+
+            if (client == null)
+                return null;
+
+            client.UserId = userId;
+            await SaveChanges();
+            return client;
         }
 
         public async Task<Client> GetClientByIdentityId(string identityId)

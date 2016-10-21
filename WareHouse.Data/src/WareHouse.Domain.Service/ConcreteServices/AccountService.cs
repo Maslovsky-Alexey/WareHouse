@@ -51,12 +51,36 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<UserModel> RegisterClient(RegisterModel model)
         {
-            return await MapToUserModel(await RegisterUserWithRole(model, "client"));
+            var client = await clientService.GetClientByName(model.Username, true);
+
+            if (client != null && !string.IsNullOrEmpty(client.UserId))
+                return null;
+
+            var user = await RegisterUserWithRole(model, "client");
+
+            if (client == null)
+                await clientService.Add(new Domain.Model.Client {Name = model.Username, UserId = user.Id});   
+            else
+                await clientService.AssignWithApplicationUser(client.Id, user.Id);
+            
+            return await MapToUserModel(user);
         }
 
         public async Task<UserModel> RegisterEmployee(RegisterModel model)
         {
-            return await MapToUserModel(await RegisterUserWithRole(model, "employee"));
+            var employee = await employeeService.GetEmployeeByName(model.Username, true);
+
+            if (employee != null && !string.IsNullOrEmpty(employee.UserId))
+                return null;
+
+            var user = await RegisterUserWithRole(model, "employee");
+
+            if (employee == null)
+                await employeeService.Add(new Domain.Model.Employee { Name = model.Username, UserId = user.Id });
+            else
+                await employeeService.AssignWithApplicationUser(employee.Id, user.Id);
+
+            return await MapToUserModel(user);
         }
 
         public async Task<UserModel> GetUserByName(string username)

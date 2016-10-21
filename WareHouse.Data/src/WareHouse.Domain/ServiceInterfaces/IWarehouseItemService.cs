@@ -12,10 +12,12 @@ namespace WareHouse.Domain.ServiceInterfaces
 
         Task<IEnumerable<WarehouseItemViewModel>> GetAllAsViewModel();
 
-        Task AddOrUpdateAsViewModel(WarehouseItem model);
+        Task AddOrUpdate(WarehouseItem model);
 
-        Task<IEnumerable<WarehouseItem>> GetItemsByName(string name, bool ignoreCase);
+        Task<WarehouseItem> GetItemByName(string name, bool ignoreCase);
 
         Task<WarehouseItemViewModel> GetItemByIdAsViewModel(int id);
+
+        Task UpdateCount(int warehouseItemId, int deltaCount);
     }
 }

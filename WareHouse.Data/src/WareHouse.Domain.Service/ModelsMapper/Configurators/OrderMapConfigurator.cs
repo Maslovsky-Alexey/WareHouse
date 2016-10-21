@@ -57,7 +57,7 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
                         obj =>
                             obj.ResolveUsing(
                                 src =>
-                                    new ModelsMapper<Data.Model.Employee, Employee>(new ItemMapConfigurator())
+                                    new ModelsMapper<Data.Model.Employee, Employee>(new EmployeeMapConfigurator())
                                         .MapService(src.Employee)))
                     .ForMember(obj => obj.Status,
                         obj =>

@@ -31,29 +31,29 @@ namespace WebAPI.Controllers
         {
             await operationService.AddOrder(value);
         }
-
-        [Route("ConfirmOrder")]
+                
+        [Route("ConfirmOrder/{id}")]
         [HttpPut("{id}")]
         public async Task ConfirmOrder(int id)
         {
             await operationService.ConfirmOrder(id);
         }
 
-        [Route("ConfirmSupply")]
+        [Route("ConfirmSupply/{id}")]
         [HttpPut("{id}")]
         public async Task ConfirmSupply(int id)
         {
             await operationService.ConfirmSupply(id);
         }
 
-        [Route("ReturnOrder")]
+        [Route("ReturnOrder/{id}")]
         [HttpPut("{id}")]
         public async Task ReturnOrder(int id)
         {
             await operationService.ReturnOrder(id);
         }
 
-        [Route("ReturnSupply")]
+        [Route("ReturnSupply/{id}")]
         [HttpPut("{id}")]
         public async Task ReturnSupply(int id)
         {

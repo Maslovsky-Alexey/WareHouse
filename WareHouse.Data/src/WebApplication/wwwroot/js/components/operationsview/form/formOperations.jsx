@@ -58,18 +58,18 @@ var FormOperations = React.createClass({
     CreateSupplyModel: function(id, count) {
         return {
             count: count,
-            itemId: id,
-            providerId: this.props.actor,
-            employeeId: 1
+            item: { id: id },
+            provider: { id: this.props.actor },
+            employee: {id: 1}//TODO: ЗАМЕНИТЬ!
         };
     },
 
     CreateOrderModel: function(id, count) {
         return {
             count: count,
-            itemId: id,
-            clientId: this.props.actor,
-            employeeId: 1
+            item: { id: id },
+            client: { id: this.props.actor },
+            employee: { id: 1 }//TODO: ЗАМЕНИТЬ!
         };
     },
 

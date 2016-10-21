@@ -3,14 +3,16 @@
 var AccountRepository = function() {
 
     serverMediator = new ServerMediator.ServerMediator(),
-        this.registerClient = function(username, password, success) {
-            var model = {
-                username: username,
-                password: password
-            };
 
-            serverMediator.sendRequest("api/account/registerclient", "post", JSON.stringify(model), success);
+    this.registerClient = function(username, password, success) {
+        var model = {
+            username: username,
+            password: password
         };
+
+        serverMediator.sendRequest("api/account/registerclient", "post", JSON.stringify(model), success);
+    };
+
     this.registerEmployee = function(username, password, success) {
         var model = {
             username: username,
@@ -19,6 +21,7 @@ var AccountRepository = function() {
 
         serverMediator.sendRequest("api/account/registeremployee", "post", JSON.stringify(model), success);
     };
+
     this.login = function(username, password, success) {
         var model = {
             username: username,

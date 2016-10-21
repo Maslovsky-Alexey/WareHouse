@@ -24,5 +24,17 @@ namespace WareHouse.Data.EF.Repository
                 return await context.Employees.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
             return await context.Employees.FirstOrDefaultAsync(x => x.Name == name);
         }
+
+        public async Task<Employee> AssignWithApplicationUser(int employeeId, string userId)
+        {
+            var employee = await GetItem(employeeId);
+
+            if (employee == null)
+                return null;
+
+            employee.UserId = userId;
+            await SaveChanges();
+            return employee;
+        }
     }
 }

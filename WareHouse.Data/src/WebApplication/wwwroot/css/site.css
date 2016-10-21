@@ -37,3 +37,20 @@
     font-size: 28px;
     color: #2e6ccf;
 }
+
+.profile-items-prop {
+    display: inline;
+    max-width: 50px;
+    min-width: 50px;
+    margin-right: 20px;
+}
+
+.profile-items-view {
+    border: 1px solid #000000;
+    height: 250px;
+    overflow-y: auto;
+}
+
+.profile-items-row {
+    
+}

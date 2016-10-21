@@ -1,11 +1,17 @@
 ﻿var React = require("react");
 var ReactDom = require("react-dom");
 var Link = require("react-router").Link;
+var Redirecter = require("../../helpers/redirecter.js").Redirecter;
 
 var Layout = React.createClass({
     getInitialState: function getInitialState() {
 
         return {};
+    },
+
+    logout: function() {
+        window.localStorage.clear();
+        Redirecter.redirect("");
     },
 
     render: function() {
@@ -29,6 +35,9 @@ var Layout = React.createClass({
                                 </li>
                                 <li>
                                     <Link to="/profile">Profile</Link>
+                                </li>
+                                <li>
+                                    <button className="form-control btn-link" onClick={this.logout}>Logout</button>
                                 </li>
                             </ul>
                         </div>

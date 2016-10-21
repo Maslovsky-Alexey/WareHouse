@@ -32,7 +32,7 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
                         obj =>
                             obj.ResolveUsing(
                                 src =>
-                                    new ModelsMapper<ItemStatus, Model.ItemStatus>(new EmployeeMapConfigurator())
+                                    new ModelsMapper<ItemStatus, Model.ItemStatus>(new ItemStatusMapConfigurator())
                                         .MapEF(src.Status)))
             ).CreateMapper();
         }
@@ -57,13 +57,13 @@ namespace WareHouse.Domain.Service.ModelsMapper.Configurators
                         obj =>
                             obj.ResolveUsing(
                                 src =>
-                                    new ModelsMapper<Data.Model.Employee, Employee>(new ItemMapConfigurator())
+                                    new ModelsMapper<Data.Model.Employee, Employee>(new EmployeeMapConfigurator())
                                         .MapService(src.Employee)))
                     .ForMember(obj => obj.Status,
                         obj =>
                             obj.ResolveUsing(
                                 src =>
-                                    new ModelsMapper<ItemStatus, Model.ItemStatus>(new ItemMapConfigurator())
+                                    new ModelsMapper<ItemStatus, Model.ItemStatus>(new ItemStatusMapConfigurator())
                                         .MapService(src.Status)))
             ).CreateMapper();
         }

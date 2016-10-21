@@ -46,9 +46,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             await orderService.Add(new Order
             {
-                ClientId = item.ClientId,
-                EmployeeId = item.EmployeeId,
-                ItemId = item.ItemId,
+                ClientId = item.Client.Id,
+                EmployeeId = item.Employee.Id,
+                ItemId = item.Item.Id,
                 StatusId = (await itemStatusService.GetStatus(Status.Processing)).Id,
                 Count = item.Count,
                 DateTime = DateTime.Now
@@ -59,42 +59,82 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             await supplyService.Add(new Supply
             {
-                ProviderId = item.ProviderId,
-                EmployeeId = item.EmployeeId,
-                ItemId = item.ItemId,
+                ProviderId = item.Provider.Id,
+                EmployeeId = item.Employee.Id,
+                ItemId = item.Item.Id,
                 StatusId = (await itemStatusService.GetStatus(Status.Processing)).Id,
                 Count = item.Count,
                 DateTime = DateTime.Now
             });
         }
 
-        public async Task ConfirmOrder(int itemId)
+        public async Task ConfirmOrder(int orderId)
         {
-            await orderService.UpdateOrderStatus(itemId, await GetStatusId(Status.Success));
+            var order = await orderService.GetItem(orderId);
+            var statusSuccess = await GetStatusId(Status.Success);
+
+            if (order.StatusId == statusSuccess)
+                return;
+
+            await warehouseItemService.UpdateCount((await GetWarehouseItemByItemId(order.ItemId)).Id, -order.Count);
+
+            await orderService.UpdateOrderStatus(orderId, await GetStatusId(Status.Success));
         }
 
-        public async Task ConfirmSupply(int itemId)
+        public async Task ConfirmSupply(int supplyId)
         {
-            await supplyService.UpdateSupplyStatus(itemId, await GetStatusId(Status.Success));
+            var supply = await supplyService.GetItem(supplyId);
+            var statusSuccess = await GetStatusId(Status.Success);
 
-            var supply = await supplyService.GetItem(itemId);
+            if (supply.StatusId == statusSuccess)
+                return;
 
-            await warehouseItemService.Add(new WarehouseItem
+            await supplyService.UpdateSupplyStatus(supplyId, statusSuccess);
+           
+            await warehouseItemService.AddOrUpdate(new WarehouseItem
             {
                 Count = supply.Count,
-                ItemId = supply.ItemId
+                Item = await itemService.GetItem(supply.ItemId)
             });
         }
 
 
-        public async Task ReturnOrder(int itemId)
+        public async Task ReturnOrder(int orderId)
         {
-            await orderService.UpdateOrderStatus(itemId, await GetStatusId(Status.Failure));
+            var order = await orderService.GetItem(orderId);
+            var statusSuccess = await GetStatusId(Status.Success);
+
+            await orderService.UpdateOrderStatus(orderId, await GetStatusId(Status.Failure));
+
+            if (order.StatusId == statusSuccess)
+            {
+                await warehouseItemService.UpdateCount(
+                    (await GetWarehouseItemByItemId(order.ItemId)).Id, order.Count);
+
+                return;
+            }            
         }
 
-        public async Task ReturnSupply(int itemId)
+        public async Task ReturnSupply(int supplyId)
         {
-            await supplyService.UpdateSupplyStatus(itemId, await GetStatusId(Status.Failure));
+            var supply = await supplyService.GetItem(supplyId);
+            var statusSuccess = await GetStatusId(Status.Success);
+
+            await supplyService.UpdateSupplyStatus(supplyId, await GetStatusId(Status.Failure));
+
+            if (supply.StatusId == statusSuccess)
+            {
+                await warehouseItemService.UpdateCount(
+                    (await GetWarehouseItemByItemId(supply.ItemId)).Id, -supply.Count);
+
+                return;
+            }
+        }
+
+        private async Task<WarehouseItem> GetWarehouseItemByItemId(int itemId)
+        {
+            var item = await itemService.GetItem(itemId);
+            return await warehouseItemService.GetItemByName(item.Name, false);
         }
 
         private async Task<int> GetStatusId(Status status)

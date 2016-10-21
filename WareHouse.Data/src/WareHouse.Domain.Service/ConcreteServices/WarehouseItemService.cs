@@ -22,14 +22,22 @@ namespace WareHouse.Domain.Service.ConcreteServices
             warehouseItemRepository = (IWarehouseItemRepository) repository;
         }
 
-        public async Task AddOrUpdateAsViewModel(WarehouseItem model)
+        public async Task AddOrUpdate(WarehouseItem model)
         {
-            var item = (await GetItemsByName(model.Item.Name, true)).FirstOrDefault();
+            var item = await GetItemByName(model.Item.Name, false);
 
-            if (item != null)
-                item.Count = model.Count;
-            else
+            if (item == null)
+            {
                 await Add(model);
+                return;
+            }
+            
+            await UpdateCount(item.Id, model.Count);
+        }
+
+        public async Task UpdateCount(int warehouseItemId, int deltaCount)
+        {
+            await warehouseItemRepository.UpdateCount(warehouseItemId, deltaCount);
         }
 
         public async Task<IEnumerable<WarehouseItemViewModel>> GetAllAsViewModel()
@@ -38,10 +46,10 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 .Select(MapToViewModel);
         }
 
-        public async Task<IEnumerable<WarehouseItem>> GetItemsByName(string name, bool ignoreCase)
+        public async Task<WarehouseItem> GetItemByName(string name, bool ignoreCase)
         {
             return
-                (await ((WarehouseItemRepository) repository).GetItemsByName(name, ignoreCase)).Select(MapToServiceModel);
+               MapToServiceModel(await ((WarehouseItemRepository) repository).GetItemByName(name, ignoreCase));
         }
 
 
@@ -75,7 +83,6 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 Max = items.Max(item => item.Count),
                 Min = items.Min(item => item.Count)
             };
-            ;
         }
 
         private WarehouseItemViewModel MapToViewModel(Data.Model.WarehouseItem item)

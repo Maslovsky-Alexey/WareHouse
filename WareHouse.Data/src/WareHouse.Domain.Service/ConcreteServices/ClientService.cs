@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Service.ModelsMapper;
@@ -18,6 +19,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             return MapToServiceModel(await ((ClientRepository) repository).GetClientByName(name, ignoreCase));
         }
+
 
         public async Task<bool> AddWithoutRepetition(Client value)
         {
@@ -44,6 +46,11 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public async Task<Client> GetClientByIdentityId(string identityId)
         {
             return MapToServiceModel(await ((ClientRepository) repository).GetClientByIdentityId(identityId));
+        }
+
+        public async Task<Client> AssignWithApplicationUser(int clientId, string userId)
+        {
+            return MapToServiceModel(await((ClientRepository)repository).AssignWithApplicationUser(clientId, userId));
         }
     }
 }

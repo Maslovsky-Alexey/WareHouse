@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices.ComTypes;
+using System.Threading.Tasks;
 using WareHouse.Domain.Model;
 
 namespace WareHouse.Domain.ServiceInterfaces
@@ -12,5 +13,7 @@ namespace WareHouse.Domain.ServiceInterfaces
         Task<bool> RemoveClientByName(Client value);
 
         Task<Client> GetClientByIdentityId(string identityId);
+
+        Task<Client> AssignWithApplicationUser(int clientId, string userId);
     }
 }

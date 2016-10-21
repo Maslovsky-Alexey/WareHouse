@@ -1,15 +1,21 @@
-﻿namespace WareHouse.Domain.Model.ViewModel
+﻿using System;
+
+namespace WareHouse.Domain.Model.ViewModel
 {
     public class SupplyViewModel
     {
-        public int ItemId { get; set; }
+        public int Id { get; set; }
+
+        public Item Item { get; set; }
 
         public int Count { get; set; }
 
-        public int StatusId { get; set; }
+        public ItemStatus Status { get; set; }
 
-        public int ProviderId { get; set; }
+        public Provider Provider { get; set; }
 
-        public int EmployeeId { get; set; }
+        public Employee Employee { get; set; }
+
+        public string DateTime { get; set; }
     }
 }

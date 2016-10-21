@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Service.ModelsMapper;
@@ -12,6 +13,11 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public EmployeeService(BaseRepository<Data.Model.Employee> repository) : base(repository,
             new ModelsMapper<Data.Model.Employee, Employee>(new EmployeeMapConfigurator()))
         {
+        }
+
+        public async Task<Employee> AssignWithApplicationUser(int employeeId, string userId)
+        {
+            return MapToServiceModel(await ((EmployeeRepository) repository).AssignWithApplicationUser(employeeId, userId));
         }
 
         public async Task<Employee> GetEmployeeByIdentityId(string identityId)
