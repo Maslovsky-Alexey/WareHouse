@@ -2,15 +2,13 @@
 using System.Threading.Tasks;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface ISupplyService : IService<Supply, Data.Model.Supply>
+    public interface ISupplyService : IService<Supply, Data.Model.Supply>, ISafeSupplyService, IUnsafeSupplyService
     {
-        Task UpdateSupplyStatus(int id, int statusId);
-
-        Task<IEnumerable<SupplyViewModel>> GetProviderSupplies(string providerName);
-
-        Task<IEnumerable<SupplyViewModel>> GetAllAsViewModel();
+        
     }
 }

@@ -2,21 +2,14 @@
 using System.Threading.Tasks;
 using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IService<ServiceModel, EFModel>
+    public interface IService<ServiceModel, EFModel> : ISafeService<ServiceModel, EFModel>, IUnsafeService<ServiceModel, EFModel>
         where EFModel : BaseModel
-        where ServiceModel : Model.BaseModel
+        where ServiceModel : Model.BaseModel 
     {
-        Task<IEnumerable<ServiceModel>> GetAll();
-
-        Task<OperationStatus> Add(ServiceModel item);
-
-        Task<OperationStatus> Remove(ServiceModel item);
-
-        Task<ServiceModel> GetItem(int id);
-
-        Task<int> Count();
     }
 }

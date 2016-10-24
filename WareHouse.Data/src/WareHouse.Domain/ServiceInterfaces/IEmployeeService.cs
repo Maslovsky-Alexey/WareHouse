@@ -1,14 +1,12 @@
 ﻿using System.Threading.Tasks;
 using WareHouse.Domain.Model;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IEmployeeService : IService<Employee, Data.Model.Employee>
+    public interface IEmployeeService : IService<Employee, Data.Model.Employee>, ISafeEmployeeService, IUnsafeEmployeeService
     {
-        Task<Employee> GetEmployeeByName(string name, bool ignoreCase);
 
-        Task<Employee> GetEmployeeByIdentityId(string identityId);
-
-        Task<Employee> AssignWithApplicationUser(int employeeId, string userId);
     }
 }

@@ -2,15 +2,12 @@
 using System.Threading.Tasks;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IOrderService : IService<Order, Data.Model.Order>
+    public interface IOrderService : IService<Order, Data.Model.Order>, ISafeOrderService, IUnsafeOrderService
     {
-        Task UpdateOrderStatus(int id, int statusId);
-
-        Task<IEnumerable<OrderViewModel>> GetClientOrders(string clientName);
-
-        Task<IEnumerable<OrderViewModel>> GetAllAsViewModel();
     }
 }

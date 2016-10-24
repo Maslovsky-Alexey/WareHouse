@@ -1,12 +1,11 @@
 ﻿using System.Threading.Tasks;
 using WareHouse.Domain.Model;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IItemService : IService<Item, Data.Model.Item>
+    public interface IItemService : IService<Item, Data.Model.Item>, ISafeItemService, IUnsafeItemService
     {
-        Task<Item> GetItemByName(string name, bool ignoreCase);
-
-        Task AddWithoutRepetition(Item item);
     }
 }

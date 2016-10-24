@@ -2,23 +2,13 @@
 using WareHouse.Data.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IOperationService
+    public interface IOperationService : ISafeOperationService, IUnsafeOperationService
     {
-        Task<OperationStatus> AddOrder(OrderViewModel item);
 
-        Task<OperationStatus> AddSupply(SupplyViewModel item);
-
-        Task ConfirmOrder(int itemId);
-
-        Task ConfirmSupply(int itemId);
-
-        Task ReturnOrder(int itemId);
-
-        Task ReturnSupply(int itemId);
-
-        Task AddItemWithoutRepetition(Item item);
     }
 }

@@ -1,19 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using WareHouse.Domain.Model.ViewModel;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IAccountService
+    public interface IAccountService : ISafeAccountService, IUnsafeAccountService
     {
-        Task<bool> Login(LoginModel model);
-
-        Task<UserModel> RegisterClient(RegisterModel model);
-
-        Task<UserModel> RegisterEmployee(RegisterModel model);
-
-        Task<UserModel> GetCurrentUser(HttpContext httpContext);
-
-        Task<UserModel> GetUserByName(string username);
     }
 }
