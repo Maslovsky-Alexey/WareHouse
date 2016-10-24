@@ -42,7 +42,12 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task<WarehouseItemViewModel> GetItemById(int id)
         {
-            return await warehouseItems.GetItemByIdAsViewModel(id);
+            var item = await warehouseItems.GetItemByIdAsViewModel(id);
+
+            if (item == null)
+                HttpContext.Response.StatusCode = 404;
+
+            return item;
         }
     }
 }

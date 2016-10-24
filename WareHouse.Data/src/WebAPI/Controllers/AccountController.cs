@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("RegisterEmployee")]
-        [AllowAnonymous]
+        [Authorize(Roles = "employee")]
         public async Task<UserModel> RegisterEmployee([FromBody] RegisterModel model)
         {
             return await accountService.RegisterEmployee(model);
@@ -42,33 +42,29 @@ namespace WebAPI.Controllers
 
             if (result)
                 HeadersHelper.AddAuthorizationHeader(HttpContext, encryptor.Encrypt(model.Username));
-
-            return result;
-        }
-
-        [HttpGet("Login")]
-        [AllowAnonymous]
-        public async Task<bool> Login()
-        {
-            var result = await accountService.Login(new LoginModel {Password = "admin", Username = "admin"});
-
-            if (result)
-                HttpContext.Response.Headers.Add("Authorization", new[] {"Bearer " + encryptor.Encrypt("admin")});
+            else
+                HttpContext.Response.StatusCode = 401;
 
             return result;
         }
 
         [HttpGet("GetCurrentUser")]
+        [Authorize]
         public async Task<UserModel> GetCurrentUser()
         {
             return await accountService.GetCurrentUser(HttpContext);
         }
 
         [HttpGet("GetUserByName/{username}")]
-        [Authorize(Roles = "employee, client")]
+        [Authorize]
         public async Task<UserModel> GetUserByName(string username)
         {
-            return await accountService.GetUserByName(username);
+            var user = await accountService.GetUserByName(username);
+
+            if (user == null)
+                HttpContext.Response.StatusCode = 404;
+
+            return user;
         }
     }
 }

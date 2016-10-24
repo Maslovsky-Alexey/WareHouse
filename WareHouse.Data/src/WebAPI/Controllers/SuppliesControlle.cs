@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,6 +22,7 @@ namespace WebAPI.Controllers
 
         // GET: api/values
         [HttpGet]
+        [Authorize(Roles = "employee")]
         public async Task<IEnumerable<SupplyViewModel>> Get()
         {
             return await items.GetAllAsViewModel();
@@ -28,6 +30,7 @@ namespace WebAPI.Controllers
 
         [Route("GetProviderSupplies/{providerName}")]
         [HttpGet("{providerName}")]
+        [Authorize(Roles = "employee")]
         public async Task<IEnumerable<SupplyViewModel>> GetProviderSupplies(string providerName)
         {
             return await items.GetProviderSupplies(providerName);

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,20 +21,29 @@ namespace WebAPI.Controllers
 
         [Route("AddSupply")]
         [HttpPost]
+        [Authorize(Roles = "employee")]
         public async Task AddSupply([FromBody] SupplyViewModel value)
         {
-            await operationService.AddSupply(value);
+            var status = await operationService.AddSupply(value);
+
+            if (status == WareHouse.Data.Repository.OperationStatus.Error)
+                HttpContext.Response.StatusCode = 500;
         }
 
         [Route("AddOrder")]
         [HttpPost]
+        [Authorize(Roles = "employee")]
         public async Task AddOrder([FromBody] OrderViewModel value)
         {
-            await operationService.AddOrder(value);
+            var status = await operationService.AddOrder(value);
+
+            if (status == WareHouse.Data.Repository.OperationStatus.Error)
+                HttpContext.Response.StatusCode = 500;
         }
                 
         [Route("ConfirmOrder/{id}")]
         [HttpPut("{id}")]
+        [Authorize]
         public async Task ConfirmOrder(int id)
         {
             await operationService.ConfirmOrder(id);
@@ -41,6 +51,7 @@ namespace WebAPI.Controllers
 
         [Route("ConfirmSupply/{id}")]
         [HttpPut("{id}")]
+        [Authorize(Roles = "employee")]
         public async Task ConfirmSupply(int id)
         {
             await operationService.ConfirmSupply(id);
@@ -48,6 +59,7 @@ namespace WebAPI.Controllers
 
         [Route("ReturnOrder/{id}")]
         [HttpPut("{id}")]
+        [Authorize]
         public async Task ReturnOrder(int id)
         {
             await operationService.ReturnOrder(id);
@@ -55,6 +67,7 @@ namespace WebAPI.Controllers
 
         [Route("ReturnSupply/{id}")]
         [HttpPut("{id}")]
+        [Authorize(Roles = "employee")]
         public async Task ReturnSupply(int id)
         {
             await operationService.ReturnSupply(id);
@@ -62,6 +75,7 @@ namespace WebAPI.Controllers
 
         [Route("AddItemWithoutRepetition")]
         [HttpPost]
+        [Authorize(Roles = "employee")]
         public async Task AddItemWithoutRepetition([FromBody] Item value)
         {
             await operationService.AddItemWithoutRepetition(value);

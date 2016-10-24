@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,6 +21,7 @@ namespace WebAPI.Controllers
 
         // GET: api/values
         [HttpGet]
+        [Authorize(Roles = "employee")]
         public async Task<IEnumerable<Client>> Get()
         {
             return await clients.GetAll();
@@ -27,6 +29,7 @@ namespace WebAPI.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "employee")]
         public async Task<Client> Get(int id)
         {
             var client = await clients.GetItem(id);
@@ -39,6 +42,7 @@ namespace WebAPI.Controllers
 
         // POST api/values
         [HttpPost]
+        [Authorize(Roles = "employee")]
         public async Task Post([FromBody] Client value)
         {
             var isSuccess = await clients.AddWithoutRepetition(value);
@@ -48,6 +52,7 @@ namespace WebAPI.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "employee")]
         public async Task Delete([FromBody] Client value)
         {
             var isRemoved = await clients.RemoveClientByName(value);

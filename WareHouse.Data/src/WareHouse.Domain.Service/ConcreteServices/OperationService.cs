@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using WareHouse.Data.Model;
+using WareHouse.Data.Repository;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
 using Item = WareHouse.Domain.Model.Item;
@@ -42,9 +43,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
             });
         }
 
-        public async Task AddOrder(OrderViewModel item)
+        public async Task<OperationStatus> AddOrder(OrderViewModel item)
         {
-            await orderService.Add(new Order
+            return await orderService.Add(new Order
             {
                 ClientId = item.Client.Id,
                 EmployeeId = item.Employee.Id,
@@ -53,17 +54,18 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 Count = item.Count,
                 DateTime = DateTime.Now
             });
+
         }
 
-        public async Task AddSupply(SupplyViewModel item)
+        public async Task<OperationStatus> AddSupply(SupplyViewModel supply)
         {
-            await supplyService.Add(new Supply
+            return await supplyService.Add(new Supply
             {
-                ProviderId = item.Provider.Id,
-                EmployeeId = item.Employee.Id,
-                ItemId = item.Item.Id,
+                ProviderId = supply.Provider.Id,
+                EmployeeId = supply.Employee.Id,
+                ItemId = supply.Item.Id,
                 StatusId = (await itemStatusService.GetStatus(Status.Processing)).Id,
-                Count = item.Count,
+                Count = supply.Count,
                 DateTime = DateTime.Now
             });
         }

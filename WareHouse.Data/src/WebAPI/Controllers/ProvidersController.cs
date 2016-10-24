@@ -5,6 +5,7 @@ using WareHouse.Data.EF.Context;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Service.ConcreteServices;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,6 +23,7 @@ namespace WebAPI.Controllers
 
         // GET: api/values
         [HttpGet]
+        [Authorize(Roles = "employee")]
         public async Task<IEnumerable<Provider>> Get()
         {
             return await providers.GetAll();
@@ -29,6 +31,7 @@ namespace WebAPI.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "employee")]
         public async Task<Provider> Get(int id)
         {
             return await providers.GetItem(id);
@@ -36,6 +39,7 @@ namespace WebAPI.Controllers
 
         // POST api/values
         [HttpPost]
+        [Authorize(Roles = "employee")]
         public async Task Post([FromBody] Provider value)
         {
             await providers.AddWithoutRepetition(value);
@@ -43,6 +47,7 @@ namespace WebAPI.Controllers
 
         // DELETE api/values/5
         [HttpDelete]
+        [Authorize(Roles = "employee")]
         public async Task Delete([FromBody] Provider value)
         {
             await providers.RemoveProviderByName(value);

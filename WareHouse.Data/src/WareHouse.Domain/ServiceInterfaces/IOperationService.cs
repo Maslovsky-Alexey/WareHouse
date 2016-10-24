@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using WareHouse.Data.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 
@@ -6,9 +7,9 @@ namespace WareHouse.Domain.ServiceInterfaces
 {
     public interface IOperationService
     {
-        Task AddOrder(OrderViewModel item);
+        Task<OperationStatus> AddOrder(OrderViewModel item);
 
-        Task AddSupply(SupplyViewModel item);
+        Task<OperationStatus> AddSupply(SupplyViewModel item);
 
         Task ConfirmOrder(int itemId);
 
