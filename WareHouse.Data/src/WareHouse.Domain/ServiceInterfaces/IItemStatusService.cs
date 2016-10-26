@@ -6,7 +6,7 @@ using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IItemStatusService : IService<ItemStatus, Data.Model.ItemStatus>, ISafeItemStatusService, IUnsafeItemStatusService
+    public interface IItemStatusService : ISafeItemStatusService, IUnsafeItemStatusService
     {
     }
 }

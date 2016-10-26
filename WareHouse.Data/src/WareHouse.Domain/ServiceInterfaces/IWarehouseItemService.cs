@@ -8,7 +8,7 @@ using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IWarehouseItemService : IService<WarehouseItem, Data.Model.WarehouseItem>, ISafeWarehouseItemService, IUnsafeWarehouseItemService
+    public interface IWarehouseItemService : ISafeWarehouseItemService, IUnsafeWarehouseItemService
     {
 
 

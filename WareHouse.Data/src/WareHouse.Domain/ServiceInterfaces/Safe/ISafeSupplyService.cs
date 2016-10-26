@@ -8,7 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Safe
 {
-    public interface ISafeSupplyService
+    public interface ISafeSupplyService : ISafeService<Supply, Data.Model.Supply>
     {
         Task<IEnumerable<SupplyViewModel>> GetProviderSupplies(string providerName);
 

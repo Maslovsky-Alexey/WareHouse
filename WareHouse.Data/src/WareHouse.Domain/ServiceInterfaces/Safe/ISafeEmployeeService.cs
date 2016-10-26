@@ -8,7 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Safe
 {
-    public interface ISafeEmployeeService
+    public interface ISafeEmployeeService : ISafeService<Employee, Data.Model.Employee>
     {
         Task<Employee> GetEmployeeByName(string name, bool ignoreCase);
 

@@ -7,7 +7,7 @@ using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface ISupplyService : IService<Supply, Data.Model.Supply>, ISafeSupplyService, IUnsafeSupplyService
+    public interface ISupplyService : ISafeSupplyService, IUnsafeSupplyService
     {
         
     }

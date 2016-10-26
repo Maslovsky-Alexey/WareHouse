@@ -5,6 +5,8 @@ using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,11 +15,13 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class SuppliesController : Controller
     {
-        private readonly ISupplyService items;
+        private readonly ISafeSupplyService safeSupplyService;
+        private readonly IUnsafeSupplyService unsafeSupplyService;
 
-        public SuppliesController(ISupplyService items)
+        public SuppliesController(ISafeSupplyService safeSupplyService, IUnsafeSupplyService unsafeSupplyService)
         {
-            this.items = items;
+            this.safeSupplyService = safeSupplyService;
+            this.unsafeSupplyService = unsafeSupplyService;
         }
 
         // GET: api/values
@@ -25,7 +29,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task<IEnumerable<SupplyViewModel>> Get()
         {
-            return await items.GetAllAsViewModel();
+            return await safeSupplyService.GetAllAsViewModel();
         }
 
         [Route("GetProviderSupplies/{providerName}")]
@@ -33,7 +37,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task<IEnumerable<SupplyViewModel>> GetProviderSupplies(string providerName)
         {
-            return await items.GetProviderSupplies(providerName);
+            return await safeSupplyService.GetProviderSupplies(providerName);
         }
     }
 }

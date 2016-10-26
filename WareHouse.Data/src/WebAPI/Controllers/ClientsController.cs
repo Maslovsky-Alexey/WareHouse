@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,11 +14,13 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class ClientsController : Controller
     {
-        private readonly IClientService clients;
+        private readonly ISafeClientService safeClientService;
+        private readonly IUnsafeClientService unsafeClientService;
 
-        public ClientsController(IClientService clients)
+        public ClientsController(ISafeClientService safeClientService, IUnsafeClientService unsafeClientService)
         {
-            this.clients = clients;
+            this.safeClientService = safeClientService;
+            this.unsafeClientService = unsafeClientService;
         }
 
         // GET: api/values
@@ -24,7 +28,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task<IEnumerable<Client>> Get()
         {
-            return await clients.GetAll();
+            return await safeClientService.GetAll();
         }
 
         // GET api/values/5
@@ -32,7 +36,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task<Client> Get(int id)
         {
-            var client = await clients.GetItem(id);
+            var client = await safeClientService.GetItem(id);
 
             if (client == null)
                 HttpContext.Response.StatusCode = 404;
@@ -45,7 +49,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task Post([FromBody] Client value)
         {
-            var isSuccess = await clients.AddWithoutRepetition(value);
+            var isSuccess = await unsafeClientService.AddWithoutRepetition(value);
 
             HttpContext.Response.StatusCode = isSuccess ? 201 : 409;
         }
@@ -55,7 +59,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task Delete([FromBody] Client value)
         {
-            var isRemoved = await clients.RemoveClientByName(value);
+            var isRemoved = await unsafeClientService.RemoveClientByName(value);
 
             if (!isRemoved)
                 HttpContext.Response.StatusCode = 404;

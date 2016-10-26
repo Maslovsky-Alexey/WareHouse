@@ -8,7 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Safe
 {
-    public interface ISafeItemService
+    public interface ISafeItemService : ISafeService<Item, Data.Model.Item>
     {
         Task<Item> GetItemByName(string name, bool ignoreCase);
     }

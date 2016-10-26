@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,11 +14,13 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class ItemsController : Controller
     {
-        private readonly IItemService items;
+        private readonly ISafeItemService safeItemService;
+        private readonly IUnsafeItemService unsafeItemService;
 
-        public ItemsController(IItemService items)
+        public ItemsController(ISafeItemService safeItemService, IUnsafeItemService unsafeItemService)
         {
-            this.items = items;
+            this.safeItemService = safeItemService;
+            this.unsafeItemService = unsafeItemService;
         }
 
         // GET: api/values
@@ -24,7 +28,7 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task<IEnumerable<Item>> Get()
         {
-            return await items.GetAll();
+            return await safeItemService.GetAll();
         }
     }
 }

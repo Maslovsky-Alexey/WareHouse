@@ -8,7 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Unsafe
 {
-    public interface IUnsafeSupplyService
+    public interface IUnsafeSupplyService : IUnsafeService<Supply, Data.Model.Supply>
     {
         Task UpdateSupplyStatus(int id, int statusId);
     }

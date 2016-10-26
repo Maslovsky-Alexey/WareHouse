@@ -6,35 +6,45 @@ using WareHouse.Data.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
 using Employee = WareHouse.Domain.Model.Employee;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class AccountService : IAccountService
     {
-        private readonly IClientService clientService;
-        private readonly IEmployeeService employeeService;
+        private readonly ISafeClientService safeClientService;
+        private readonly IUnsafeClientService unsafeClientService;
+
+        private readonly ISafeEmployeeService safeEmployeeService;
+        private readonly IUnsafeEmployeeService unsafeEmployeeService;
+
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly IUserService userService;
+        private readonly ISafeUserService safeUserService;
 
         public AccountService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IUserService userService,
-            IClientService clientService,
-            IEmployeeService employeeService)
+            ISafeUserService safeUserService,
+            ISafeClientService safeClientService, IUnsafeClientService unsafeClientService,
+            ISafeEmployeeService safeEmployeeService, IUnsafeEmployeeService unsafeEmployeeService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
 
-            this.clientService = clientService;
-            this.employeeService = employeeService;
-            this.userService = userService;
+            this.safeClientService = safeClientService;
+            this.unsafeClientService = unsafeClientService;
+
+            this.safeEmployeeService = safeEmployeeService;
+            this.unsafeEmployeeService = unsafeEmployeeService;
+
+            this.safeUserService = safeUserService;
         }
 
         public async Task<UserModel> GetCurrentUser(HttpContext httpContext)
         {
-            var user = await userService.GetUserByName(httpContext.User.Identity.Name, false);
+            var user = await safeUserService.GetUserByName(httpContext.User.Identity.Name, false);
 
             if (user == null)
                 return null;
@@ -51,7 +61,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<UserModel> RegisterClient(RegisterModel model)
         {
-            var client = await clientService.GetClientByName(model.Username, true);
+            var client = await safeClientService.GetClientByName(model.Username, true);
 
             if (client != null && !string.IsNullOrEmpty(client.UserId))
                 return null;
@@ -59,16 +69,16 @@ namespace WareHouse.Domain.Service.ConcreteServices
             var user = await RegisterUserWithRole(model, "client");
 
             if (client == null)
-                await clientService.Add(new Domain.Model.Client {Name = model.Username, UserId = user.Id});   
+                await unsafeClientService.Add(new Domain.Model.Client {Name = model.Username, UserId = user.Id});   
             else
-                await clientService.AssignWithApplicationUser(client.Id, user.Id);
+                await unsafeClientService.AssignWithApplicationUser(client.Id, user.Id);
             
             return await MapToUserModel(user);
         }
 
         public async Task<UserModel> RegisterEmployee(RegisterModel model)
         {
-            var employee = await employeeService.GetEmployeeByName(model.Username, true);
+            var employee = await safeEmployeeService.GetEmployeeByName(model.Username, true);
 
             if (employee != null && !string.IsNullOrEmpty(employee.UserId))
                 return null;
@@ -76,16 +86,16 @@ namespace WareHouse.Domain.Service.ConcreteServices
             var user = await RegisterUserWithRole(model, "employee");
 
             if (employee == null)
-                await employeeService.Add(new Domain.Model.Employee { Name = model.Username, UserId = user.Id });
+                await unsafeEmployeeService.Add(new Domain.Model.Employee { Name = model.Username, UserId = user.Id });
             else
-                await employeeService.AssignWithApplicationUser(employee.Id, user.Id);
+                await unsafeEmployeeService.AssignWithApplicationUser(employee.Id, user.Id);
 
             return await MapToUserModel(user);
         }
 
         public async Task<UserModel> GetUserByName(string username)
         {
-            return await MapToUserModel(await userService.GetUserByName(username, false));
+            return await MapToUserModel(await safeUserService.GetUserByName(username, false));
         }
 
 
@@ -97,10 +107,10 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 await userManager.AddToRoleAsync(await userManager.FindByNameAsync("admin"), "employee");
             }
 
-            await employeeService.Add(new Employee
+            await unsafeEmployeeService.Add(new Employee
             {
                 Name = "Administrator",
-                UserId = (await userService.GetUserByName("admin", false)).Id
+                UserId = (await safeUserService.GetUserByName("admin", false)).Id
             });
         }
 
@@ -114,7 +124,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
             await userManager.AddToRoleAsync(await userManager.FindByNameAsync(model.Username), role);
 
-            return await userService.GetUserByName(model.Username, false);
+            return await safeUserService.GetUserByName(model.Username, false);
         }
 
         private async Task<UserModel> MapToUserModel(ApplicationUser user)
@@ -130,9 +140,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
         private async Task<string> GetUserName(ApplicationUser user)
         {
             if (await UserHasRole(user, "employee"))
-                return (await employeeService.GetEmployeeByIdentityId(user.Id)).Name;
+                return (await safeEmployeeService.GetEmployeeByIdentityId(user.Id)).Name;
             if (await UserHasRole(user, "client"))
-                return (await clientService.GetClientByIdentityId(user.Id)).Name;
+                return (await safeClientService.GetClientByIdentityId(user.Id)).Name;
 
             return null;
         }

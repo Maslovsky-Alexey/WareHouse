@@ -5,7 +5,7 @@ using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IEmployeeService : IService<Employee, Data.Model.Employee>, ISafeEmployeeService, IUnsafeEmployeeService
+    public interface IEmployeeService : ISafeEmployeeService, IUnsafeEmployeeService
     {
 
     }

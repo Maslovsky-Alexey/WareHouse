@@ -8,7 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Safe
 {
-    public interface ISafeItemStatusService
+    public interface ISafeItemStatusService : ISafeService<ItemStatus, Data.Model.ItemStatus>
     {
         Task<ItemStatus> GetStatus(Data.Model.Status status);
     }

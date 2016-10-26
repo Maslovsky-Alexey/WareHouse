@@ -8,7 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Safe
 {
-    public interface ISafeProviderService
+    public interface ISafeProviderService : ISafeService<Provider, Data.Model.Provider>
     {
         Task<Provider> GetProviderByName(string name, bool ignoreCase);
     }

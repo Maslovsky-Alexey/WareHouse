@@ -7,9 +7,12 @@ using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
+
     public interface IService<ServiceModel, EFModel> : ISafeService<ServiceModel, EFModel>, IUnsafeService<ServiceModel, EFModel>
         where EFModel : BaseModel
         where ServiceModel : Model.BaseModel 
     {
+      
+
     }
 }

@@ -4,6 +4,8 @@ using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,11 +14,13 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class OperationsController : Controller
     {
-        private readonly IOperationService operationService;
+        private readonly ISafeOperationService safeOperationService;
+        private readonly IUnsafeOperationService unsafeOperationService;
 
-        public OperationsController(IOperationService operationService)
+        public OperationsController(ISafeOperationService safeOperationService, IUnsafeOperationService unsafeOperationService)
         {
-            this.operationService = operationService;
+            this.safeOperationService = safeOperationService;
+            this.unsafeOperationService = unsafeOperationService;
         }
 
         [Route("AddSupply")]
@@ -24,7 +28,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task AddSupply([FromBody] SupplyViewModel value)
         {
-            var status = await operationService.AddSupply(value);
+            var status = await unsafeOperationService.AddSupply(value);
 
             if (status == WareHouse.Data.Repository.OperationStatus.Error)
                 HttpContext.Response.StatusCode = 500;
@@ -35,7 +39,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task AddOrder([FromBody] OrderViewModel value)
         {
-            var status = await operationService.AddOrder(value);
+            var status = await unsafeOperationService.AddOrder(value);
 
             if (status == WareHouse.Data.Repository.OperationStatus.Error)
                 HttpContext.Response.StatusCode = 500;
@@ -46,7 +50,7 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task ConfirmOrder(int id)
         {
-            await operationService.ConfirmOrder(id);
+            await unsafeOperationService.ConfirmOrder(id);
         }
 
         [Route("ConfirmSupply/{id}")]
@@ -54,7 +58,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task ConfirmSupply(int id)
         {
-            await operationService.ConfirmSupply(id);
+            await unsafeOperationService.ConfirmSupply(id);
         }
 
         [Route("ReturnOrder/{id}")]
@@ -62,7 +66,7 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task ReturnOrder(int id)
         {
-            await operationService.ReturnOrder(id);
+            await unsafeOperationService.ReturnOrder(id);
         }
 
         [Route("ReturnSupply/{id}")]
@@ -70,7 +74,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task ReturnSupply(int id)
         {
-            await operationService.ReturnSupply(id);
+            await unsafeOperationService.ReturnSupply(id);
         }
 
         [Route("AddItemWithoutRepetition")]
@@ -78,7 +82,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task AddItemWithoutRepetition([FromBody] Item value)
         {
-            await operationService.AddItemWithoutRepetition(value);
+            await unsafeOperationService.AddItemWithoutRepetition(value);
         }
     }
 }

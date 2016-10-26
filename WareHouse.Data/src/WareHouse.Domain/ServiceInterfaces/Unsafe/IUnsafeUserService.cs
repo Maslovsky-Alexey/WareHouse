@@ -8,8 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Unsafe
 {
-    public interface IUnsafeEmployeeService : IUnsafeService<Employee, Data.Model.Employee>
+    public interface IUnsafeUserService
     {
-        Task<Employee> AssignWithApplicationUser(int employeeId, string userId);
     }
 }

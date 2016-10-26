@@ -9,7 +9,7 @@ using WareHouse.MyOData;
 
 namespace WareHouse.Domain.ServiceInterfaces.Safe
 {
-    public interface ISafeWarehouseItemService
+    public interface ISafeWarehouseItemService : ISafeService<WarehouseItem, Data.Model.WarehouseItem>
     {
         Task<PageModel> GetPage(int page, MyODataConfigurates config);
 

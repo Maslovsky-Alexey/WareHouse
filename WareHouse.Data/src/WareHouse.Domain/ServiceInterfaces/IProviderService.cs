@@ -5,7 +5,7 @@ using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IProviderService : IService<Provider, Data.Model.Provider>, ISafeProviderService, IUnsafeProviderService
+    public interface IProviderService : ISafeProviderService, IUnsafeProviderService
     {
     }
 }

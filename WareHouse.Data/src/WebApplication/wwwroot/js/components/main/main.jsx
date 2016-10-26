@@ -10,6 +10,9 @@ var ProfileView = require("../profileview/profileview.jsx").ProfileView;
 var Layout = require("../layout/layout.jsx").Layout;
 var ConcreteItemView = require("../concreteitemview/concreteitemview.jsx").ConcreteItemView;
 
+
+
+
 ReactDOM.render((
         <ReactRouter.Router>
             <ReactRouter.Route component={Layout}>

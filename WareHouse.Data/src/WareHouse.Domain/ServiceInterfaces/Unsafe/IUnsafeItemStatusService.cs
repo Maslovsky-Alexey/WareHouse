@@ -8,7 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Unsafe
 {
-    public interface IUnsafeItemStatusService
+    public interface IUnsafeItemStatusService : IUnsafeService<ItemStatus, Data.Model.ItemStatus>
     {
         
     }

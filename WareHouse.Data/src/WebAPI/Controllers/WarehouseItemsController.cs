@@ -6,6 +6,8 @@ using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.MyOData;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,18 +16,20 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class WarehouseItemsController : Controller
     {
-        private readonly IWarehouseItemService warehouseItems;
+        private readonly ISafeWarehouseItemService safeWarehouseItemService;
+        private readonly IUnsafeWarehouseItemService unsafeWarehouseItemService;
 
-        public WarehouseItemsController(IWarehouseItemService warehouseItems)
+        public WarehouseItemsController(ISafeWarehouseItemService safeWarehouseItemService, IUnsafeWarehouseItemService unsafeWarehouseItemService)
         {
-            this.warehouseItems = warehouseItems;
+            this.safeWarehouseItemService = safeWarehouseItemService;
+            this.unsafeWarehouseItemService = unsafeWarehouseItemService;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IEnumerable<WarehouseItemViewModel>> Get()
         {
-            return await warehouseItems.GetAllAsViewModel();
+            return await safeWarehouseItemService.GetAllAsViewModel();
         }
 
 
@@ -34,7 +38,7 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task<PageModel> GetPage(int page, [FromBody] MyODataConfigurates config)
         {
-            return await warehouseItems.GetPage(page, config);
+            return await safeWarehouseItemService.GetPage(page, config);
         }
 
         [Route("GetItemById/{id}")]
@@ -42,7 +46,7 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task<WarehouseItemViewModel> GetItemById(int id)
         {
-            var item = await warehouseItems.GetItemByIdAsViewModel(id);
+            var item = await safeWarehouseItemService.GetItemByIdAsViewModel(id);
 
             if (item == null)
                 HttpContext.Response.StatusCode = 404;

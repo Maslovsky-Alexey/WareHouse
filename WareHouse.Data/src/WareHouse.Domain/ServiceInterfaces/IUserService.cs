@@ -5,8 +5,8 @@ using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IUserService
+    public interface IUserService : ISafeUserService, IUnsafeUserService
     {
-        Task<ApplicationUser> GetUserByName(string name, bool ignoreCase);
+        
     }
 }

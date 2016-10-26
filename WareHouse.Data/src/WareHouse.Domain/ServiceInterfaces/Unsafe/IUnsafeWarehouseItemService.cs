@@ -8,7 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Unsafe
 {
-    public interface IUnsafeWarehouseItemService
+    public interface IUnsafeWarehouseItemService : IUnsafeService<WarehouseItem, Data.Model.WarehouseItem>
     {
         Task AddOrUpdate(WarehouseItem model);
 

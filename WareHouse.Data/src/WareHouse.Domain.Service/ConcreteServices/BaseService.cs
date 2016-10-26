@@ -48,11 +48,6 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return await repository.Count();
         }
 
-        public IEnumerable<ServiceModel> GetAllSync()
-        {
-            return repository.GetAllSync().Select(MapToServiceModel);
-        }
-
         protected EFModel MapToEFModel(ServiceModel model)
         {
             return mapper.MapEF(model);

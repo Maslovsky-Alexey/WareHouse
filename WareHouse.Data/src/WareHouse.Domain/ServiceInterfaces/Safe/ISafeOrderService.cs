@@ -8,7 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Safe
 {
-    public interface ISafeOrderService
+    public interface IUnafeOrderService : ISafeService<Order, Data.Model.Order>
     {
         Task<IEnumerable<OrderViewModel>> GetClientOrders(string clientName);
 

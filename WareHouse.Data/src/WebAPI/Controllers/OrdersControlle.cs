@@ -5,6 +5,7 @@ using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
+using WareHouse.Domain.ServiceInterfaces.Safe;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,11 +14,13 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class OrdersController : Controller
     {
-        private readonly IOrderService items;
+        private readonly IUnafeOrderService safeOrderService;
+        private readonly IUnafeOrderService unsafeOrderService;
 
-        public OrdersController(IOrderService items)
+        public OrdersController(IUnafeOrderService safeOrderService, IUnafeOrderService unsafeOrderService)
         {
-            this.items = items;
+            this.safeOrderService = safeOrderService;
+            this.unsafeOrderService = unsafeOrderService;
         }
 
         // GET: api/values
@@ -26,7 +29,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task<IEnumerable<OrderViewModel>> Get()
         {
-            return await items.GetAllAsViewModel();
+            return await safeOrderService.GetAllAsViewModel();
         }
 
         [Route("GetClientOrders/{clientName}")]
@@ -34,7 +37,7 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task<IEnumerable<OrderViewModel>> GetClientOrders(string clientName)
         {
-            return await items.GetClientOrders(clientName);
+            return await safeOrderService.GetClientOrders(clientName);
         }
     }
 }

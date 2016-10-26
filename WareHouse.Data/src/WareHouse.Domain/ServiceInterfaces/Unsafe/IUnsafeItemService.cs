@@ -8,7 +8,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WareHouse.Domain.ServiceInterfaces.Unsafe
 {
-    public interface IUnsafeItemService
+    public interface IUnsafeItemService : IUnsafeService<Item, Data.Model.Item>
     {
         Task AddWithoutRepetition(Item item);
     }

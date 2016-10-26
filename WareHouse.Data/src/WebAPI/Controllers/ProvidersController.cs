@@ -6,6 +6,8 @@ using WareHouse.Data.EF.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Service.ConcreteServices;
 using Microsoft.AspNetCore.Authorization;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,11 +16,13 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class ProvidersController : Controller
     {
-        private readonly ProviderService providers;
+        private readonly ISafeProviderService safeProviderService;
+        private readonly IUnsafeProviderService unsafeProviderService;
 
-        public ProvidersController(WareHouseDbContext context)
+        public ProvidersController(ISafeProviderService safeProviderService, IUnsafeProviderService unsafeProviderService)
         {
-            providers = new ProviderService(new ProviderRepository(context));
+            this.safeProviderService = safeProviderService;
+            this.unsafeProviderService = unsafeProviderService;
         }
 
         // GET: api/values
@@ -26,7 +30,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task<IEnumerable<Provider>> Get()
         {
-            return await providers.GetAll();
+            return await safeProviderService.GetAll();
         }
 
         // GET api/values/5
@@ -34,7 +38,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task<Provider> Get(int id)
         {
-            return await providers.GetItem(id);
+            return await safeProviderService.GetItem(id);
         }
 
         // POST api/values
@@ -42,7 +46,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task Post([FromBody] Provider value)
         {
-            await providers.AddWithoutRepetition(value);
+            await unsafeProviderService.AddWithoutRepetition(value);
         }
 
         // DELETE api/values/5
@@ -50,7 +54,7 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task Delete([FromBody] Provider value)
         {
-            await providers.RemoveProviderByName(value);
+            await unsafeProviderService.RemoveProviderByName(value);
         }
     }
 }
