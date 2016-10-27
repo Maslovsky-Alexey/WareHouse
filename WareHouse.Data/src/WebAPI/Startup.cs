@@ -82,6 +82,7 @@ namespace WebAPI
 
             containerBuilder.Populate(services);
             ApplicationContainer = containerBuilder.Build();
+            ApplicationContainer.Resolve<LogHelper.ILog>();
 
             var tokenEncryptor = ApplicationContainer.Resolve<IEncryptor>();
 
@@ -102,6 +103,8 @@ namespace WebAPI
 
             containerBuilder.Register(c => CacheManager.Instance).As<ICacheManager>().SingleInstance();
             containerBuilder.RegisterType<LocalCache>().As<ICache>();
+
+            containerBuilder.Register(c => LogHelper.LogHelper.Instance("d:\\log.txt")).As<LogHelper.ILog>().SingleInstance().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
 
             containerBuilder.RegisterType<ClientRepository>().As<BaseRepository<Client>>();
             containerBuilder.RegisterType<ClientService>().As<IUnsafeClientService>();
@@ -153,7 +156,8 @@ namespace WebAPI
 
             containerBuilder.RegisterType<AccountService>().As<IUnsafeAccountService>();
             containerBuilder.RegisterType<AccountService>();
-            containerBuilder.Register(context => context.Resolve<AccountService>()).As<ISafeAccountService>();
+            containerBuilder.Register(context => new AccountProxyService(context.Resolve<AccountService>(), null));
+            containerBuilder.Register(context => context.Resolve<AccountProxyService>()).As<ISafeAccountService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance));
 
             containerBuilder.Register(c => TokenEncryptor.Instance).As<IEncryptor>().SingleInstance();
         }

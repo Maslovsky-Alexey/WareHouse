@@ -8,6 +8,8 @@ using WareHouse.Domain.ServiceInterfaces;
 using Employee = WareHouse.Domain.Model.Employee;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.Domain.ServiceInterfaces.Unsafe;
+using System;
+using System.Collections.Generic;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
@@ -22,6 +24,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ISafeUserService safeUserService;
+
 
         public AccountService(
             UserManager<ApplicationUser> userManager,
@@ -151,5 +154,6 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
             return (await userManager.GetRolesAsync(user)).FirstOrDefault(x => x == role) != null;
         }
+
     }
 }

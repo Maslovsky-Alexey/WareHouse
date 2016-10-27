@@ -13,8 +13,10 @@ using WareHouse.Domain.Service.ProxyServices.Cache;
 
 namespace WareHouse.Domain.Service.ProxyServices
 {
-    public class AccountProxyService : ISafeAccountService
+    public class AccountProxyService : ISafeAccountService, System.IObservable<SignInLogModel>
     {
+        private List<IObserver<SignInLogModel>> subscribers = new List<IObserver<SignInLogModel>>();
+
         private ISafeAccountService safeAccountService;
         private ICache cache;
 
@@ -38,7 +40,31 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<bool> Login(LoginModel model)
         {
-            return await safeAccountService.Login(model);
+            if (!await safeAccountService.Login(model))
+                return false;
+
+            var user = await safeAccountService.GetUserByName(model.Username);
+
+            OnNext(new SignInLogModel
+            {
+                UserName = user.Login,
+                isEmployee = user.isEmployee,
+                FullName = user.Name,
+                DateTime = DateTime.Now
+            });
+
+            return true;
+        }
+
+        public IDisposable Subscribe(IObserver<SignInLogModel> observer)
+        {
+            subscribers.Add(observer);
+            return null;
+        }
+
+        protected void OnNext(SignInLogModel value)
+        {
+            subscribers.ForEach(subscriber => subscriber.OnNext(value));
         }
     }
 }
