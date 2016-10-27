@@ -18,6 +18,7 @@ using WareHouse.Domain.Service.ProxyServices;
 using WareHouse.Domain.ServiceInterfaces.Unsafe;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.Domain.Service.ProxyServices.Cache;
+using WebAPI.EventStream;
 
 namespace WebAPI
 {
