@@ -7,44 +7,47 @@ using WareHouse.Data.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.Service.ConcreteServices;
+using WareHouse.Domain.Service.ProxyServices.Cache;
 using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 
 namespace WareHouse.Domain.Service.ProxyServices
 {
-    public class SupplyProxyService : ISafeSupplyService
+    public class SupplyProxyService : BaseProxyService<Supply, Data.Model.Supply>, ISafeSupplyService
     {
         private ISafeSupplyService safeSupplyService;
 
-
-        public SupplyProxyService(ISafeSupplyService safeSupplyService)
+        public SupplyProxyService(ISafeService<Model.Supply, Data.Model.Supply> safeService, ICache cache) : base(safeService, cache)
         {
-            this.safeSupplyService = safeSupplyService;
+            this.safeSupplyService = (ISafeSupplyService)safeService;
         }
 
-        public async Task<int> Count()
-        {
-            return await safeSupplyService.Count();
-        }
-
-        public async Task<IEnumerable<Supply>> GetAll()
-        {
-            return await safeSupplyService.GetAll();
-        }
 
         public async Task<IEnumerable<SupplyViewModel>> GetAllAsViewModel()
         {
-            return await safeSupplyService.GetAllAsViewModel();
+            var items = (IEnumerable<SupplyViewModel>)cache.Get($"all");
+
+            if (items != null)
+                return items;
+
+
+            items = await safeSupplyService.GetAllAsViewModel();
+            cache.AddOrUpdate($"all", items);
+            return items;
         }
 
-        public async Task<Supply> GetItem(int id)
-        {
-            return await safeSupplyService.GetItem(id);
-        }
 
         public async Task<IEnumerable<SupplyViewModel>> GetProviderSupplies(string providerName)
         {
-            return await safeSupplyService.GetProviderSupplies(providerName);
+            var items = (IEnumerable<SupplyViewModel>)cache.Get($"all{providerName}");
+
+            if (items != null)
+                return items;
+
+
+            items = await safeSupplyService.GetProviderSupplies(providerName);
+            cache.AddOrUpdate($"all{providerName}", items);
+            return items;
         }
     }
 }

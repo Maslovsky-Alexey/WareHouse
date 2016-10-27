@@ -11,58 +11,26 @@ using WareHouse.Domain.ServiceInterfaces.Safe;
 
 namespace WareHouse.Domain.Service.ProxyServices
 {
-    public class ItemProxyService : ISafeItemService, IObserver<Item>
+    public class ItemProxyService : BaseProxyService<Item, Data.Model.Item>, ISafeItemService
     {
         private ISafeItemService safeItemService;
-        private ICache cache;
 
-        public ItemProxyService(ISafeItemService safeItemService, ICache cache)
+        public ItemProxyService(ISafeService<Model.Item, Data.Model.Item> safeService, ICache cache) : base(safeService, cache)
         {
-            this.safeItemService = safeItemService;
-            this.cache = cache;
-        }
-
-        public async Task<int> Count()
-        {
-            return await safeItemService.Count();
-        }
-
-        public async Task<IEnumerable<Item>> GetAll()
-        {
-            var items = (IEnumerable<Item>)cache.Get("all");
-
-            if (items != null)
-                return items;
-
-            items = await safeItemService.GetAll();
-            cache.AddOrUpdate("all", items);
-
-            return items;
-        }
-
-        public async Task<Item> GetItem(int id)
-        {
-            return await safeItemService.GetItem(id);
+            safeItemService = (ISafeItemService)safeService;
         }
 
         public async Task<Item> GetItemByName(string name, bool ignoreCase)
         {
-            return await safeItemService.GetItemByName(name, ignoreCase);
-        }
+            var item = (Item)cache.Get($"^item{name}");
 
-        public void OnCompleted()
-        {
-            throw new NotImplementedException();
-        }
+            if (item != null)
+                return item;
 
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
 
-        public void OnNext(Item value)
-        {
-            cache.Clear();
+            item = await safeItemService.GetItemByName(name, ignoreCase);
+            cache.AddOrUpdate($"^item{name}", item);
+            return item;
         }
     }
 }

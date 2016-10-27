@@ -6,6 +6,7 @@ using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,10 +15,10 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class OrdersController : Controller
     {
-        private readonly IUnafeOrderService safeOrderService;
-        private readonly IUnafeOrderService unsafeOrderService;
+        private readonly ISafeOrderService safeOrderService;
+        private readonly IUnsafeOrderService unsafeOrderService;
 
-        public OrdersController(IUnafeOrderService safeOrderService, IUnafeOrderService unsafeOrderService)
+        public OrdersController(ISafeOrderService safeOrderService, IUnsafeOrderService unsafeOrderService)
         {
             this.safeOrderService = safeOrderService;
             this.unsafeOrderService = unsafeOrderService;

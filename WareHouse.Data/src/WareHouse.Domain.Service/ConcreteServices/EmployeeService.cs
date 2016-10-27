@@ -17,7 +17,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<Employee>  AssignWithApplicationUser(int employeeId, string userId)
         {
-            return MapToServiceModel(await ((EmployeeRepository) repository).AssignWithApplicationUser(employeeId, userId));
+            var employee = MapToServiceModel(await ((EmployeeRepository)repository).AssignWithApplicationUser(employeeId, userId));
+
+            if (employee != null)
+                OnNext(employee);
+
+            return employee;
         }
 
         public async Task<Employee> GetEmployeeByIdentityId(string identityId)

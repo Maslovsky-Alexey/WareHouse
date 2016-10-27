@@ -21,7 +21,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         private readonly ISafeItemStatusService safeItemStatusService;
         private readonly IUnsafeItemStatusService unsafeItemStatusService;
 
-        private readonly IUnafeOrderService safeOrderService;
+        private readonly ISafeOrderService safeOrderService;
         private readonly IUnsafeOrderService unsafeOrderService;
 
         private readonly ISafeSupplyService safeSupplyService;
@@ -35,7 +35,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             ISafeWarehouseItemService safeWarehouseItemService, IUnsafeWarehouseItemService unsafeWarehouseItemService,
             ISafeItemService safeItemService, IUnsafeItemService unsafeItemService,
             ISafeItemStatusService safeItemStatusService, IUnsafeItemStatusService unsafeItemStatusService,
-            IUnafeOrderService safeOrderService, IUnsafeOrderService unsafeOrderService,
+            ISafeOrderService safeOrderService, IUnsafeOrderService unsafeOrderService,
             ISafeSupplyService safeSupplyService, IUnsafeSupplyService unsafeSupplyService)
         {
             this.safeItemService = safeItemService;

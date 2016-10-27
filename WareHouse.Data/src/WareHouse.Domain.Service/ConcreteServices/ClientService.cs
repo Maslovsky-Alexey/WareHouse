@@ -28,7 +28,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (client != null)
                 return false;
 
-            await Add(value);
+            if (await Add(value) == Data.Repository.OperationStatus.Added)
+                OnNext(value);
+
             return true;
         }
 
@@ -39,7 +41,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (removingItem == null)
                 return false;
 
-            await Remove(await GetItem(removingItem.Id));
+            if (await Remove(await GetItem(removingItem.Id)) == Data.Repository.OperationStatus.Removed)
+                OnNext(null);
+
             return true;
         }
 
@@ -50,7 +54,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<Client> AssignWithApplicationUser(int clientId, string userId)
         {
-            return MapToServiceModel(await((ClientRepository)repository).AssignWithApplicationUser(clientId, userId));
+            var a = MapToServiceModel(await ((ClientRepository)repository).AssignWithApplicationUser(clientId, userId));
+
+            if (a != null)
+                OnNext(a);
+
+            return a;
         }
     }
 }

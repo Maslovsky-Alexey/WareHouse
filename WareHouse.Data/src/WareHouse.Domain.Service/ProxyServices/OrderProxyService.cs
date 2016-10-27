@@ -7,45 +7,43 @@ using WareHouse.Data.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.Service.ConcreteServices;
+using WareHouse.Domain.Service.ProxyServices.Cache;
 using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 
 namespace WareHouse.Domain.Service.ProxyServices
 {
-    public class OrderProxyService : IUnafeOrderService
+    public class OrderProxyService : BaseProxyService<Order, Data.Model.Order>, ISafeOrderService
     {
-        private IUnafeOrderService safeOrderService;
+        private ISafeOrderService safeOrderService;
 
-
-        public OrderProxyService(IUnafeOrderService safeOrderService)
+        public OrderProxyService(ISafeService<Model.Order, Data.Model.Order> safeService, ICache cache) : base(safeService, cache)
         {
-            this.safeOrderService = safeOrderService;
-        }
-
-
-        public async Task<int> Count()
-        {
-            return await safeOrderService.Count();
-        }
-
-        public async Task<IEnumerable<Order>> GetAll()
-        {
-            return await safeOrderService.GetAll();
+            this.safeOrderService = (ISafeOrderService)safeService;
         }
 
         public async Task<IEnumerable<OrderViewModel>> GetAllAsViewModel()
         {
-            return await safeOrderService.GetAllAsViewModel();
+            var items = (IEnumerable<OrderViewModel>)cache.Get($"all");
+
+            if (items != null)
+                return items;
+
+            items = await safeOrderService.GetAllAsViewModel();
+            cache.AddOrUpdate($"all", items);
+            return items;
         }
 
         public async Task<IEnumerable<OrderViewModel>> GetClientOrders(string clientName)
         {
-            return await safeOrderService.GetClientOrders(clientName);
-        }
+            var items = (IEnumerable<OrderViewModel>)cache.Get($"all{clientName}");
 
-        public async Task<Order> GetItem(int id)
-        {
-            return await safeOrderService.GetItem(id);
+            if (items != null)
+                return items;
+
+            items = await safeOrderService.GetClientOrders(clientName);
+            cache.AddOrUpdate($"all{clientName}", items);
+            return items;
         }
     }
 }

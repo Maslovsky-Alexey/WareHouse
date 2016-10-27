@@ -26,7 +26,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (provider != null)
                 return;
 
-            await Add(value);
+            if (await Add(value) == Data.Repository.OperationStatus.Added)
+                OnNext(value);
         }
 
         public async Task RemoveProviderByName(Provider value)
@@ -34,7 +35,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
             var removingItem = await GetProviderByName(value.Name, true);
 
             if (removingItem != null)
-                await Remove(await GetItem(removingItem.Id));
+                if (await Remove(await GetItem(removingItem.Id)) == Data.Repository.OperationStatus.Removed)
+                    OnNext(null);
         }
     }
 }

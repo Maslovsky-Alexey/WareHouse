@@ -10,10 +10,8 @@ using System.Collections.Generic;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
-    public class ItemService : BaseService<Item, Data.Model.Item>, IItemService, IObservable<Item>
+    public class ItemService : BaseService<Item, Data.Model.Item>, IItemService
     {
-        private List<IObserver<Item>> subscribers = new List<IObserver<Item>>();
-
         public ItemService(BaseRepository<Data.Model.Item> repository) : base(repository,
             new ModelsMapper<Data.Model.Item, Item>(new ItemMapConfigurator()))
         {
@@ -33,27 +31,6 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public async Task<Item> GetItemByName(string name, bool ignoreCase)
         {
             return MapToServiceModel(await ((ItemRepository) repository).GetItemByName(name, ignoreCase));
-        }
-
-        public void OnCompleted()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnNext(Item value)
-        {
-            subscribers.ForEach(subscriber => subscriber.OnNext(value));
-        }
-
-        public IDisposable Subscribe(IObserver<Item> observer)
-        {
-            subscribers.Add(observer);
-            return null;
         }
     }
 }

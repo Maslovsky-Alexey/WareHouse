@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
@@ -9,10 +10,12 @@ using WareHouse.Domain.ServiceInterfaces;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
-    public class BaseService<ServiceModel, EFModel> : IService<ServiceModel, EFModel>
+    public class BaseService<ServiceModel, EFModel> : IService<ServiceModel, EFModel>, IObservable<ServiceModel>
         where EFModel : BaseModel
         where ServiceModel : Model.BaseModel
     {
+        protected List<IObserver<ServiceModel>> subscribers = new List<IObserver<ServiceModel>>();
+
         private readonly ModelsMapper<EFModel, ServiceModel> mapper;
         protected BaseRepository<EFModel> repository;
 
@@ -56,6 +59,17 @@ namespace WareHouse.Domain.Service.ConcreteServices
         protected ServiceModel MapToServiceModel(EFModel model)
         {
             return mapper.MapService(model);
+        }
+
+        public IDisposable Subscribe(IObserver<ServiceModel> observer)
+        {
+            subscribers.Add(observer);
+            return null;
+        }
+
+        protected void OnNext(ServiceModel value)
+        {
+            subscribers.ForEach(subscriber => subscriber.OnNext(value));
         }
     }
 }

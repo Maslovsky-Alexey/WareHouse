@@ -7,7 +7,7 @@ using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IOrderService : IUnafeOrderService, IUnsafeOrderService
+    public interface IOrderService : ISafeOrderService, IUnsafeOrderService
     {
     }
 }

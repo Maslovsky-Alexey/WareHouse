@@ -100,7 +100,8 @@ namespace WebAPI
             containerBuilder.Register(context => { return new WareHouseDbContext(builder.Options); })
                 .InstancePerDependency();
 
-            containerBuilder.Register(c => LocalCache.Instance).As<ICache>().SingleInstance();
+            containerBuilder.Register(c => CacheManager.Instance).As<ICacheManager>().SingleInstance();
+            containerBuilder.RegisterType<LocalCache>().As<ICache>();
 
             containerBuilder.RegisterType<ClientRepository>().As<BaseRepository<Client>>();
             containerBuilder.RegisterType<ClientService>().As<IUnsafeClientService>();
@@ -108,8 +109,9 @@ namespace WebAPI
 
             containerBuilder.RegisterType<ItemRepository>().As<BaseRepository<Item>>();
             containerBuilder.RegisterType<ItemService>().As<IUnsafeItemService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance));
-            containerBuilder.Register(context => new ItemProxyService(new ItemService(context.Resolve<BaseRepository<Item>>()), context.Resolve<ICache>()))
-                .As<ISafeItemService>().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
+            containerBuilder.Register(context => new ItemProxyService(new ItemService(context.Resolve<BaseRepository<Item>>()), 
+                context.Resolve<ICacheManager>().AddOrGetExistSection("ItemService", context.Resolve<ICache>())));
+            containerBuilder.Register(context => context.Resolve<ItemProxyService>()).As<ISafeItemService>().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
 
             containerBuilder.RegisterType<ProviderRepository>().As<BaseRepository<Provider>>();
             containerBuilder.RegisterType<ProviderService>().As<IUnsafeProviderService>();
@@ -132,12 +134,17 @@ namespace WebAPI
             containerBuilder.Register(context => new UserService(context.Resolve<IUserRepository>())).As<ISafeUserService>();
 
             containerBuilder.RegisterType<OrderRepository>().As<BaseRepository<Order>>();
-            containerBuilder.RegisterType<OrderService>().As<IUnsafeOrderService>();
-            containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>())).As<IUnafeOrderService>();
+            containerBuilder.RegisterType<OrderService>().As<IUnsafeOrderService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance)); ;
+            containerBuilder.Register(context => new OrderProxyService(new OrderService(context.Resolve<BaseRepository<Order>>()),
+                context.Resolve<ICacheManager>().AddOrGetExistSection("OrderService", context.Resolve<ICache>())));
+            containerBuilder.Register(context => context.Resolve<OrderProxyService>()).As<ISafeOrderService>().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
+
 
             containerBuilder.RegisterType<SupplyRepository>().As<BaseRepository<Supply>>();
-            containerBuilder.RegisterType<SupplyService>().As<IUnsafeSupplyService>();
-            containerBuilder.Register(context => new SupplyService(context.Resolve<BaseRepository<Supply>>())).As<ISafeSupplyService>();
+            containerBuilder.RegisterType<SupplyService>().As<IUnsafeSupplyService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance));
+            containerBuilder.Register(context => new SupplyProxyService(new SupplyService(context.Resolve<BaseRepository<Supply>>()),
+                context.Resolve<ICacheManager>().AddOrGetExistSection("SupplyService", context.Resolve<ICache>())));
+            containerBuilder.Register(context => context.Resolve<SupplyProxyService>()).As<ISafeSupplyService>().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
 
 
             containerBuilder.RegisterType<OperationService>().As<IUnsafeOperationService>();

@@ -7,45 +7,43 @@ using WareHouse.Data.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.Service.ConcreteServices;
+using WareHouse.Domain.Service.ProxyServices.Cache;
 using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 
 namespace WareHouse.Domain.Service.ProxyServices
 {
-    public class ClientProxyService : ISafeClientService
+    public class ClientProxyService : BaseProxyService<Client, Data.Model.Client>, ISafeClientService
     {
         private ISafeClientService safeClientService;
 
-
-        public ClientProxyService(ISafeClientService safeClientService)
+        public ClientProxyService(ISafeService<Model.Client, Data.Model.Client> safeService, ICache cache) : base(safeService, cache)
         {
-            this.safeClientService = safeClientService;
-        }      
-
-        public async Task<int> Count()
-        {
-            return await safeClientService.Count();
-        }
-
-        public async Task<IEnumerable<Client>> GetAll()
-        {
-            return await safeClientService.GetAll();
+            this.safeClientService = (ISafeClientService)safeService;
         }
 
         public async Task<Client> GetClientByIdentityId(string identityId)
         {
-            return await safeClientService.GetClientByIdentityId(identityId);
+            var client = (Client)cache.Get($"id{identityId}");
+
+            if (client != null)
+                return client;
+
+            client = await safeClientService.GetClientByIdentityId(identityId);
+            cache.AddOrUpdate($"id{identityId}", client);
+            return client;
         }
 
         public async Task<Client> GetClientByName(string name, bool ignoreCase)
         {
-            return await safeClientService.GetClientByName(name, ignoreCase);
-        }
+            var client = (Client)cache.Get($"name{name}");
 
-        public async Task<Client> GetItem(int id)
-        {
-            return await safeClientService.GetItem(id);
-        }
+            if (client != null)
+                return client;
 
+            client = await safeClientService.GetClientByName(name, ignoreCase);
+            cache.AddOrUpdate($"name{name}", client);
+            return client;
+        }
     }
 }

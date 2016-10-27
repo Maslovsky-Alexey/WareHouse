@@ -33,11 +33,13 @@ namespace WareHouse.Domain.Service.ConcreteServices
             }
             
             await UpdateCount(item.Id, model.Count);
+            OnNext(null);
         }
 
         public async Task UpdateCount(int warehouseItemId, int deltaCount)
         {
             await warehouseItemRepository.UpdateCount(warehouseItemId, deltaCount);
+            OnNext(null);
         }
 
         public async Task<IEnumerable<WarehouseItemViewModel>> GetAllAsViewModel()

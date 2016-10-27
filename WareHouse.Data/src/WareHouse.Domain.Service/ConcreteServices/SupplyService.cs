@@ -30,6 +30,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public async Task UpdateSupplyStatus(int id, int statusId)
         {
             await supplyRepository.UpdateSupplyStatus(id, statusId);
+            OnNext(null);
         }
 
         public async Task<IEnumerable<SupplyViewModel>> GetProviderSupplies(string providerName)

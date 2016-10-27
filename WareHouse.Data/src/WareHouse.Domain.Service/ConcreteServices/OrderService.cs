@@ -31,6 +31,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public async Task UpdateOrderStatus(int id, int statusId)
         {
             await orderRepository.UpdateOrderStatus(id, statusId);
+            OnNext(null);
         }
 
         public async Task<IEnumerable<OrderViewModel>> GetClientOrders(string clientName)
