@@ -7,7 +7,7 @@ using WareHouse.Domain.Model.ViewModel;
 
 namespace WebAPI.LogHelper
 {
-    public class LogHelper : ILog, IObserver<SignInLogModel>
+    public class LogHelper : ILog, IObserver<SignInLogModel> // TODO: Это общая логика приложения, этот класс не должен находится в сборке webapi.
     {
         public string FileName { get; private set; }
 

@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
             this.unsafeOperationService = unsafeOperationService;
         }
 
-        [Route("AddSupply")]
+        [Route("AddSupply")] //TODO: URI не должен содержать глаголы, это должна быть сущность. А действие, которое нужно выполнить, задается http мотодом. Вот краткая статейка https://tproger.ru/translations/http-api-design-guide/.
         [HttpPost]
         [Authorize(Roles = "employee")]
         public async Task AddSupply([FromBody] SupplyViewModel value)
@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
             var status = await unsafeOperationService.AddSupply(value);
 
             if (status == WareHouse.Data.Repository.OperationStatus.Error)
-                HttpContext.Response.StatusCode = 500;
+                HttpContext.Response.StatusCode = 500; //TODO: Даже если в ветви одна строка кода, лучше оборачивать ее в блок {}.
         }
 
         [Route("AddOrder")]
@@ -72,7 +72,7 @@ namespace WebAPI.Controllers
         [Route("ReturnSupply/{id}")]
         [HttpPut("{id}")]
         [Authorize(Roles = "employee")]
-        public async Task ReturnSupply(int id)
+        public async Task ReturnSupply(int id) //TODO: 404 здесь не может быть?
         {
             await unsafeOperationService.ReturnSupply(id);
         }

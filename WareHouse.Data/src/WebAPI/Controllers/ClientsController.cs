@@ -39,9 +39,11 @@ namespace WebAPI.Controllers
             var client = await safeClientService.GetItem(id);
 
             if (client == null)
-                HttpContext.Response.StatusCode = 404;
+            {
+                HttpContext.Response.StatusCode = 404; //TODO: Можно использовать использовать this.NotFound().
+            }
 
-            return client;
+            return client; //TODO: Выпопление этого кода не нужно, если условие выше true.
         }
 
         // POST api/values
@@ -50,8 +52,7 @@ namespace WebAPI.Controllers
         public async Task Post([FromBody] Client value)
         {
             var isSuccess = await unsafeClientService.AddWithoutRepetition(value);
-
-            HttpContext.Response.StatusCode = isSuccess ? 201 : 409;
+            HttpContext.Response.StatusCode = isSuccess ? 201 : 409; //TODO: Лучше использовать this.Request.CreateResponse
         }
 
         // DELETE api/values/5
