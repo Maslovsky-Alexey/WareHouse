@@ -38,7 +38,7 @@ namespace WareHouse.Data.EF.Repository
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message + '\n' + e.InnerException);
+                Console.WriteLine(e.Message + '\n' + e.InnerException); //TODO: Консоль - слишком частная привязка, для этого нужно использовать объект логгирования, который уже будет знать, куда это записать.
                 return OperationStatus.Error;
             }
 

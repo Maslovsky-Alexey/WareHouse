@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
 
 
         [Route("GetPage/{page}")]
-        [HttpGet("{page}")]
+        [HttpGet("{page}")] // TODO: пэйджинг лучше передавать через query
         [Authorize]
         public async Task<PageModel> GetPage(int page, [FromBody] MyODataConfigurates config)
         {

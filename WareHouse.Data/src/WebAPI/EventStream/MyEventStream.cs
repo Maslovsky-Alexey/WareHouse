@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace WebAPI.EventStream
 {
-    public class MyEventStream
+    public class MyEventStream // TODO: Это общая логика приложения, этот класс не должен находится в сборке webapi.
     {
         private static MyEventStream sender;
-        private List<KeyValue> observebles;
-        private List<KeyValue> subscribers;
+        private readonly List<KeyValue> observebles;
+        private readonly List<KeyValue> subscribers;
 
         private MyEventStream()
         {
@@ -21,7 +21,7 @@ namespace WebAPI.EventStream
         {
             get
             {
-                if (sender == null)
+                if (sender == null) // TODO: Не потокобезопасно
                     sender = new MyEventStream();
 
                 return sender;
@@ -52,7 +52,7 @@ namespace WebAPI.EventStream
                 .Select(x => x.Value as IObservable<T>)
                 .ToList();
 
-            if (list.Count == 0)
+            if (list.Count == 0) // TODO: В асинхронном приложении нельзя гарантировать порядок выполения кода, если наблюдаемый объект зарегистрируется позже, то этот наблюдатель на него не подпишится.
                 return;
 
             list.ForEach(item => item.Subscribe(observer));

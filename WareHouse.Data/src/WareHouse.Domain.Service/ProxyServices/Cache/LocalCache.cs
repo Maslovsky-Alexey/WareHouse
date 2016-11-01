@@ -17,7 +17,7 @@ namespace WareHouse.Domain.Service.ProxyServices.Cache
             memoryCache.Set(key, item);
         }
 
-        public object Get(string key)
+        public object Get(string key) // TODO: Сделать generic методом.
         {
             return memoryCache.Get<object>(key);
         }

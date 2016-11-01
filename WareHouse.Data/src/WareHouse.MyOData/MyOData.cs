@@ -96,7 +96,7 @@ namespace WareHouse.MyOData
                             item.GetType()
                                 .GetTypeInfo()
                                 .GetProperty(config.OrderBy,
-                                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
+                                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) // TODO: Вызовы с отображением повторяются, лучше сделать метод расширения над object.
                                 .GetValue(item, null));
             else
                 result =
