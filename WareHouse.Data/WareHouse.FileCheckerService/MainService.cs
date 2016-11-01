@@ -8,14 +8,17 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using WareHouse.FileCheckerService.APIMediator;
 using WareHouse.FileCheckerService.FileWatcher;
+using WareHouse.FileCheckerService.Models.APIModel;
 using WareHouse.FileCheckerService.Repositories;
 
 namespace WareHouse.FileCheckerService
 {
     public partial class MainService : ServiceBase
     {
-        RuntimeCsvFileWatcher watcher;
+        private ItemsCsvFileWatcher watcherItems;
+        private OrdersCsvFileWatcher watcherOrders;
 
         public MainService()
         {
@@ -39,12 +42,13 @@ namespace WareHouse.FileCheckerService
         }
 
 
-        private Task StartUpConfigurateAsync()
+        private void StartUpConfigurateAsync()
         {
-            return Task.Factory.StartNew(() =>
+            Task.Factory.StartNew(() =>
             {
-                watcher = new RuntimeCsvFileWatcher(@"D:\in", new ChangeRepository(new Context.HistoryDbContext()));
-            });
+                watcherOrders = new OrdersCsvFileWatcher(@"D:\in\orders", new ChangeRepository(new Context.HistoryDbContext()), new OrdersAPIMediator());
+                watcherItems = new ItemsCsvFileWatcher(@"D:\in\items", new ChangeRepository(new Context.HistoryDbContext()), new ItemsAPIMediator());                      
+            });     
         }
 
     }

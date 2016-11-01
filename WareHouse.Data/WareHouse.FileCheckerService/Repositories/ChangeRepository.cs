@@ -36,6 +36,9 @@ namespace WareHouse.FileCheckerService.Repositories
 
         public DateTime GetDateTimeLastChange()
         {
+            if (table.Count() <= 0)
+                return DateTime.MinValue;
+
             return table.Max(x => x.LastChange);
         }
 

@@ -4,24 +4,40 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WareHouse.FileCheckerService.APIMediator.Interfaces;
 using WareHouse.FileCheckerService.Repositories.Interfaces;
 
 namespace WareHouse.FileCheckerService.FileWatcher
 {
-    public class RuntimeCsvFileWatcher
+    public abstract class RuntimeCsvFileWatcher<TCsvModel, TAPIModel>
+        where TCsvModel : class
+        where TAPIModel : class
     {
-        private readonly IChangeRepository changeRepository;
-        private FileSystemWatcher watcher;
-        private string folder;
+        protected readonly IChangeRepository changeRepository;
+        protected readonly IMediator<TAPIModel> mediator;
+        private Mapper.ModelsMapper<TCsvModel, TAPIModel> mapper;
 
-        public RuntimeCsvFileWatcher(string folder, IChangeRepository changeRepository)
+        protected FileSystemWatcher watcher;
+        protected string folder;
+
+        public RuntimeCsvFileWatcher(string folder, IChangeRepository changeRepository, IMediator<TAPIModel> mediator, Mapper.ModelsMapper<TCsvModel, TAPIModel> mapper)
         {
+            this.mapper = mapper;
+
             this.folder = folder;
 
             this.changeRepository = changeRepository;
-            FileSystemWatcher watcher = new FileSystemWatcher(this.folder, "*.csv");
+            this.mediator = mediator;
 
-            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite| NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            AddAllChanges(folder);
+            ConfigurateFileWathcer();
+        }
+
+        private void ConfigurateFileWathcer()
+        {
+            watcher = new FileSystemWatcher(this.folder, "*.csv");
+
+            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
             watcher.Changed += Watcher_Changed;
             watcher.Created += Watcher_Created;
@@ -37,29 +53,59 @@ namespace WareHouse.FileCheckerService.FileWatcher
 
         private void Watcher_Created(object sender, FileSystemEventArgs e)
         {
+            if (!IsFisrtTimeChange(e.FullPath))
+                return;
+
             AddChangeNow(e.FullPath);
         }
 
         private void Watcher_Changed(object sender, FileSystemEventArgs e)
         {
+            if (!IsFisrtTimeChange(e.FullPath))
+                return;
+
             AddChangeNow(e.FullPath);
         }
-
+       
         private OperationStatus AddChangeNow(string fullpath)
         {
+            SendChangesToServer(fullpath);
             return changeRepository.AddOrUpdate(new Models.ChangeModel
             {
-                LastChange = DateTime.Now,
+                LastChange = File.GetLastWriteTime(fullpath),
                 FullPath = fullpath
             });
         }
 
-        private void CheckFiles()
+        private bool IsFisrtTimeChange(string path)
         {
-            var lastChange = changeRepository.GetDateTimeLastChange();
+            var item = changeRepository.GetByFullPath(path);
 
+            if (item == null || item.LastChange != File.GetLastWriteTime(path))
+                return true;
 
+            return false;
+        }
 
+        protected void SendChangesToServer(string fullpath)
+        {
+            var a = new CsvParser.CsvParser().Parse<TCsvModel>(File.ReadAllText(fullpath));
+
+            foreach (var item in a)
+                mediator.AddItem(mapper.MapService(item));
+        }
+
+        private void AddAllChanges(string path)
+        {
+            if (File.GetLastWriteTime(folder) <= changeRepository.GetDateTimeLastChange())
+                return;
+
+            foreach (var dir in Directory.GetDirectories(path))
+                AddAllChanges(dir);
+
+            foreach (var file in Directory.GetFiles(path, "*.csv"))
+                if (File.GetLastAccessTime(file) > (changeRepository.GetByFullPath(file)?.LastChange ?? DateTime.MinValue))
+                    AddChangeNow(file);
         }
     }
 }
