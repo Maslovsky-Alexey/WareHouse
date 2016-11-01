@@ -9,8 +9,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class ProviderService : BaseService<Provider, Data.Model.Provider>, IProviderService
     {
-        public ProviderService(BaseRepository<Data.Model.Provider> repository) : base(repository,
-            new ModelsMapper<Data.Model.Provider, Provider>(new ProviderMapConfigurator()))
+        public ProviderService(BaseRepository<Data.Model.Provider> repository, IMapConfigurator mapConfigurator) : base(repository,
+            new ModelsMapper<Data.Model.Provider, Provider>(mapConfigurator))
         {
         }
 

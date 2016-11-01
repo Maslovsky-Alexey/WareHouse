@@ -15,9 +15,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
     {
         private readonly IOrderRepository orderRepository;
 
-        public OrderService(BaseRepository<Data.Model.Order> repository)
+        public OrderService(BaseRepository<Data.Model.Order> repository, IMapConfigurator mapConfigurator)
             : base(repository,
-                new ModelsMapper<Data.Model.Order, Order>(new OrderMapConfigurator()))
+                new ModelsMapper<Data.Model.Order, Order>(mapConfigurator))
         {
             orderRepository = (IOrderRepository) repository;
         }

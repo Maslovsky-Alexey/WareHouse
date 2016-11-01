@@ -13,8 +13,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
     {
         private readonly IItemStatusRepository itemStatusRepository;
 
-        public ItemStatusService(BaseRepository<Data.Model.ItemStatus> repository) : base(repository,
-            new ModelsMapper<Data.Model.ItemStatus, ItemStatus>(new ItemStatusMapConfigurator()))
+        public ItemStatusService(BaseRepository<Data.Model.ItemStatus> repository, IMapConfigurator mapConfigurator) : base(repository,
+            new ModelsMapper<Data.Model.ItemStatus, ItemStatus>(mapConfigurator))
         {
             itemStatusRepository = (IItemStatusRepository) repository;
         }

@@ -21,8 +21,12 @@ namespace WebAPI.EventStream
         {
             get
             {
-                if (sender == null) // TODO: Не потокобезопасно
-                    sender = new MyEventStream();
+                lock(sender)
+                {
+                    if (sender == null)
+                        sender = new MyEventStream();
+                }
+
 
                 return sender;
             }
@@ -52,7 +56,7 @@ namespace WebAPI.EventStream
                 .Select(x => x.Value as IObservable<T>)
                 .ToList();
 
-            if (list.Count == 0) // TODO: В асинхронном приложении нельзя гарантировать порядок выполения кода, если наблюдаемый объект зарегистрируется позже, то этот наблюдатель на него не подпишится.
+            if (list.Count == 0)
                 return;
 
             list.ForEach(item => item.Subscribe(observer));

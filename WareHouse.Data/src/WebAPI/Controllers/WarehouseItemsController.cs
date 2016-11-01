@@ -49,7 +49,7 @@ namespace WebAPI.Controllers
             var item = await safeWarehouseItemService.GetItemByIdAsViewModel(id);
 
             if (item == null)
-                HttpContext.Response.StatusCode = 404;
+                NotFound();
 
             return item;
         }

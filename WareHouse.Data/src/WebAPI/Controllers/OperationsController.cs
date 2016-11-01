@@ -31,7 +31,9 @@ namespace WebAPI.Controllers
             var status = await unsafeOperationService.AddSupply(value);
 
             if (status == WareHouse.Data.Repository.OperationStatus.Error)
-                HttpContext.Response.StatusCode = 500; //TODO: Даже если в ветви одна строка кода, лучше оборачивать ее в блок {}.
+            {
+                HttpContext.Response.StatusCode = 500;
+            }         
         }
 
         [Route("AddOrder")]

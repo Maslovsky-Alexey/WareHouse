@@ -12,8 +12,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class ItemService : BaseService<Item, Data.Model.Item>, IItemService
     {
-        public ItemService(BaseRepository<Data.Model.Item> repository) : base(repository,
-            new ModelsMapper<Data.Model.Item, Item>(new ItemMapConfigurator()))
+        public ItemService(BaseRepository<Data.Model.Item> repository, IMapConfigurator mapConfigurator) : base(repository,
+            new ModelsMapper<Data.Model.Item, Item>(mapConfigurator))
         {
         }
 

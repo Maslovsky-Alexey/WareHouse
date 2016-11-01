@@ -92,21 +92,11 @@ namespace WareHouse.MyOData
             if (config.IsOrderAsceneding)
                 result =
                     result.OrderBy(
-                        item =>
-                            item.GetType()
-                                .GetTypeInfo()
-                                .GetProperty(config.OrderBy,
-                                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) // TODO: Вызовы с отображением повторяются, лучше сделать метод расширения над object.
-                                .GetValue(item, null));
+                        item => item.GetValueFromPublicProperyWithIgnoreCase(config.OrderBy));
             else
                 result =
                     result.OrderByDescending(
-                        item =>
-                            item.GetType()
-                                .GetTypeInfo()
-                                .GetProperty(config.OrderBy,
-                                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
-                                .GetValue(item, null));
+                        item => item.GetValueFromPublicProperyWithIgnoreCase(config.OrderBy));
 
             return result;
         }

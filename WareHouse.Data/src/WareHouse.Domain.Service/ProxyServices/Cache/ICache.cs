@@ -11,7 +11,7 @@ namespace WareHouse.Domain.Service.ProxyServices.Cache
 
         void Remove(string key);
 
-        object Get(string key);
+        T Get<T>(string key);
 
         void Clear();
     }

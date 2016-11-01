@@ -10,8 +10,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class EmployeeService : BaseService<Employee, Data.Model.Employee>, IEmployeeService
     {
-        public EmployeeService(BaseRepository<Data.Model.Employee> repository) : base(repository,
-            new ModelsMapper<Data.Model.Employee, Employee>(new EmployeeMapConfigurator()))
+        public EmployeeService(BaseRepository<Data.Model.Employee> repository, IMapConfigurator mapConfigurator) : base(repository,
+            new ModelsMapper<Data.Model.Employee, Employee>(mapConfigurator))
         {
         }
 

@@ -15,8 +15,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
     {
         private readonly ISupplyRepository supplyRepository;
 
-        public SupplyService(BaseRepository<Data.Model.Supply> repository) : base(repository,
-            new ModelsMapper<Data.Model.Supply, Supply>(new SupplyMapConfigurator()))
+        public SupplyService(BaseRepository<Data.Model.Supply> repository, IMapConfigurator mapConfigurator) : base(repository,
+            new ModelsMapper<Data.Model.Supply, Supply>(mapConfigurator))
         {
             supplyRepository = (ISupplyRepository) repository;
         }

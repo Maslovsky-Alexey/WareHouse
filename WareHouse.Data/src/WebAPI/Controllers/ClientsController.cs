@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
+
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebAPI.Controllers
@@ -40,10 +41,11 @@ namespace WebAPI.Controllers
 
             if (client == null)
             {
-                HttpContext.Response.StatusCode = 404; //TODO: Можно использовать использовать this.NotFound().
+                NotFound();
+                return null;
             }
 
-            return client; //TODO: Выпопление этого кода не нужно, если условие выше true.
+            return client;
         }
 
         // POST api/values
@@ -63,7 +65,7 @@ namespace WebAPI.Controllers
             var isRemoved = await unsafeClientService.RemoveClientByName(value);
 
             if (!isRemoved)
-                HttpContext.Response.StatusCode = 404;
+                NotFound();
         }
     }
 }

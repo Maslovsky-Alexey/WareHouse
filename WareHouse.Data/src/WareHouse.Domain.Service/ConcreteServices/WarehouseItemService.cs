@@ -16,8 +16,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
     {
         private readonly IWarehouseItemRepository warehouseItemRepository;
 
-        public WarehouseItemService(BaseRepository<Data.Model.WarehouseItem> repository) : base(repository,
-            new ModelsMapper<Data.Model.WarehouseItem, WarehouseItem>(new WarehouseItemMapConfigurator()))
+        public WarehouseItemService(BaseRepository<Data.Model.WarehouseItem> repository, IMapConfigurator mapConfigurator) : base(repository,
+            new ModelsMapper<Data.Model.WarehouseItem, WarehouseItem>(mapConfigurator))
         {
             warehouseItemRepository = (IWarehouseItemRepository) repository;
         }

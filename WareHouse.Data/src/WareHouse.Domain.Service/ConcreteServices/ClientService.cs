@@ -10,9 +10,10 @@ namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class ClientService : BaseService<Client, Data.Model.Client>, IClientService
     {
-        public ClientService(BaseRepository<Data.Model.Client> repository) : base(repository,
-            new ModelsMapper<Data.Model.Client, Client>(new ClientMapConfigurator())) // TODO: Почему эти параметры указаны явно, а не в DI контейнере?
+        public ClientService(BaseRepository<Data.Model.Client> repository, IMapConfigurator mapConfigurator) : base(repository,
+            new ModelsMapper<Data.Model.Client, Client>(mapConfigurator))
         {
+
         }
 
         public async Task<Client> GetClientByName(string name, bool ignoreCase)

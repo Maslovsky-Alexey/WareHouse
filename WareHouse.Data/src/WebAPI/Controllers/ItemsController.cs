@@ -15,12 +15,10 @@ namespace WebAPI.Controllers
     public class ItemsController : Controller
     {
         private readonly ISafeItemService safeItemService;
-        private readonly IUnsafeItemService unsafeItemService; //TODO: Он не используется в коде, нужно сделать clean up кода. Наличие лишних зависимостей усложняет восприятие и гибкость кода.
 
-        public ItemsController(ISafeItemService safeItemService, IUnsafeItemService unsafeItemService)
+        public ItemsController(ISafeItemService safeItemService)
         {
             this.safeItemService = safeItemService;
-            this.unsafeItemService = unsafeItemService;
         }
 
         // GET: api/values

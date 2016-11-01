@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
             var result = await safeAccountService.Login(model);
 
             if (result)
-                HeadersHelper.AddAuthorizationHeader(HttpContext, encryptor.Encrypt(model.Username));
+                HttpContext.AddAuthorizationHeader(encryptor.Encrypt(model.Username));
             else
                 HttpContext.Response.StatusCode = 401;
 
@@ -68,7 +68,7 @@ namespace WebAPI.Controllers
             var user = await safeAccountService.GetUserByName(username);
 
             if (user == null)
-                HttpContext.Response.StatusCode = 404;
+                NotFound();
 
             return user;
         }
