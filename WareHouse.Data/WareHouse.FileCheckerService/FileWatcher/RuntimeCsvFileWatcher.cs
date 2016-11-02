@@ -14,13 +14,13 @@ namespace WareHouse.FileCheckerService.FileWatcher
         where TAPIModel : class
     {
         protected readonly IChangeRepository changeRepository;
-        protected readonly IMediator<TAPIModel> mediator;
+        protected readonly ISenderAPI<TAPIModel> mediator;
         private Mapper.ModelsMapper<TCsvModel, TAPIModel> mapper;
 
         protected FileSystemWatcher watcher;
         protected string folder;
 
-        public RuntimeCsvFileWatcher(string folder, IChangeRepository changeRepository, IMediator<TAPIModel> mediator, Mapper.ModelsMapper<TCsvModel, TAPIModel> mapper)
+        public RuntimeCsvFileWatcher(string folder, IChangeRepository changeRepository, ISenderAPI<TAPIModel> mediator, Mapper.ModelsMapper<TCsvModel, TAPIModel> mapper)
         {
             this.mapper = mapper;
 

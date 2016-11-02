@@ -7,7 +7,8 @@ using WareHouse.FileCheckerService.Models.APIModel;
 
 namespace WareHouse.FileCheckerService.APIMediator.Interfaces
 {
-    public interface IItemsMediator : IMediator<ItemAPIModel>
+    public interface IAuthorizationAPI
     {
+        string Login(LoginAPIModel model);
     }
 }

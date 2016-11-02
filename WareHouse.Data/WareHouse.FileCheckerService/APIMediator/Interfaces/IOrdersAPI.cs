@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WareHouse.FileCheckerService.Models.APIModel;
 
 namespace WareHouse.FileCheckerService.APIMediator.Interfaces
 {
-    public interface IMediator<T>
-        where T : class
+    public interface IOrdersAPI : ISenderAPI<OrderAPIModel>
     {
-        void AddItem(T item);
     }
 }

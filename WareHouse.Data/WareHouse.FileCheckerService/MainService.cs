@@ -46,8 +46,14 @@ namespace WareHouse.FileCheckerService
         {
             Task.Factory.StartNew(() =>
             {
-                watcherOrders = new OrdersCsvFileWatcher(@"D:\in\orders", new ChangeRepository(new Context.HistoryDbContext()), new OrdersAPIMediator());
-                watcherItems = new ItemsCsvFileWatcher(@"D:\in\items", new ChangeRepository(new Context.HistoryDbContext()), new ItemsAPIMediator());                      
+                var token = new AuthorizationAPI(new BaseMediator()).Login(new LoginAPIModel
+                {
+                    Username = new ConfigurationManager().GetValue("Login"),
+                    Password = new ConfigurationManager().GetValue("Password"),
+                });
+                        
+                watcherOrders = new OrdersCsvFileWatcher(new ConfigurationManager().GetValue("ItemsFolder"), new ChangeRepository(new Context.HistoryDbContext()), new OrdersAPI(new BaseMediator(), token));
+                watcherItems = new ItemsCsvFileWatcher(new ConfigurationManager().GetValue("OrdersFolder"), new ChangeRepository(new Context.HistoryDbContext()), new ItemsAPI(new BaseMediator(), token));                  
             });     
         }
 

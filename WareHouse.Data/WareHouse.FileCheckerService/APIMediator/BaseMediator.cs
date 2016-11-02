@@ -8,34 +8,29 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using WareHouse.FileCheckerService.APIMediator.Interfaces;
+using System.Collections.Specialized;
 
 namespace WareHouse.FileCheckerService.APIMediator
 {
-    public abstract class BaseMediator<T> : IMediator<T>
-        where T : class
+    public class BaseMediator : IBaseMediator
     {
-        private string url;
-        private string additionAction;
 
-        public BaseMediator(string url, string additionAction)
+        public BaseMediator()
         {
-            this.url = url;
-            this.additionAction = additionAction;
         }
 
-        protected void SendItem(string action, T item)
-        {
-            SendPostRequest(url + "/" + action, JsonConvert.SerializeObject(item));
-        }
-
-        protected HttpWebResponse SendPostRequest(string uri, string content)
+        public HttpWebResponse SendRequest(string uri, string type, string body, string contentType, string authorizationToken)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
-            httpWebRequest.ContentType = "application/json; charset=UTF-8";
-            httpWebRequest.Headers.Add("Authorization", "Bearer WIwqABRAoB/4DGjaTNY6TQ==");
-            httpWebRequest.Method = "POST";
 
-            WriteJsonToHttpWebReques(httpWebRequest, content);
+            httpWebRequest.ContentType = contentType;
+
+            httpWebRequest.Headers.Add("Authorization", "Bearer WIwqABRAoB/4DGjaTNY6TQ==");
+
+            httpWebRequest.Method = type;
+
+            if (body != null)
+                WriteJsonToHttpWebReques(httpWebRequest, body);
 
             return GetResponse(httpWebRequest);
         }
@@ -68,11 +63,6 @@ namespace WareHouse.FileCheckerService.APIMediator
             }
 
             return httpResponse;
-        }
-
-        public void AddItem(T item)
-        {
-            SendItem(additionAction, item);
         }
     }
 }

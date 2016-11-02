@@ -55,6 +55,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
@@ -68,12 +69,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APIMediator\Interfaces\IOrdersMediator.cs" />
-    <Compile Include="APIMediator\Interfaces\IItemsMediator.cs" />
-    <Compile Include="APIMediator\Interfaces\IMediator.cs" />
-    <Compile Include="APIMediator\OrdersAPIMediator.cs" />
-    <Compile Include="APIMediator\ItemsAPIMediator.cs" />
+    <Compile Include="APIMediator\AuthorizationAPI.cs" />
+    <Compile Include="APIMediator\Interfaces\IAuthorizationAPI.cs" />
+    <Compile Include="APIMediator\Interfaces\IBaseMediator.cs" />
+    <Compile Include="APIMediator\Interfaces\IOrdersAPI.cs" />
+    <Compile Include="APIMediator\Interfaces\IItemsAPI.cs" />
+    <Compile Include="APIMediator\Interfaces\ISenderAPI.cs" />
+    <Compile Include="APIMediator\OrdersAPI.cs" />
+    <Compile Include="APIMediator\ItemsAPI.cs" />
     <Compile Include="APIMediator\BaseMediator.cs" />
+    <Compile Include="ConfigurationManager.cs" />
     <Compile Include="Configurator.cs" />
     <Compile Include="Context\HistoryDbContext.cs" />
     <Compile Include="CsvParser\CsvParser.cs" />
@@ -91,6 +96,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\APIModel\BaseModel.cs" />
     <Compile Include="Models\APIModel\ItemAPIModel.cs" />
+    <Compile Include="Models\APIModel\LoginAPIModel.cs" />
     <Compile Include="Models\APIModel\OrderAPIModel.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\ChangeModel.cs" />
@@ -132,7 +138,9 @@
       <DependentUpon>MainService.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

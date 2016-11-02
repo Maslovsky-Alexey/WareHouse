@@ -13,9 +13,10 @@ namespace WareHouse.FileCheckerService.FileWatcher
 {
     public class OrdersCsvFileWatcher : RuntimeCsvFileWatcher<OrderCsvModel, OrderAPIModel>
     {
-        public OrdersCsvFileWatcher(string folder, IChangeRepository changeRepository, IMediator<OrderAPIModel> mediator) : base(folder, changeRepository, mediator,
+        public OrdersCsvFileWatcher(string folder, IChangeRepository changeRepository, ISenderAPI<OrderAPIModel> mediator) : base(folder, changeRepository, mediator,
              new Mapper.ModelsMapper<OrderCsvModel, OrderAPIModel>(new Mapper.Configurations.OrdersConfiguration()))
         {
+
         }
     }
 }

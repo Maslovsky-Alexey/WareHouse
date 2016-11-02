@@ -16,9 +16,9 @@ namespace WareHouse.FileCheckerService
         /// </summary>
         static void Main()
         {
-            //new MainService().Start();
+            new MainService().Start();
 
-            //Thread.Sleep(999999999);
+            Thread.Sleep(999999999);
 
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]

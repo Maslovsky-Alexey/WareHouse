@@ -13,7 +13,7 @@ namespace WareHouse.FileCheckerService.FileWatcher
 {
     class ItemsCsvFileWatcher : RuntimeCsvFileWatcher<ItemCsvModel, ItemAPIModel>
     {
-        public ItemsCsvFileWatcher(string folder, IChangeRepository changeRepository, IMediator<ItemAPIModel> mediator) : base(folder, changeRepository, mediator, 
+        public ItemsCsvFileWatcher(string folder, IChangeRepository changeRepository, ISenderAPI<ItemAPIModel> mediator) : base(folder, changeRepository, mediator, 
             new Mapper.ModelsMapper<ItemCsvModel, ItemAPIModel>(new Mapper.Configurations.ItemsConfiguration()))
         {
             
