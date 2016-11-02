@@ -4,7 +4,6 @@ using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using WareHouse.Data.Model;
 using System;
 
 namespace WareHouse.Data.EF.Context

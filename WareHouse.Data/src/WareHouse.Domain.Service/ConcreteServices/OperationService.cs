@@ -94,26 +94,36 @@ namespace WareHouse.Domain.Service.ConcreteServices
             });
         }
 
-        public async Task ConfirmOrder(int orderId)
+        public async Task<ConfirmationStatus> ConfirmOrder(int orderId)
         {
             var order = await safeOrderService.GetItem(orderId);
+
+            if (order == null)
+                return ConfirmationStatus.NotFound;
+
             var statusSuccess = await GetStatusId(Status.Success);
 
             if (order.StatusId == statusSuccess)
-                return;
+                return ConfirmationStatus.NotConfirmed;
 
             await unsafeWarehouseItemService.UpdateCount((await GetWarehouseItemByItemId(order.ItemId)).Id, -order.Count);
 
             await unsafeOrderService.UpdateOrderStatus(orderId, await GetStatusId(Status.Success));
+
+            return ConfirmationStatus.Confirmed;
         }
 
-        public async Task ConfirmSupply(int supplyId)
+        public async Task<ConfirmationStatus> ConfirmSupply(int supplyId)
         {
             var supply = await safeSupplyService.GetItem(supplyId);
+
+            if (supply == null)
+                return ConfirmationStatus.NotFound;
+
             var statusSuccess = await GetStatusId(Status.Success);
 
             if (supply.StatusId == statusSuccess)
-                return;
+                return ConfirmationStatus.NotConfirmed;
 
             await unsafeSupplyService.UpdateSupplyStatus(supplyId, statusSuccess);
            
@@ -122,12 +132,18 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 Count = supply.Count,
                 Item = await safeItemService.GetItem(supply.ItemId)
             });
+
+            return ConfirmationStatus.Confirmed;
         }
 
 
-        public async Task ReturnOrder(int orderId)
+        public async Task<ReturnStatus> ReturnOrder(int orderId)
         {
             var order = await safeOrderService.GetItem(orderId);
+
+            if (order == null)
+                return ReturnStatus.NotFound;
+
             var statusSuccess = await GetStatusId(Status.Success);
 
             await unsafeOrderService.UpdateOrderStatus(orderId, await GetStatusId(Status.Failure));
@@ -137,13 +153,19 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 await unsafeWarehouseItemService.UpdateCount(
                     (await GetWarehouseItemByItemId(order.ItemId)).Id, order.Count);
 
-                return;
-            }            
+                return ReturnStatus.Returned;
+            }
+
+            return ReturnStatus.NotReturned;
         }
 
-        public async Task ReturnSupply(int supplyId)
+        public async Task<ReturnStatus> ReturnSupply(int supplyId)
         {
             var supply = await safeSupplyService.GetItem(supplyId);
+
+            if (supply == null)
+                return ReturnStatus.NotFound;
+
             var statusSuccess = await GetStatusId(Status.Success);
 
             await unsafeSupplyService.UpdateSupplyStatus(supplyId, await GetStatusId(Status.Failure));
@@ -153,8 +175,10 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 await unsafeWarehouseItemService.UpdateCount(
                     (await GetWarehouseItemByItemId(supply.ItemId)).Id, -supply.Count);
 
-                return;
+                return ReturnStatus.Returned;
             }
+
+            return ReturnStatus.NotReturned;
         }
 
         private async Task<WarehouseItem> GetWarehouseItemByItemId(int itemId)

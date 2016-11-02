@@ -24,7 +24,7 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<Client> GetClientByIdentityId(string identityId)
         {
-            var client = (Client)cache.Get($"id{identityId}");
+            var client = cache.Get<Client>($"id{identityId}");
 
             if (client != null)
                 return client;
@@ -36,7 +36,7 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<Client> GetClientByName(string name, bool ignoreCase)
         {
-            var client = (Client)cache.Get($"name{name}");
+            var client = cache.Get<Client>($"name{name}");
 
             if (client != null)
                 return client;

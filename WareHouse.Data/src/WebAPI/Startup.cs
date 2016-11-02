@@ -18,8 +18,10 @@ using WareHouse.Domain.Service.ProxyServices;
 using WareHouse.Domain.ServiceInterfaces.Unsafe;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.Domain.Service.ProxyServices.Cache;
-using WebAPI.EventStream;
+
 using WareHouse.Domain.Service.ModelsMapper.Configurators;
+using WareHouse.LogHelper;
+using WareHouse.MyEventStream;
 
 namespace WebAPI
 {
@@ -83,7 +85,7 @@ namespace WebAPI
 
             containerBuilder.Populate(services);
             ApplicationContainer = containerBuilder.Build();
-            ApplicationContainer.Resolve<LogHelper.ILog>();
+            ApplicationContainer.ResolveKeyed<ILog>("SignIn");
 
             var tokenEncryptor = ApplicationContainer.Resolve<IEncryptor>();
 
@@ -105,7 +107,8 @@ namespace WebAPI
             containerBuilder.Register(c => CacheManager.Instance).As<ICacheManager>().SingleInstance();
             containerBuilder.RegisterType<LocalCache>().As<ICache>();
 
-            containerBuilder.Register(c => LogHelper.LogHelper.Instance("d:\\log.txt")).As<LogHelper.ILog>().SingleInstance().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
+            containerBuilder.Register(c => FileLog<WareHouse.Domain.Model.ViewModel.SignInLogModel>.Instance("d:\\log.txt")).Keyed<ILog>("SignIn").SingleInstance().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
+            containerBuilder.RegisterType<ConsoleLog>().As<ILog>();
 
             containerBuilder.RegisterType<ClientMapConfigurator>();
             containerBuilder.RegisterType<EmployeeMapConfigurator>();
@@ -118,7 +121,7 @@ namespace WebAPI
 
 
             containerBuilder.RegisterType<ClientRepository>().As<BaseRepository<Client>>();
-            containerBuilder.RegisterType<ClientService>().As<IUnsafeClientService>();
+            containerBuilder.Register(context => new ClientService(context.Resolve<BaseRepository<Client>>(), context.Resolve<ClientMapConfigurator>())).As<IUnsafeClientService>();
             containerBuilder.Register(context => new ClientService(context.Resolve<BaseRepository<Client>>(), context.Resolve<ClientMapConfigurator>())).As<ISafeClientService>();
 
             containerBuilder.RegisterType<ItemRepository>().As<BaseRepository<Item>>();

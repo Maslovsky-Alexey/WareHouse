@@ -28,7 +28,7 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<IEnumerable<TServiceModel>> GetAll()
         {
-            var items = (IEnumerable<TServiceModel>)cache.Get("all");
+            var items = cache.Get<IEnumerable<TServiceModel>>("all");
 
             if (items != null)
                 return items;
@@ -41,7 +41,7 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<TServiceModel> GetItem(int id)
         {
-            var item = (TServiceModel)cache.Get($"item{id}");
+            var item = cache.Get<TServiceModel>($"item{id}");
 
             if (item != null)
                 return item;

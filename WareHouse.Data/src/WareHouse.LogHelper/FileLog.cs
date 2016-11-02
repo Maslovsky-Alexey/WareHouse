@@ -3,25 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using WareHouse.Domain.Model.ViewModel;
 
-namespace WebAPI.LogHelper
+namespace WareHouse.LogHelper
 {
-    public class LogHelper : ILog, IObserver<SignInLogModel> // TODO: Это общая логика приложения, этот класс не должен находится в сборке webapi.
+    public class FileLog<TModel> : ILog, IObserver<TModel>
     {
         public string FileName { get; private set; }
 
-        private static LogHelper instance;
+        private static FileLog<TModel> instance;
 
-        public static LogHelper Instance(string fileName)
+        public static FileLog<TModel> Instance(string fileName)
         {
             if (instance == null)
-                instance = new LogHelper(fileName);
+                instance = new FileLog<TModel>(fileName);
 
             return instance;
         }
 
-        private LogHelper(string fileName)
+        private FileLog(string fileName)
         {
             FileName = fileName;
 
@@ -50,7 +49,7 @@ namespace WebAPI.LogHelper
             throw new NotImplementedException();
         }
 
-        public void OnNext(SignInLogModel value)
+        public void OnNext(TModel value)
         {
             Log(value.ToString());
         }

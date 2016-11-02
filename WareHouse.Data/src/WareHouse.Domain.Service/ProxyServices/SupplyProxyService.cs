@@ -25,7 +25,7 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<IEnumerable<SupplyViewModel>> GetAllAsViewModel()
         {
-            var items = (IEnumerable<SupplyViewModel>)cache.Get($"all");
+            var items = cache.Get<IEnumerable<SupplyViewModel>>($"all");
 
             if (items != null)
                 return items;
@@ -39,7 +39,7 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<IEnumerable<SupplyViewModel>> GetProviderSupplies(string providerName)
         {
-            var items = (IEnumerable<SupplyViewModel>)cache.Get($"all{providerName}");
+            var items = cache.Get<IEnumerable<SupplyViewModel>>($"all{providerName}");
 
             if (items != null)
                 return items;

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebAPI.LogHelper
+namespace WareHouse.MyEventStream
 {
-    interface ILog
+    public class Class1
     {
-        void Log(string text);
-
-        void Clear();
+        public Class1()
+        {
+        }
     }
 }

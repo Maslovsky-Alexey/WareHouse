@@ -8189,6 +8189,9 @@
 	var Layout = __webpack_require__(569).Layout;
 	var ConcreteItemView = __webpack_require__(570).ConcreteItemView;
 
+
+
+
 	ReactDOM.render((
 	        React.createElement(ReactRouter.Router, null, 
 	            React.createElement(ReactRouter.Route, {component: Layout}, 
@@ -34786,11 +34789,11 @@
 	        };
 
 	    this.getPageItems = function(success, page) {
-	        serverMediator.sendRequest("api/warehouseitems/GetPage/" + page,
+	        serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page,
 	            "get",
 	            null,
 	            function(data) {
-	                if (data == "")
+	                if (data === "")
 	                    data = "null";
 
 	                success(JSON.parse(data));
@@ -34800,17 +34803,17 @@
 	    this.getPageItemsWithFilter = function(success, page, filter) {
 	        console.debug(filter);
 	        if (filter)
-	            serverMediator.sendRequest("api/warehouseitems/GetPage/" + page + "/" + filter,
+	            serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page + "&" + filter,
 	                "get",
 	                null,
 	                function(data) {
-	                    if (data == "")
+	                    if (data === "")
 	                        data = "null";
 
 	                    success(JSON.parse(data));
 	                });
 	        else
-	            serverMediator.sendRequest("api/warehouseitems/GetPage/" + page,
+	            serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page,
 	                "get",
 	                null,
 	                function(data) {
@@ -34823,7 +34826,7 @@
 	            "get",
 	            null,
 	            function(data) {
-	                if (data == "")
+	                if (data === "")
 	                    data = "null";
 
 	                success(JSON.parse(data));

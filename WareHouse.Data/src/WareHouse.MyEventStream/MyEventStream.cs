@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebAPI.EventStream
+namespace WareHouse.MyEventStream
 {
-    public class MyEventStream // TODO: Это общая логика приложения, этот класс не должен находится в сборке webapi.
+    public class MyEventStream
     {
         private static MyEventStream sender;
         private readonly List<KeyValue> observebles;
@@ -20,14 +20,10 @@ namespace WebAPI.EventStream
         public static MyEventStream Instance
         {
             get
-            {
-                lock(sender)
-                {
-                    if (sender == null)
-                        sender = new MyEventStream();
-                }
-
-
+            {            
+                if (sender == null)
+                    sender = new MyEventStream();
+                
                 return sender;
             }
         }

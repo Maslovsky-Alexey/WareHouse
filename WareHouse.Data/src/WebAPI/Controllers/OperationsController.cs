@@ -23,7 +23,8 @@ namespace WebAPI.Controllers
             this.unsafeOperationService = unsafeOperationService;
         }
 
-        [Route("AddSupply")] //TODO: URI не должен содержать глаголы, это должна быть сущность. А действие, которое нужно выполнить, задается http мотодом. Вот краткая статейка https://tproger.ru/translations/http-api-design-guide/.
+
+        [Route("AddSupply")]
         [HttpPost]
         [Authorize(Roles = "employee")]
         public async Task AddSupply([FromBody] SupplyViewModel value)
@@ -52,7 +53,8 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task ConfirmOrder(int id)
         {
-            await unsafeOperationService.ConfirmOrder(id);
+            if (await unsafeOperationService.ConfirmOrder(id) == ConfirmationStatus.NotFound)
+                NotFound();
         }
 
         [Route("ConfirmSupply/{id}")]
@@ -60,7 +62,8 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task ConfirmSupply(int id)
         {
-            await unsafeOperationService.ConfirmSupply(id);
+            if (await unsafeOperationService.ConfirmSupply(id) == ConfirmationStatus.NotFound)
+                NotFound();
         }
 
         [Route("ReturnOrder/{id}")]
@@ -68,15 +71,17 @@ namespace WebAPI.Controllers
         [Authorize]
         public async Task ReturnOrder(int id)
         {
-            await unsafeOperationService.ReturnOrder(id);
+            if (await unsafeOperationService.ReturnOrder(id) == ReturnStatus.NotFound)
+                NotFound();
         }
 
         [Route("ReturnSupply/{id}")]
         [HttpPut("{id}")]
         [Authorize(Roles = "employee")]
-        public async Task ReturnSupply(int id) //TODO: 404 здесь не может быть?
+        public async Task ReturnSupply(int id)
         {
-            await unsafeOperationService.ReturnSupply(id);
+            if (await unsafeOperationService.ReturnSupply(id) == ReturnStatus.NotFound)
+                NotFound();
         }
 
         [Route("AddItemWithoutRepetition")]

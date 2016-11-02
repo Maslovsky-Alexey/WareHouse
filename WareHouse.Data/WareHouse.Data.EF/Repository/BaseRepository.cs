@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WareHouse.Data.EF.Context;
 using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
+using WareHouse.LogHelper;
 
 namespace WareHouse.Data.EF.Repository
 {
@@ -14,8 +15,15 @@ namespace WareHouse.Data.EF.Repository
     {
         protected WareHouseDbContext context;
         protected DbSet<T> table;
+        protected ILog log;
 
         public BaseRepository(WareHouseDbContext context)
+        {
+            this.context = context;
+            table = context.Set<T>();
+        }
+
+        public BaseRepository(WareHouseDbContext context, ILog log)
         {
             this.context = context;
             table = context.Set<T>();
@@ -38,7 +46,7 @@ namespace WareHouse.Data.EF.Repository
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message + '\n' + e.InnerException); //TODO: Консоль - слишком частная привязка, для этого нужно использовать объект логгирования, который уже будет знать, куда это записать.
+                log?.Log(e.Message + '\n' + e.InnerException);
                 return OperationStatus.Error;
             }
 

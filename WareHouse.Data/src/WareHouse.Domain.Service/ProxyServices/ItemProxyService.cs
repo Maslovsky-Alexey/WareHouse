@@ -22,7 +22,7 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<Item> GetItemByName(string name, bool ignoreCase)
         {
-            var item = (Item)cache.Get($"^item{name}");
+            var item = cache.Get<Item>($"^item{name}");
 
             if (item != null)
                 return item;

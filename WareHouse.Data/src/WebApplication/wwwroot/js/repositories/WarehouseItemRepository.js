@@ -14,11 +14,11 @@ var WarehouseItemsRepository = function() {
         };
 
     this.getPageItems = function(success, page) {
-        serverMediator.sendRequest("api/warehouseitems/GetPage/" + page,
+        serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page,
             "get",
             null,
             function(data) {
-                if (data == "")
+                if (data === "")
                     data = "null";
 
                 success(JSON.parse(data));
@@ -28,17 +28,17 @@ var WarehouseItemsRepository = function() {
     this.getPageItemsWithFilter = function(success, page, filter) {
         console.debug(filter);
         if (filter)
-            serverMediator.sendRequest("api/warehouseitems/GetPage/" + page + "/" + filter,
+            serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page + "&" + filter,
                 "get",
                 null,
                 function(data) {
-                    if (data == "")
+                    if (data === "")
                         data = "null";
 
                     success(JSON.parse(data));
                 });
         else
-            serverMediator.sendRequest("api/warehouseitems/GetPage/" + page,
+            serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page,
                 "get",
                 null,
                 function(data) {
@@ -51,7 +51,7 @@ var WarehouseItemsRepository = function() {
             "get",
             null,
             function(data) {
-                if (data == "")
+                if (data === "")
                     data = "null";
 
                 success(JSON.parse(data));

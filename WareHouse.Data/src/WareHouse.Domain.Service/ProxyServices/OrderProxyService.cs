@@ -24,7 +24,7 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<IEnumerable<OrderViewModel>> GetAllAsViewModel()
         {
-            var items = (IEnumerable<OrderViewModel>)cache.Get($"all");
+            var items = cache.Get<IEnumerable<OrderViewModel>> ($"all");
 
             if (items != null)
                 return items;
@@ -36,7 +36,7 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<IEnumerable<OrderViewModel>> GetClientOrders(string clientName)
         {
-            var items = (IEnumerable<OrderViewModel>)cache.Get($"all{clientName}");
+            var items = cache.Get<IEnumerable<OrderViewModel>>($"all{clientName}");
 
             if (items != null)
                 return items;

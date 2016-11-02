@@ -33,10 +33,10 @@ namespace WebAPI.Controllers
         }
 
 
-        [Route("GetPage/{page}")]
-        [HttpGet("{page}")] // TODO: пэйджинг лучше передавать через query
+        [Route("GetPage")]
+        [HttpGet]
         [Authorize]
-        public async Task<PageModel> GetPage(int page, [FromBody] MyODataConfigurates config)
+        public async Task<PageModel> GetPage([FromQuery]int page, [FromBody] MyODataConfigurates config)
         {
             return await safeWarehouseItemService.GetPage(page, config);
         }
