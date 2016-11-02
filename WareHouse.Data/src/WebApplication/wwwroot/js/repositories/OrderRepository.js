@@ -10,7 +10,7 @@ var OrderRepository = function() {
     };
 
     this.getClientOrders = function (clientName, success) {
-        serverMediator.sendRequest("api/orders/GetClientOrders/" + clientName, "get", null,
+        serverMediator.sendRequest("api/orders/" + clientName, "get", null,
             (data) => success(JSON.parse(data)));
     };
 };

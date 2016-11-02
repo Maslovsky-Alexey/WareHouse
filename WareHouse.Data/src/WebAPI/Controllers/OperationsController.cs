@@ -23,8 +23,7 @@ namespace WebAPI.Controllers
             this.unsafeOperationService = unsafeOperationService;
         }
 
-
-        [Route("AddSupply")]
+        [Route("Supply")]
         [HttpPost]
         [Authorize(Roles = "employee")]
         public async Task AddSupply([FromBody] SupplyViewModel value)
@@ -37,7 +36,7 @@ namespace WebAPI.Controllers
             }         
         }
 
-        [Route("AddOrder")]
+        [Route("Order")]
         [HttpPost]
         [Authorize(Roles = "employee")]
         public async Task AddOrder([FromBody] OrderViewModel value)
@@ -48,7 +47,7 @@ namespace WebAPI.Controllers
                 HttpContext.Response.StatusCode = 500;
         }
                 
-        [Route("ConfirmOrder/{id}")]
+        [Route("Order/Actions/Confirm/{id}")]
         [HttpPut("{id}")]
         [Authorize]
         public async Task ConfirmOrder(int id)
@@ -57,7 +56,7 @@ namespace WebAPI.Controllers
                 NotFound();
         }
 
-        [Route("ConfirmSupply/{id}")]
+        [Route("Supply/Actions/Confirm/{id}")]
         [HttpPut("{id}")]
         [Authorize(Roles = "employee")]
         public async Task ConfirmSupply(int id)
@@ -66,7 +65,7 @@ namespace WebAPI.Controllers
                 NotFound();
         }
 
-        [Route("ReturnOrder/{id}")]
+        [Route("Order/Actions/Return/{id}")]
         [HttpPut("{id}")]
         [Authorize]
         public async Task ReturnOrder(int id)
@@ -75,7 +74,7 @@ namespace WebAPI.Controllers
                 NotFound();
         }
 
-        [Route("ReturnSupply/{id}")]
+        [Route("Supply/Actions/Return/{id}")]
         [HttpPut("{id}")]
         [Authorize(Roles = "employee")]
         public async Task ReturnSupply(int id)
@@ -84,7 +83,7 @@ namespace WebAPI.Controllers
                 NotFound();
         }
 
-        [Route("AddItemWithoutRepetition")]
+        [Route("Item")]
         [HttpPost]
         [Authorize(Roles = "employee")]
         public async Task AddItemWithoutRepetition([FromBody] Item value)

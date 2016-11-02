@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
         }
 
 
-        [Route("GetPage")]
+        [Route("Page")]
         [HttpGet]
         [Authorize]
         public async Task<PageModel> GetPage([FromQuery]int page, [FromBody] MyODataConfigurates config)
@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
             return await safeWarehouseItemService.GetPage(page, config);
         }
 
-        [Route("GetItemById/{id}")]
+        [Route("Item/{id}")]
         [HttpGet("{id}")]
         [Authorize]
         public async Task<WarehouseItemViewModel> GetItemById(int id)

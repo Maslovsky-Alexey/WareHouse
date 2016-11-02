@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
             return await safeSupplyService.GetAllAsViewModel();
         }
 
-        [Route("GetProviderSupplies/{providerName}")]
+        [Route("{providerName}")]
         [HttpGet("{providerName}")]
         [Authorize(Roles = "employee")]
         public async Task<IEnumerable<SupplyViewModel>> GetProviderSupplies(string providerName)

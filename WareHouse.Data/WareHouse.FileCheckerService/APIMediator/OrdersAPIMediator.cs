@@ -10,7 +10,7 @@ namespace WareHouse.FileCheckerService.APIMediator
 {
     public class OrdersAPIMediator : BaseMediator<OrderAPIModel>, IOrdersMediator
     {
-        public OrdersAPIMediator() : base("http://localhost:33649", "api/operations/addorder")
+        public OrdersAPIMediator() : base("http://localhost:33649", "api/operations/order")
         {
 
         }

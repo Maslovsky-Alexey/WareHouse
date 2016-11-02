@@ -10,7 +10,7 @@ var SupplyRepository = function() {
     };
 
     this.getProviderSupplies = function (providerName, success) {
-        serverMediator.sendRequest("api/supplies/GetProviderSupplies/" + providerName, "get", null,
+        serverMediator.sendRequest("api/supplies/" + providerName, "get", null,
             (data) => success(JSON.parse(data)));
     };
 };

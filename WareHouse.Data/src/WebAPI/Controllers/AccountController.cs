@@ -26,14 +26,14 @@ namespace WebAPI.Controllers
             this.encryptor = encryptor;
         }
 
-        [HttpPost("RegisterClient")]
+        [HttpPost("Client/Actions/Register")]
         [Authorize(Roles = "employee")]
         public async Task<UserModel> RegisterClient([FromBody] RegisterModel model)
         {
             return await unsafeAccountService.RegisterClient(model);
         }
 
-        [HttpPost("RegisterEmployee")]
+        [HttpPost("Employee/Actions/Register")]
         [Authorize(Roles = "employee")]
         public async Task<UserModel> RegisterEmployee([FromBody] RegisterModel model)
         {
@@ -54,14 +54,14 @@ namespace WebAPI.Controllers
             return result;
         }
 
-        [HttpGet("GetCurrentUser")]
+        [HttpGet("CurrentUser")]
         [Authorize]
         public async Task<UserModel> GetCurrentUser()
         {
             return await safeAccountService.GetCurrentUser(HttpContext);
         }
 
-        [HttpGet("GetUserByName/{username}")]
+        [HttpGet("User/{username}")]
         [Authorize]
         public async Task<UserModel> GetUserByName(string username)
         {

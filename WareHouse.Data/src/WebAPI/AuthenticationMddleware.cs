@@ -18,6 +18,7 @@ namespace WebAPI
         private readonly RequestDelegate next;
         private readonly UserManager<ApplicationUser> userManager;
 
+
         public AuthenticationMddleware(RequestDelegate next, UserManager<ApplicationUser> userManager,
             WareHouseDbContext context, IEncryptor encryptor)
         {
@@ -65,7 +66,7 @@ namespace WebAPI
                     httpContext.User = new GenericPrincipal(new UserIndentity(user),
                         (await userManager.GetRolesAsync(user)).ToArray());
                 }
-                catch (Exception ex)
+                catch
                 {
                     httpContext.Response.StatusCode = 401;
                 }

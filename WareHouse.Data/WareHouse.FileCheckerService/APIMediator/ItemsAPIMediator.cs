@@ -10,7 +10,7 @@ namespace WareHouse.FileCheckerService.APIMediator
 {
     public class ItemsAPIMediator : BaseMediator<ItemAPIModel>, IItemsMediator
     {
-        public ItemsAPIMediator() : base("http://localhost:33649", "api/operations/AddItemWithoutRepetition")
+        public ItemsAPIMediator() : base("http://localhost:33649", "api/operations/item")
         {
         }
     }

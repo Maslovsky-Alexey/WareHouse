@@ -34519,7 +34519,7 @@
 	            password: password
 	        };
 
-	        serverMediator.sendRequest("api/account/registerclient", "post", JSON.stringify(model), success);
+	        serverMediator.sendRequest("api/account/client/actions/register", "post", JSON.stringify(model), success);
 	    };
 
 	    this.registerEmployee = function(username, password, success) {
@@ -34528,7 +34528,7 @@
 	            password: password
 	        };
 
-	        serverMediator.sendRequest("api/account/registeremployee", "post", JSON.stringify(model), success);
+	        serverMediator.sendRequest("api/account/employee/actions/register", "post", JSON.stringify(model), success);
 	    };
 
 	    this.login = function(username, password, success) {
@@ -34550,7 +34550,7 @@
 	            });
 	    };
 	    this.getCurrentUser = function(success) {
-	        serverMediator.sendRequest("api/account/getcurrentuser",
+	        serverMediator.sendRequest("api/account/currentuser",
 	            "get",
 	            null,
 	            function(data) {
@@ -34562,7 +34562,7 @@
 	    };
 	    this.getUserByName = function(username, success) {
 
-	        serverMediator.sendRequest("api/account/getuserbyname/" + username,
+	        serverMediator.sendRequest("api/account/user/" + username,
 	            "get",
 	            null,
 	            function(data) {
@@ -34789,7 +34789,7 @@
 	        };
 
 	    this.getPageItems = function(success, page) {
-	        serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page,
+	        serverMediator.sendRequest("api/warehouseitems/page/?page=" + page,
 	            "get",
 	            null,
 	            function(data) {
@@ -34803,7 +34803,7 @@
 	    this.getPageItemsWithFilter = function(success, page, filter) {
 	        console.debug(filter);
 	        if (filter)
-	            serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page + "&" + filter,
+	            serverMediator.sendRequest("api/warehouseitems/page/?page=" + page + "&" + filter,
 	                "get",
 	                null,
 	                function(data) {
@@ -34813,7 +34813,7 @@
 	                    success(JSON.parse(data));
 	                });
 	        else
-	            serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page,
+	            serverMediator.sendRequest("api/warehouseitems/page/?page=" + page,
 	                "get",
 	                null,
 	                function(data) {
@@ -34822,7 +34822,7 @@
 	    };
 
 	    this.getItemById = function(id, success) {
-	        serverMediator.sendRequest("api/warehouseitems/GetItemById/" + id,
+	        serverMediator.sendRequest("api/warehouseitems/item/" + id,
 	            "get",
 	            null,
 	            function(data) {
@@ -37101,29 +37101,29 @@
 	var OperationRepository = function() {
 	    serverMediator = new ServerMediator.ServerMediator(),
 	    this.addOrder = function(item, success) {
-	        serverMediator.sendRequest("api/operations/addorder", "post", JSON.stringify(item), success);
+	        serverMediator.sendRequest("api/operations/order", "post", JSON.stringify(item), success);
 	    };
 	    this.addSupply = function(item, success) {
-	        serverMediator.sendRequest("api/operations/addsupply", "post", JSON.stringify(item), success);
+	        serverMediator.sendRequest("api/operations/supply", "post", JSON.stringify(item), success);
 	    };
 	    this.addItemWithoutRepetition = function(item, success) {
-	        serverMediator.sendRequest("api/operations/AddItemWithoutRepetition", "post", JSON.stringify(item), success);
+	        serverMediator.sendRequest("api/operations/item", "post", JSON.stringify(item), success);
 	    };
 
 	    this.confirmOrder = function (id, success) {
-	        serverMediator.sendRequest("api/operations/confirmorder/" + id, "put", null, success);
+	        serverMediator.sendRequest("api/operations/order/actions/confirm/" + id, "put", null, success);
 	    };
 
 	    this.confirmSupply = function (id, success) {
-	        serverMediator.sendRequest("api/operations/ConfirmSupply/" + id, "put", null, success);
+	        serverMediator.sendRequest("api/operations/supply/actions/confirm/" + id, "put", null, success);
 	    };
 
 	    this.returnOrder = function (id, success) {
-	        serverMediator.sendRequest("api/operations/ReturnOrder/" + id, "put", null, success);
+	        serverMediator.sendRequest("api/operations/order/actions/return/" + id, "put", null, success);
 	    };
 
 	    this.returnSupply = function (id, success) {
-	        serverMediator.sendRequest("api/operations/ReturnSupply/" + id, "put", null, success);
+	        serverMediator.sendRequest("api/operations/supply/actions/return/" + id, "put", null, success);
 	    };
 	};
 
@@ -37744,7 +37744,7 @@
 	    };
 
 	    this.getClientOrders = function (clientName, success) {
-	        serverMediator.sendRequest("api/orders/GetClientOrders/" + clientName, "get", null,
+	        serverMediator.sendRequest("api/orders/" + clientName, "get", null,
 	            (data) => success(JSON.parse(data)));
 	    };
 	};
@@ -37767,7 +37767,7 @@
 	    };
 
 	    this.getProviderSupplies = function (providerName, success) {
-	        serverMediator.sendRequest("api/supplies/GetProviderSupplies/" + providerName, "get", null,
+	        serverMediator.sendRequest("api/supplies/" + providerName, "get", null,
 	            (data) => success(JSON.parse(data)));
 	    };
 	};

@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
             return await safeOrderService.GetAllAsViewModel();
         }
 
-        [Route("GetClientOrders/{clientName}")]
+        [Route("{clientName}")]
         [HttpGet("{clientName}")]
         [Authorize]
         public async Task<IEnumerable<OrderViewModel>> GetClientOrders(string clientName)

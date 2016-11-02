@@ -14,7 +14,7 @@ var WarehouseItemsRepository = function() {
         };
 
     this.getPageItems = function(success, page) {
-        serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page,
+        serverMediator.sendRequest("api/warehouseitems/page/?page=" + page,
             "get",
             null,
             function(data) {
@@ -28,7 +28,7 @@ var WarehouseItemsRepository = function() {
     this.getPageItemsWithFilter = function(success, page, filter) {
         console.debug(filter);
         if (filter)
-            serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page + "&" + filter,
+            serverMediator.sendRequest("api/warehouseitems/page/?page=" + page + "&" + filter,
                 "get",
                 null,
                 function(data) {
@@ -38,7 +38,7 @@ var WarehouseItemsRepository = function() {
                     success(JSON.parse(data));
                 });
         else
-            serverMediator.sendRequest("api/warehouseitems/GetPage/?page=" + page,
+            serverMediator.sendRequest("api/warehouseitems/page/?page=" + page,
                 "get",
                 null,
                 function(data) {
@@ -47,7 +47,7 @@ var WarehouseItemsRepository = function() {
     };
 
     this.getItemById = function(id, success) {
-        serverMediator.sendRequest("api/warehouseitems/GetItemById/" + id,
+        serverMediator.sendRequest("api/warehouseitems/item/" + id,
             "get",
             null,
             function(data) {

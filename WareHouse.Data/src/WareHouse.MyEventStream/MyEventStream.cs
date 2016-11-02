@@ -7,6 +7,8 @@ namespace WareHouse.MyEventStream
 {
     public class MyEventStream
     {
+        private static object threadlock = new object();
+
         private static MyEventStream sender;
         private readonly List<KeyValue> observebles;
         private readonly List<KeyValue> subscribers;
@@ -20,11 +22,14 @@ namespace WareHouse.MyEventStream
         public static MyEventStream Instance
         {
             get
-            {            
-                if (sender == null)
-                    sender = new MyEventStream();
-                
-                return sender;
+            {
+                lock (threadlock)
+                {
+                    if (sender == null)
+                        sender = new MyEventStream();
+
+                    return sender;
+                }
             }
         }
 
