@@ -44,8 +44,6 @@ namespace WareHouse.MyEventStream
 
             if (list.Count == 0)
                 return;
-
-            list.ForEach(item => observeble.Subscribe(item));
         }
 
         public void Subscribe<T>(IObserver<T> observer)
@@ -59,8 +57,19 @@ namespace WareHouse.MyEventStream
 
             if (list.Count == 0)
                 return;
+        }
 
-            list.ForEach(item => item.Subscribe(observer));
+        public void Emit<T>(T value)
+        {
+            List<IObserver<T>> list = subscribers
+                .Where(x => x.Key == typeof(T).Name)
+                .Select(x => x.Value as IObserver<T>)
+                .ToList();
+
+            if (list.Count == 0)
+                return;
+
+            list.ForEach(item => item.OnNext(value));
         }
     }
 }

@@ -15,8 +15,6 @@ namespace WareHouse.Domain.Service.ProxyServices
 {
     public class AccountProxyService : ISafeAccountService, System.IObservable<SignInLogModel>
     {
-        private List<IObserver<SignInLogModel>> subscribers = new List<IObserver<SignInLogModel>>();
-
         private ISafeAccountService safeAccountService;
         private ICache cache;
 
@@ -58,13 +56,12 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public IDisposable Subscribe(IObserver<SignInLogModel> observer)
         {
-            subscribers.Add(observer);
             return null;
         }
 
         protected void OnNext(SignInLogModel value)
         {
-            subscribers.ForEach(subscriber => subscriber.OnNext(value));
+            MyEventStream.MyEventStream.Instance.Emit(value);
         }
     }
 }

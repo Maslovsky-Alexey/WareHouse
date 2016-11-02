@@ -14,8 +14,6 @@ namespace WareHouse.Domain.Service.ConcreteServices
         where EFModel : BaseModel
         where ServiceModel : Model.BaseModel
     {
-        protected List<IObserver<ServiceModel>> subscribers = new List<IObserver<ServiceModel>>();
-
         private readonly ModelsMapper<EFModel, ServiceModel> mapper;
         protected BaseRepository<EFModel> repository;
 
@@ -63,13 +61,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public IDisposable Subscribe(IObserver<ServiceModel> observer)
         {
-            subscribers.Add(observer);
             return null;
         }
 
         protected void OnNext(ServiceModel value)
         {
-            subscribers.ForEach(subscriber => subscriber.OnNext(value));
+            MyEventStream.MyEventStream.Instance.Emit(value);
         }
     }
 }

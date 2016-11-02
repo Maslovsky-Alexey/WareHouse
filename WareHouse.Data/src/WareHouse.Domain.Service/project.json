@@ -9,6 +9,7 @@
     "System.Reactive.Core": "3.0.0",
     "WareHouse.Data.EF": "1.0.0-*",
     "WareHouse.Domain": "1.0.0-*",
+    "WareHouse.MyEventStream": "1.0.0-*",
     "WareHouse.MyOData": "1.0.0-*"
   },
 
