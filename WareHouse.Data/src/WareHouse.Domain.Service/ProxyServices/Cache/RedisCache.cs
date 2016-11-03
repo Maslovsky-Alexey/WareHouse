@@ -35,20 +35,12 @@ namespace WareHouse.Domain.Service.ProxyServices.Cache
 
         public T Get<T>(string key) where T : class
         {
-            T result = null;
+            var value = database.StringGet(key);
 
-            try
-            {
-                var a = database.StringGet(key);
-                var b = JsonConvert.DeserializeObject<T>(a);
-                result = b;
-            }
-            catch
-            {
-                
-            }
-
-            return result;
+            if (value.IsNullOrEmpty)
+                return null;
+            else
+                return JsonConvert.DeserializeObject<T>(value);
         }
 
         public void Remove(string key)
