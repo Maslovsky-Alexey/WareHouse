@@ -17,7 +17,7 @@ namespace WareHouse.Domain.Service.ProxyServices.Cache
             memoryCache.Set(key, item);
         }
 
-        public T Get<T>(string key)
+        public T Get<T>(string key) where T : class
         {
             return memoryCache.Get<T>(key);
         }

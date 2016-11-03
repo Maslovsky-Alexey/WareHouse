@@ -100,12 +100,27 @@ namespace WebAPI
         {
             var connection = Configuration.GetConnectionString("DefaultConnection");
             var builder = new DbContextOptionsBuilder<WareHouseDbContext>().UseSqlServer(connection);
+            var redisUrl = "localhost:6379";
 
             containerBuilder.Register(context => { return new WareHouseDbContext(builder.Options); })
                 .InstancePerDependency();
 
             containerBuilder.Register(c => CacheManager.Instance).As<ICacheManager>().SingleInstance();
-            containerBuilder.RegisterType<LocalCache>().As<ICache>();
+
+            containerBuilder.RegisterType<RedisCache>()
+                .WithParameter("url", redisUrl)
+                .WithParameter("dbIndex", 1)
+                .Keyed<ICache>("Items");
+
+            containerBuilder.RegisterType<RedisCache>()
+                .WithParameter("url", redisUrl)
+                .WithParameter("dbIndex", 2)
+                .Keyed<ICache>("Orders");
+
+            containerBuilder.RegisterType<RedisCache>()
+                .WithParameter("url", redisUrl)
+                .WithParameter("dbIndex", 3)
+                .Keyed<ICache>("Supplies");
 
             containerBuilder.Register(c => FileLog<WareHouse.Domain.Model.ViewModel.SignInLogModel>.Instance("d:\\log.txt")).Keyed<ILog>("SignIn").SingleInstance().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
             containerBuilder.RegisterType<ConsoleLog>().As<ILog>();
@@ -127,7 +142,7 @@ namespace WebAPI
             containerBuilder.RegisterType<ItemRepository>().As<BaseRepository<Item>>();
             containerBuilder.Register(context => new ItemService(context.Resolve<BaseRepository<Item>>(), context.Resolve<ItemMapConfigurator>())).As<IUnsafeItemService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance));
             containerBuilder.Register(context => new ItemProxyService(new ItemService(context.Resolve<BaseRepository<Item>>(), context.Resolve<ItemMapConfigurator>()), 
-                context.Resolve<ICacheManager>().AddOrGetExistSection("ItemService", context.Resolve<ICache>())));
+                context.Resolve<ICacheManager>().AddOrGetExistSection("ItemService", context.ResolveKeyed<ICache>("Items"))));
             containerBuilder.Register(context => context.Resolve<ItemProxyService>()).As<ISafeItemService>().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
 
             containerBuilder.RegisterType<ProviderRepository>().As<BaseRepository<Provider>>();
@@ -153,14 +168,14 @@ namespace WebAPI
             containerBuilder.RegisterType<OrderRepository>().As<BaseRepository<Order>>();
             containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<IUnsafeOrderService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance)); ;
             containerBuilder.Register(context => new OrderProxyService(new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>()),
-                context.Resolve<ICacheManager>().AddOrGetExistSection("OrderService", context.Resolve<ICache>())));
+                context.Resolve<ICacheManager>().AddOrGetExistSection("OrderService", context.ResolveKeyed<ICache>("Orders"))));
             containerBuilder.Register(context => context.Resolve<OrderProxyService>()).As<ISafeOrderService>().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
 
 
             containerBuilder.RegisterType<SupplyRepository>().As<BaseRepository<Supply>>();
             containerBuilder.Register(context => new SupplyService(context.Resolve<BaseRepository<Supply>>(), context.Resolve<SupplyMapConfigurator>())).As<IUnsafeSupplyService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance));
             containerBuilder.Register(context => new SupplyProxyService(new SupplyService(context.Resolve<BaseRepository<Supply>>(), context.Resolve<SupplyMapConfigurator>()),
-                context.Resolve<ICacheManager>().AddOrGetExistSection("SupplyService", context.Resolve<ICache>())));
+                context.Resolve<ICacheManager>().AddOrGetExistSection("SupplyService", context.ResolveKeyed<ICache>("Supplies"))));
             containerBuilder.Register(context => context.Resolve<SupplyProxyService>()).As<ISafeSupplyService>().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
 
 
