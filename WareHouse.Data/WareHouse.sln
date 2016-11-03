@@ -59,10 +59,15 @@ EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebApplication1", "src\WebApplication1\WebApplication1.xproj", "{3321960F-4B07-4BAE-920B-2BFF064D3816}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WareHouse.FileCheckerService", "WareHouse.FileCheckerService\WareHouse.FileCheckerService.csproj", "{DA6257C9-1C59-4DB3-BDD9-4A191D2CBE9B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BD4EA6A1-8E98-45EE-9732-D843F03B5F1D} = {BD4EA6A1-8E98-45EE-9732-D843F03B5F1D}
+	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.LogHelper", "src\WareHouse.LogHelper\WareHouse.LogHelper.xproj", "{2BDA734C-8E7A-403D-8800-24C64BF7C2C5}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.MyEventStream", "src\WareHouse.MyEventStream\WareHouse.MyEventStream.xproj", "{75304C1B-E41F-42AC-A1A5-6B39C23E845D}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.AutharizationAPI", "src\WareHouse.AutharizationAPI\WareHouse.AutharizationAPI.xproj", "{CFD026FB-B2D8-4B4D-B1F7-3482A48356C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -118,6 +123,10 @@ Global
 		{75304C1B-E41F-42AC-A1A5-6B39C23E845D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75304C1B-E41F-42AC-A1A5-6B39C23E845D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75304C1B-E41F-42AC-A1A5-6B39C23E845D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFD026FB-B2D8-4B4D-B1F7-3482A48356C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFD026FB-B2D8-4B4D-B1F7-3482A48356C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFD026FB-B2D8-4B4D-B1F7-3482A48356C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFD026FB-B2D8-4B4D-B1F7-3482A48356C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -139,5 +148,6 @@ Global
 		{DA6257C9-1C59-4DB3-BDD9-4A191D2CBE9B} = {3E2CC7D0-E69F-4397-BE99-E18C6EE3DE77}
 		{2BDA734C-8E7A-403D-8800-24C64BF7C2C5} = {3E2CC7D0-E69F-4397-BE99-E18C6EE3DE77}
 		{75304C1B-E41F-42AC-A1A5-6B39C23E845D} = {3E2CC7D0-E69F-4397-BE99-E18C6EE3DE77}
+		{CFD026FB-B2D8-4B4D-B1F7-3482A48356C2} = {3E2CC7D0-E69F-4397-BE99-E18C6EE3DE77}
 	EndGlobalSection
 EndGlobal

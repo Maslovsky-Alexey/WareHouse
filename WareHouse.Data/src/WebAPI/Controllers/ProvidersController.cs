@@ -41,6 +41,13 @@ namespace WebAPI.Controllers
             return await safeProviderService.GetItem(id);
         }
 
+        [HttpGet("{name}")]
+        [Authorize(Roles = "employee")]
+        public async Task<Provider> Get(string name)
+        {
+            return await safeProviderService.GetProviderByName(name, true);
+        }
+
         // POST api/values
         [HttpPost]
         [Authorize(Roles = "employee")]

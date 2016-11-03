@@ -28,5 +28,13 @@ namespace WebAPI.Controllers
         {
             return await safeItemService.GetAll();
         }
+
+
+        [HttpGet("{name}")]
+        [Authorize]
+        public async Task<Item> Get(string name)
+        {
+            return await safeItemService.GetItemByName(name, true);
+        }
     }
 }

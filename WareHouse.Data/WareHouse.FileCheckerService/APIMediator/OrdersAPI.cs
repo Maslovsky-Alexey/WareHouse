@@ -6,24 +6,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WareHouse.FileCheckerService.APIMediator.Interfaces;
+using WareHouse.FileCheckerService.APIMediator.WebRequestHelper;
 using WareHouse.FileCheckerService.Models.APIModel;
 
 namespace WareHouse.FileCheckerService.APIMediator
 {
     public class OrdersAPI : IOrdersAPI
     {
-        private readonly IBaseMediator baseMediator;
+        private readonly IWebRequestHelper webRequestHelper;
         private string authToken;
 
-        public OrdersAPI(IBaseMediator baseMediator, string authToken)
+        public OrdersAPI(IWebRequestHelper webRequestHelper, string authToken)
         {
-            this.baseMediator = baseMediator;
+            this.webRequestHelper = webRequestHelper;
             this.authToken = authToken;
         }
 
         public void AddItem(OrderAPIModel model)
         {
-            baseMediator.SendRequest("http://localhost:33649/api/operations/order", "post", JsonConvert.SerializeObject(model), "application/json; charset=UTF-8", authToken);
+            var response = webRequestHelper.Post("/api/operations/orders", JsonConvert.SerializeObject(model), "application/json; charset=UTF-8", authToken);
         }
     }
 }

@@ -5,24 +5,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WareHouse.FileCheckerService.APIMediator.Interfaces;
+using WareHouse.FileCheckerService.APIMediator.WebRequestHelper;
 using WareHouse.FileCheckerService.Models.APIModel;
 
 namespace WareHouse.FileCheckerService.APIMediator
 {
     public class AuthorizationAPI : IAuthorizationAPI
     {
-        private readonly BaseMediator baseMediator;
+        private readonly IWebRequestHelper webRequestHelper;
 
-        public AuthorizationAPI(BaseMediator baseMediator)
+        public AuthorizationAPI(IWebRequestHelper webRequestHelper)
         {
-            this.baseMediator = baseMediator;
+            this.webRequestHelper = webRequestHelper;
         }
 
         public string Login(LoginAPIModel model)
         {
-            var response = baseMediator.SendRequest("http://localhost:33649/api/account/login", "post", JsonConvert.SerializeObject(model), "application/json; charset=UTF-8", "");
+            var response = webRequestHelper.Post("/api/account/login", JsonConvert.SerializeObject(model), "application/json; charset=UTF-8", "");
 
-            return response.Headers["Authorization"];
+            if (response.HasError)
+                return "";
+
+            return response.ContainsHeader("Authorization") ? response["Authorization"] : "";
         }
     }
 }

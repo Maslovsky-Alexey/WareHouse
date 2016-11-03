@@ -9,6 +9,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using WareHouse.FileCheckerService.APIMediator;
+using WareHouse.FileCheckerService.APIMediator.WebRequestHelper;
 using WareHouse.FileCheckerService.FileWatcher;
 using WareHouse.FileCheckerService.Models.APIModel;
 using WareHouse.FileCheckerService.Repositories;
@@ -46,14 +47,16 @@ namespace WareHouse.FileCheckerService
         {
             Task.Factory.StartNew(() =>
             {
-                var token = new AuthorizationAPI(new BaseMediator()).Login(new LoginAPIModel
+                var host = new ConfigurationManager().GetValue("Host");
+
+                var token = new AuthorizationAPI(new WebRequestHelper(host)).Login(new LoginAPIModel
                 {
                     Username = new ConfigurationManager().GetValue("Login"),
                     Password = new ConfigurationManager().GetValue("Password"),
                 });
-                        
-                watcherOrders = new OrdersCsvFileWatcher(new ConfigurationManager().GetValue("ItemsFolder"), new ChangeRepository(new Context.HistoryDbContext()), new OrdersAPI(new BaseMediator(), token));
-                watcherItems = new ItemsCsvFileWatcher(new ConfigurationManager().GetValue("OrdersFolder"), new ChangeRepository(new Context.HistoryDbContext()), new ItemsAPI(new BaseMediator(), token));                  
+                                        
+                watcherOrders = new OrdersCsvFileWatcher(new ConfigurationManager().GetValue("OrdersFolder"), new ChangeRepository(new Context.HistoryDbContext()), new OrdersAPI(new WebRequestHelper(host), token));
+                watcherItems = new ItemsCsvFileWatcher(new ConfigurationManager().GetValue("ItemsFolder"), new ChangeRepository(new Context.HistoryDbContext()), new ItemsAPI(new WebRequestHelper(host), token));                  
             });     
         }
 

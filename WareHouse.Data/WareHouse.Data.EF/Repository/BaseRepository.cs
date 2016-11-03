@@ -72,7 +72,7 @@ namespace WareHouse.Data.EF.Repository
 
         public async Task<T> GetItem(int id)
         {
-            return await table.FirstAsync(item => item.Id == id);
+            return await table.FirstOrDefaultAsync(item => item.Id == id);
         }
 
         public async Task<int> Count()

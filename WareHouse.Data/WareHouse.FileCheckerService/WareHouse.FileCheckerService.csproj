@@ -67,17 +67,21 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
+    <Reference Include="xNet, Version=3.3.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\xNet.3.3.4\lib\xNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="APIMediator\AuthorizationAPI.cs" />
     <Compile Include="APIMediator\Interfaces\IAuthorizationAPI.cs" />
-    <Compile Include="APIMediator\Interfaces\IBaseMediator.cs" />
     <Compile Include="APIMediator\Interfaces\IOrdersAPI.cs" />
     <Compile Include="APIMediator\Interfaces\IItemsAPI.cs" />
     <Compile Include="APIMediator\Interfaces\ISenderAPI.cs" />
     <Compile Include="APIMediator\OrdersAPI.cs" />
     <Compile Include="APIMediator\ItemsAPI.cs" />
-    <Compile Include="APIMediator\BaseMediator.cs" />
+    <Compile Include="APIMediator\WebRequestHelper\WebRequestHelper.cs" />
+    <Compile Include="APIMediator\WebRequestHelper\IWebRequestHelper.cs" />
     <Compile Include="ConfigurationManager.cs" />
     <Compile Include="Configurator.cs" />
     <Compile Include="Context\HistoryDbContext.cs" />

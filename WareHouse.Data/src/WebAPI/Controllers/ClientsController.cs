@@ -48,6 +48,21 @@ namespace WebAPI.Controllers
             return client;
         }
 
+        [HttpGet("{name}")]
+        [Authorize(Roles = "employee")]
+        public async Task<Client> Get(string name)
+        {
+            var client = await safeClientService.GetClientByName(name, true);
+
+            if (client == null)
+            {
+                NotFound();
+                return null;
+            }
+
+            return client;
+        }
+
         // POST api/values
         [HttpPost]
         [Authorize(Roles = "employee")]

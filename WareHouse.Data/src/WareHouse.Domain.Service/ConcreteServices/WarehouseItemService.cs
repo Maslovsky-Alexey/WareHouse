@@ -72,7 +72,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<WarehouseItemViewModel> GetItemByIdAsViewModel(int id)
         {
-            return MapToViewModel(await repository.GetItem(id));
+            var item = await repository.GetItem(id);
+
+            if (item == null)
+                return null;
+
+            return MapToViewModel(item);
         }
 
         private PageModel GetPage(IEnumerable<WarehouseItemViewModel> items, int page)
