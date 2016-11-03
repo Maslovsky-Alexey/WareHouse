@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
             this.unsafeOperationService = unsafeOperationService;
         }
 
-        [Route("Supply")]
+        [Route("supplies")]
         [HttpPost]
         [Authorize(Roles = "employee")]
         public async Task AddSupply([FromBody] SupplyViewModel value)
@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
             }         
         }
 
-        [Route("Order")]
+        [Route("orders")]
         [HttpPost]
         [Authorize(Roles = "employee")]
         public async Task AddOrder([FromBody] OrderViewModel value)
@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
                 HttpContext.Response.StatusCode = 500;
         }
                 
-        [Route("Order/Actions/Confirm/{id}")]
+        [Route("orders/actions/confirm/{id}")]
         [HttpPut("{id}")]
         [Authorize]
         public async Task ConfirmOrder(int id)
@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
                 NotFound();
         }
 
-        [Route("Supply/Actions/Confirm/{id}")]
+        [Route("supplies/actions/confirm/{id}")]
         [HttpPut("{id}")]
         [Authorize(Roles = "employee")]
         public async Task ConfirmSupply(int id)
@@ -65,7 +65,7 @@ namespace WebAPI.Controllers
                 NotFound();
         }
 
-        [Route("Order/Actions/Return/{id}")]
+        [Route("orders/actions/return/{id}")]
         [HttpPut("{id}")]
         [Authorize]
         public async Task ReturnOrder(int id)
@@ -74,7 +74,7 @@ namespace WebAPI.Controllers
                 NotFound();
         }
 
-        [Route("Supply/Actions/Return/{id}")]
+        [Route("supplies/actions/return/{id}")]
         [HttpPut("{id}")]
         [Authorize(Roles = "employee")]
         public async Task ReturnSupply(int id)
@@ -83,7 +83,7 @@ namespace WebAPI.Controllers
                 NotFound();
         }
 
-        [Route("Item")]
+        [Route("items")]
         [HttpPost]
         [Authorize(Roles = "employee")]
         public async Task AddItemWithoutRepetition([FromBody] Item value)

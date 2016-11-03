@@ -10,7 +10,7 @@ var AccountRepository = function() {
             password: password
         };
 
-        serverMediator.sendRequest("api/account/client/actions/register", "post", JSON.stringify(model), success);
+        serverMediator.sendRequest("api/account/clients/actions/register", "post", JSON.stringify(model), success);
     };
 
     this.registerEmployee = function(username, password, success) {
@@ -19,7 +19,7 @@ var AccountRepository = function() {
             password: password
         };
 
-        serverMediator.sendRequest("api/account/employee/actions/register", "post", JSON.stringify(model), success);
+        serverMediator.sendRequest("api/account/employees/actions/register", "post", JSON.stringify(model), success);
     };
 
     this.login = function(username, password, success) {
@@ -53,7 +53,7 @@ var AccountRepository = function() {
     };
     this.getUserByName = function(username, success) {
 
-        serverMediator.sendRequest("api/account/user/" + username,
+        serverMediator.sendRequest("api/account/users/" + username,
             "get",
             null,
             function(data) {
