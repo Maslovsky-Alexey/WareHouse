@@ -7,6 +7,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WareHouse.AutharizationAPI.Context.Models;
+using WareHouse.AutharizationAPI.Context;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Autofac;
+using Microsoft.EntityFrameworkCore;
+using WareHouse.AutharizationAPI.Repositories.Interfaces;
+using WareHouse.AutharizationAPI.Repositories;
+using Autofac.Extensions.DependencyInjection;
 
 namespace WareHouse.AutharizationAPI
 {
@@ -21,7 +29,6 @@ namespace WareHouse.AutharizationAPI
 
             if (env.IsEnvironment("Development"))
             {
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
@@ -30,27 +37,79 @@ namespace WareHouse.AutharizationAPI
         }
 
         public IConfigurationRoot Configuration { get; }
+        public IContainer ApplicationContainer { get; private set; }
 
-        // This method gets called by the runtime. Use this method to add services to the container
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<UsersContext>()
+                .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 5;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        .WithExposedHeaders("Authorization"));
+            });
+
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
+
+            var containerBuilder = new ContainerBuilder();
+
+            RegistrTypes(containerBuilder);
+
+            containerBuilder.Populate(services);
+            ApplicationContainer = containerBuilder.Build();
+
+            var tokenEncryptor = ApplicationContainer.Resolve<IEncryptor>();
+
+            tokenEncryptor.Key = Configuration.GetSection("Encrypt").GetValue<string>("Key");
+            tokenEncryptor.VI = Configuration.GetSection("Encrypt").GetValue<string>("VI");
+
+            return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
+        private void RegistrTypes(ContainerBuilder containerBuilder)
+        {
+            var connection = Configuration.GetConnectionString("DefaultConnection");
+            var builder = new DbContextOptionsBuilder<UsersContext>().UseSqlServer(connection);
+
+            containerBuilder.Register(context => { return new UsersContext(builder.Options); })
+                .InstancePerDependency();
+
+            containerBuilder.Register(c => TokenEncryptor.Instance).As<IEncryptor>().SingleInstance();
+            containerBuilder.RegisterType<ApplicationUserRepository>().As<IApplicationUserRepository>();
+        }
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseCors("AllowSpecificOrigin");
+
             app.UseApplicationInsightsRequestTelemetry();
 
             app.UseApplicationInsightsExceptionTelemetry();
-
+            app.UseIdentity();
             app.UseMvc();
+
+       
         }
     }
 }

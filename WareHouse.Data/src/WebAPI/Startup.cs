@@ -3,7 +3,6 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +21,7 @@ using WareHouse.Domain.Service.ProxyServices.Cache;
 using WareHouse.Domain.Service.ModelsMapper.Configurators;
 using WareHouse.LogHelper;
 using WareHouse.MyEventStream;
+using Autofac.Core;
 
 namespace WebAPI
 {
@@ -47,20 +47,10 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            //    var connection = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=WareHouse;uid=Admin;password=123123;";    
+            var connection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<WareHouseDbContext>(options => options.UseSqlServer(connection));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<WareHouseDbContext>()
-                .AddDefaultTokenProviders();
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Password.RequiredLength = 5;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireDigit = false;
-            });
+            var dboptions = new DbContextOptionsBuilder<WareHouseDbContext>().Options;
 
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
@@ -80,8 +70,7 @@ namespace WebAPI
 
             var containerBuilder = new ContainerBuilder();
 
-            RegistrTypes(containerBuilder);
-
+            RegistrTypes(containerBuilder, dboptions);
 
             containerBuilder.Populate(services);
             ApplicationContainer = containerBuilder.Build();
@@ -96,13 +85,14 @@ namespace WebAPI
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        private void RegistrTypes(ContainerBuilder containerBuilder)
+        private void RegistrTypes(ContainerBuilder containerBuilder, DbContextOptions<WareHouseDbContext> options)
         {
-            var connection = Configuration.GetConnectionString("DefaultConnection");
-            var builder = new DbContextOptionsBuilder<WareHouseDbContext>().UseSqlServer(connection);
+
+
+
             var redisUrl = "localhost:6379";
 
-            containerBuilder.Register(context => { return new WareHouseDbContext(builder.Options); })
+            containerBuilder.Register(context => { return new WareHouseDbContext(options); })
                 .InstancePerDependency();
 
             containerBuilder.Register(c => CacheManager.Instance).As<ICacheManager>().SingleInstance();
@@ -161,10 +151,6 @@ namespace WebAPI
             containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>())).As<IUnsafeWarehouseItemService>();
             containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>())).As<ISafeWarehouseItemService>();
 
-            containerBuilder.RegisterType<UserRepository>().As<IUserRepository>();
-            containerBuilder.Register(context => new UserService(context.Resolve<IUserRepository>())).As<IUnsafeUserService>();
-            containerBuilder.Register(context => new UserService(context.Resolve<IUserRepository>())).As<ISafeUserService>();
-
             containerBuilder.RegisterType<OrderRepository>().As<BaseRepository<Order>>();
             containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<IUnsafeOrderService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance)); ;
             containerBuilder.Register(context => new OrderProxyService(new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>()),
@@ -183,9 +169,9 @@ namespace WebAPI
             containerBuilder.RegisterType<OperationService>();
             containerBuilder.Register(context => context.Resolve<OperationService>()).As<ISafeOperationService>();
 
-            containerBuilder.RegisterType<AccountService>().As<IUnsafeAccountService>();
-            containerBuilder.RegisterType<AccountService>();
-            containerBuilder.Register(context => new AccountProxyService(context.Resolve<AccountService>(), null));
+            containerBuilder.RegisterType<AccountService>().As<IUnsafeAccountService>().WithParameter("autharizationApiUrl", "http://localhost:11492");
+            containerBuilder.RegisterType<AccountService>();           
+            containerBuilder.Register(context => new AccountProxyService(context.Resolve<AccountService>(new NamedParameter("autharizationApiUrl", "http://localhost:11492")), null));
             containerBuilder.Register(context => context.Resolve<AccountProxyService>()).As<ISafeAccountService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance));
 
             containerBuilder.Register(c => TokenEncryptor.Instance).As<IEncryptor>().SingleInstance();
@@ -214,8 +200,6 @@ namespace WebAPI
             app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseStaticFiles();
-
-            app.UseIdentity();
 
             app.UseMiddleware<AuthenticationMddleware>();
 

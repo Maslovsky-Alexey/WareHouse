@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using WareHouse.Data.Model;
 using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
@@ -10,6 +9,14 @@ using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.Domain.ServiceInterfaces.Unsafe;
 using System;
 using System.Collections.Generic;
+using WareHouse.Domain.Service.HttpHelper;
+using System.Text;
+using System.Net.Http;
+using Newtonsoft.Json;
+using WareHouse.Domain.Model.AutharizationAPIModel;
+using Newtonsoft.Json.Serialization;
+using System.IO;
+using System.Net;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
@@ -20,46 +27,44 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         private readonly ISafeEmployeeService safeEmployeeService;
         private readonly IUnsafeEmployeeService unsafeEmployeeService;
-
-        private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly ISafeUserService safeUserService;
-
+        private readonly string autharizationApiUrl;
 
         public AccountService(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            ISafeUserService safeUserService,
+            string autharizationApiUrl,
             ISafeClientService safeClientService, IUnsafeClientService unsafeClientService,
             ISafeEmployeeService safeEmployeeService, IUnsafeEmployeeService unsafeEmployeeService)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-
             this.safeClientService = safeClientService;
             this.unsafeClientService = unsafeClientService;
 
             this.safeEmployeeService = safeEmployeeService;
             this.unsafeEmployeeService = unsafeEmployeeService;
 
-            this.safeUserService = safeUserService;
+            this.autharizationApiUrl = autharizationApiUrl;
         }
 
         public async Task<UserModel> GetCurrentUser(HttpContext httpContext)
         {
-            var user = await safeUserService.GetUserByName(httpContext.User.Identity.Name, false);
+            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account?name={httpContext.User.Identity.Name}", "get", "");
 
-            if (user == null)
+            UserAPIModel apiUser = GetObjectFromResponse<UserAPIModel>(response);
+
+            if (apiUser == null)
                 return null;
 
-            return await MapToUserModel(user);
+            return await MapToUserModel(apiUser);
         }
 
-        public async Task<bool> Login(LoginModel model)
+        public async Task<string> Login(LoginModel model)
         {
-            await EnsureAddDefauleUser();
+            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account/login", "post", ToJson(model));
 
-            return (await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false)).Succeeded;
+            UserAPIModel apiUser = GetObjectFromResponse<UserAPIModel>(response);
+
+            if (apiUser == null)
+                return null;
+
+            return !string.IsNullOrEmpty(response.Headers["Authorization"]) ? response.Headers["Authorization"] : null;
         }
 
         public async Task<UserModel> RegisterClient(RegisterModel model)
@@ -98,61 +103,76 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<UserModel> GetUserByName(string username)
         {
-            return await MapToUserModel(await safeUserService.GetUserByName(username, false));
+            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account?name={username}", "get", "");
+            UserAPIModel apiUser = GetObjectFromResponse<UserAPIModel>(response);
+
+            return await MapToUserModel(apiUser);
         }
 
-
-        private async Task EnsureAddDefauleUser()
+        public async Task<IEnumerable<string>> GetUserRoles(string name)
         {
-            if (await userManager.FindByNameAsync("admin") == null)
-            {
-                await userManager.CreateAsync(new ApplicationUser {UserName = "admin"}, "admin");
-                await userManager.AddToRoleAsync(await userManager.FindByNameAsync("admin"), "employee");
-            }
+            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account?name={name}", "get", "");
+            UserAPIModel apiUser = GetObjectFromResponse<UserAPIModel>(response);
 
-            await unsafeEmployeeService.Add(new Employee
-            {
-                Name = "Administrator",
-                UserId = (await safeUserService.GetUserByName("admin", false)).Id
-            });
+            return apiUser.Roles;
         }
 
-        private async Task<ApplicationUser> RegisterUserWithRole(RegisterModel model, string role)
+        private async Task<UserAPIModel> RegisterUserWithRole(RegisterModel model, string role)
         {
-            var user = new ApplicationUser {UserName = model.Username};
-            var result = await userManager.CreateAsync(user, model.Password);
+            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account/register", "post", ToJson(MapToRegisterModelAPI(model, role)));
+            UserAPIModel apiUser = GetObjectFromResponse<UserAPIModel>(response);
 
-            if (!result.Succeeded)
+            if (apiUser == null)
                 return null;
 
-            await userManager.AddToRoleAsync(await userManager.FindByNameAsync(model.Username), role);
-
-            return await safeUserService.GetUserByName(model.Username, false);
+            return apiUser;
         }
 
-        private async Task<UserModel> MapToUserModel(ApplicationUser user)
+        private RegisterModelAPI MapToRegisterModelAPI(RegisterModel model, params string[] roles)
         {
-            return new UserModel
+            return new RegisterModelAPI
             {
-                isEmployee = await UserHasRole(user, "employee"),
-                Login = user.UserName,
-                Name = await GetUserName(user)
+                Username = model.Username,
+                Password = model.Password,
+                Roles = roles
             };
         }
 
-        private async Task<string> GetUserName(ApplicationUser user)
+        private async Task<string> GetUserName(string id, IEnumerable<string> roles)
         {
-            if (await UserHasRole(user, "employee"))
-                return (await safeEmployeeService.GetEmployeeByIdentityId(user.Id)).Name;
-            if (await UserHasRole(user, "client"))
-                return (await safeClientService.GetClientByIdentityId(user.Id)).Name;
+            if (roles.Contains("employee"))
+                return (await safeEmployeeService.GetEmployeeByIdentityId(id)).Name;
+            if (roles.Contains("client"))
+                return (await safeClientService.GetClientByIdentityId(id)).Name;
 
             return null;
         }
 
-        private async Task<bool> UserHasRole(ApplicationUser user, string role)
+        private async Task<UserModel> MapToUserModel(UserAPIModel apiUser)
         {
-            return (await userManager.GetRolesAsync(user)).FirstOrDefault(x => x == role) != null;
+            return new UserModel
+            {
+                isEmployee = apiUser.Roles.Contains("employee"),
+                Login = apiUser.UserName,
+                Name = await GetUserName(apiUser.Id, apiUser.Roles)
+            };
+        }
+
+        private string ToJson(object obj)
+        {
+            return JsonConvert.SerializeObject(obj, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+        }
+
+        private T GetObjectFromResponse<T>(WebResponse httpResponse)
+        {
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+                return JsonConvert.DeserializeObject<T>(result);
+            }      
         }
 
     }

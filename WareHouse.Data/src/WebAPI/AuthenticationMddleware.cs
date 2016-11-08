@@ -4,27 +4,26 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Primitives;
 using WareHouse.Data.EF.Context;
 using WareHouse.Data.Model;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.Model.ViewModel;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace WebAPI
 {
     public class AuthenticationMddleware
     {
-        private readonly WareHouseDbContext context;
         private readonly IEncryptor encryptor;
         private readonly RequestDelegate next;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly ISafeAccountService safeAccountService;
 
 
-        public AuthenticationMddleware(RequestDelegate next, UserManager<ApplicationUser> userManager,
-            WareHouseDbContext context, IEncryptor encryptor)
+        public AuthenticationMddleware(RequestDelegate next, ISafeAccountService safeAccountService, IEncryptor encryptor)
         {
             this.next = next;
-            this.userManager = userManager;
-            this.context = context;
+            this.safeAccountService = safeAccountService;
             this.encryptor = encryptor;
         }
 
@@ -53,18 +52,19 @@ namespace WebAPI
                 try
                 {
                     var name = encryptor.Decrypt(token.Substring(6));
-                    ApplicationUser user;
+                    UserModel user;
 
-                    lock (this)
+                    lock(this)
                     {
-                        user = context.Users.FirstOrDefault(x => x.UserName == name);
-                    }
+                        user = safeAccountService.GetUserByName(name).Result;
+                                    
 
                     if (user == null)
                         throw new Exception();
-
-                    httpContext.User = new GenericPrincipal(new UserIndentity(user),
-                        (await userManager.GetRolesAsync(user)).ToArray());
+                     
+                    httpContext.User = new GenericPrincipal(new UserIndentity(new ApplicaitonUser { UserName = user.Name }),
+                        (safeAccountService.GetUserRoles(name).Result).ToArray());
+                    }
                 }
                 catch
                 {

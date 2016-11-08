@@ -7,10 +7,10 @@ namespace WareHouse.Data.EF.Context.Mapping
     {
         public void Map(EntityTypeBuilder<Client> typeBuilder)
         {
-            typeBuilder
-                .HasOne(p => p.User)
-                .WithOne()
-                .HasForeignKey<Client>(p => p.UserId);
+            //typeBuilder
+            //    .HasOne(p => p.User)
+            //    .WithOne()
+            //    .HasForeignKey<Client>(p => p.UserId);
         }
     }
 }

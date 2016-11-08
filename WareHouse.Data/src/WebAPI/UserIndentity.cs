@@ -5,16 +5,16 @@ namespace WebAPI
 {
     public class UserIndentity : IIdentity
     {
-        public UserIndentity(ApplicationUser user)
+        public UserIndentity(ApplicaitonUser user)
         {
             User = user;
         }
 
-        public ApplicationUser User { get; set; }
+        public ApplicaitonUser User { get; set; }
 
         public string AuthenticationType
         {
-            get { return typeof(ApplicationUser).ToString(); }
+            get { return typeof(ApplicaitonUser).ToString(); }
         }
 
         public bool IsAuthenticated

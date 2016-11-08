@@ -6,7 +6,7 @@ namespace WebAPI.Controllers
     {
         public static void AddAuthorizationHeader(this HttpContext httpContext, string token)
         {
-            httpContext.Response.Headers.Add("Authorization", new[] {"Bearer " + token});
+            httpContext.Response.Headers.Add("Authorization", new[] {token});
         }
     }
 }

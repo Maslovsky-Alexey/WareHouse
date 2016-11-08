@@ -25,21 +25,27 @@ namespace WareHouse.Domain.Service.ProxyServices
             this.cache = cache;
         }
 
-
-        public async Task<UserModel> GetCurrentUser(HttpContext httpContext)
-        {
-            return await safeAccountService.GetCurrentUser(httpContext);
-        }
-
         public async Task<UserModel> GetUserByName(string username)
         {
             return await safeAccountService.GetUserByName(username);
         }
 
-        public async Task<bool> Login(LoginModel model)
+        public IDisposable Subscribe(IObserver<SignInLogModel> observer)
         {
-            if (!await safeAccountService.Login(model))
-                return false;
+            return null;
+        }
+
+        protected void OnNext(SignInLogModel value)
+        {
+            MyEventStream.MyEventStream.Instance.Emit(value);
+        }
+
+        public async Task<string> Login(LoginModel model)
+        {
+            var token = await safeAccountService.Login(model);
+
+            if (token == null)
+                return null;
 
             var user = await safeAccountService.GetUserByName(model.Username);
 
@@ -51,17 +57,17 @@ namespace WareHouse.Domain.Service.ProxyServices
                 DateTime = DateTime.Now
             });
 
-            return true;
+            return token;
         }
 
-        public IDisposable Subscribe(IObserver<SignInLogModel> observer)
+        public async Task<IEnumerable<string>> GetUserRoles(string name)
         {
-            return null;
+            return await safeAccountService.GetUserRoles(name);
         }
 
-        protected void OnNext(SignInLogModel value)
+        public async Task<UserModel> GetCurrentUser(HttpContext httpContext)
         {
-            MyEventStream.MyEventStream.Instance.Emit(value);
+            return await safeAccountService.GetCurrentUser(httpContext);
         }
     }
 }

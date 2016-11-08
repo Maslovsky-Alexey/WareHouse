@@ -2,13 +2,11 @@
 using WareHouse.Data.EF.Context.Mapping;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using System;
 
 namespace WareHouse.Data.EF.Context
 {
-    public class WareHouseDbContext : IdentityDbContext<ApplicationUser>
+    public class WareHouseDbContext : DbContext
     {
         public DbSet<Client> Clients { get; set; }
 
@@ -37,9 +35,6 @@ namespace WareHouse.Data.EF.Context
 
         private void Seed()
         {
-            Roles.Add(new IdentityRole("employee") { NormalizedName = "EMPLOYEE" });
-            Roles.Add(new IdentityRole("client") { NormalizedName = "CLIENT" });
-
             foreach (string name in Enum.GetNames(typeof(Status)))
             {
                 ItemStatus.Add(new ItemStatus() {

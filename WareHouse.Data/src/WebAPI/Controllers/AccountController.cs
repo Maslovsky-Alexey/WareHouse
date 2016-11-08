@@ -16,14 +16,11 @@ namespace WebAPI.Controllers
         private readonly ISafeAccountService safeAccountService;
         private readonly IUnsafeAccountService unsafeAccountService;
 
-        private readonly IEncryptor encryptor;
 
-        public AccountController(ISafeAccountService safeAccountService, IUnsafeAccountService unsafeAccountService, IEncryptor encryptor)
+        public AccountController(ISafeAccountService safeAccountService, IUnsafeAccountService unsafeAccountService)
         {
             this.safeAccountService = safeAccountService;
             this.unsafeAccountService = unsafeAccountService;
-
-            this.encryptor = encryptor;
         }
 
         [HttpPost("clients/actions/register")]
@@ -40,26 +37,36 @@ namespace WebAPI.Controllers
             return await unsafeAccountService.RegisterEmployee(model);
         }
 
-        [HttpPost("login")]
+        [HttpPost("login")] 
         [AllowAnonymous]
         public async Task<bool> Login([FromBody] LoginModel model)
         {
             var result = await safeAccountService.Login(model);
 
-            if (result)
-                HttpContext.AddAuthorizationHeader(encryptor.Encrypt(model.Username));
+            if (!string.IsNullOrEmpty(result))
+            {
+                HttpContext.AddAuthorizationHeader(result);
+                return true;
+            }
             else
+            {
                 HttpContext.Response.StatusCode = 401;
-
-            return result;
+                return false;
+            }   
         }
 
         [HttpGet("currentuser")]
         [Authorize]
         public async Task<UserModel> GetCurrentUser()
         {
-            return await safeAccountService.GetCurrentUser(HttpContext);
+            var user = await safeAccountService.GetCurrentUser(HttpContext);
+
+            if (user == null)
+                NotFound();
+
+            return user;
         }
+
 
         [HttpGet("users/{username}")]
         [Authorize]
