@@ -73,13 +73,21 @@ namespace WareHouse.AutharizationAPI.Repositories
         public async Task<OperationStatus> AddRole(string username, string role)
         {
             var user = await GetApplicationUserByName(username);
+            var roleId = context.Roles.FirstOrDefault(x => x.Name.ToLower() == role)?.Id;
 
-            if (user == null)
+            if (string.IsNullOrEmpty(roleId) || user == null)
                 return OperationStatus.Failed;
 
-            var result = await userManager.AddToRoleAsync(user, role);
-
-            return result.Succeeded ? OperationStatus.Failed : OperationStatus.Failed;
+            try
+            {
+                context.UserRoles.Add(new Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<string> { RoleId = roleId, UserId = user.Id });
+                var result = await context.SaveChangesAsync();
+                return result <= 0  ? OperationStatus.Failed : OperationStatus.OK;
+            }
+            catch(Exception e)
+            {
+                return OperationStatus.Failed;
+            }      
         }
 
         public async Task<OperationStatus> RemoveRole(string username, string role)

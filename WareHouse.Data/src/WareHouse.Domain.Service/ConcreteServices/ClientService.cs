@@ -53,14 +53,27 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return MapToServiceModel(await ((ClientRepository) repository).GetClientByIdentityId(identityId));
         }
 
-        public async Task<Client> AssignWithApplicationUser(int clientId, string userId)
+
+
+        public async Task<Client> AddOrAssignWithApplicationUser(string clientName, string userId)
         {
-            var a = MapToServiceModel(await ((ClientRepository)repository).AssignWithApplicationUser(clientId, userId));
+            var client = await GetClientByName(clientName, false);
 
-            if (a != null)
-                OnNext(a);
+            if (client == null)
+            {
+                await Add(new Client { Name = clientName, UserId = userId });
 
-            return a;
+                return await GetClientByName(clientName, false);
+            }
+            else
+            {
+                var result = MapToServiceModel(await ((ClientRepository)repository).AssignWithApplicationUser(client.Id, userId));
+
+                if (result != null)
+                    OnNext(result);
+
+                return result;
+            }
         }
     }
 }

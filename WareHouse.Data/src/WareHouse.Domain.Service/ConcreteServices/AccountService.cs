@@ -69,36 +69,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<UserModel> RegisterClient(RegisterModel model)
         {
-            var client = await safeClientService.GetClientByName(model.Username, true);
-
-            if (client != null && !string.IsNullOrEmpty(client.UserId))
-                return null;
-
-            var user = await RegisterUserWithRole(model, "client");
-
-            if (client == null)
-                await unsafeClientService.Add(new Domain.Model.Client {Name = model.Username, UserId = user.Id});   
-            else
-                await unsafeClientService.AssignWithApplicationUser(client.Id, user.Id);
-            
-            return await MapToUserModel(user);
+            throw new NotImplementedException();
         }
 
         public async Task<UserModel> RegisterEmployee(RegisterModel model)
         {
-            var employee = await safeEmployeeService.GetEmployeeByName(model.Username, true);
-
-            if (employee != null && !string.IsNullOrEmpty(employee.UserId))
-                return null;
-
-            var user = await RegisterUserWithRole(model, "employee");
-
-            if (employee == null)
-                await unsafeEmployeeService.Add(new Domain.Model.Employee { Name = model.Username, UserId = user.Id });
-            else
-                await unsafeEmployeeService.AssignWithApplicationUser(employee.Id, user.Id);
-
-            return await MapToUserModel(user);
+            throw new NotImplementedException();
         }
 
         public async Task<UserModel> GetUserByName(string username)
@@ -175,5 +151,22 @@ namespace WareHouse.Domain.Service.ConcreteServices
             }      
         }
 
+        public async Task<UserModel> AddRole(string username, string role)
+        {
+            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account/{username}/roles/?role={role}", "post", null);
+
+            UserAPIModel apiUser = GetObjectFromResponse<UserAPIModel>(response);
+
+            if (role == "employee")
+            {
+                await unsafeEmployeeService.AddOrAssignWithApplicationUser(username, apiUser.Id);
+            }
+            else if (role == "client")
+            {
+                await unsafeClientService.AddOrAssignWithApplicationUser(username, apiUser.Id);
+            }
+            
+            return await MapToUserModel(apiUser);
+        }
     }
 }

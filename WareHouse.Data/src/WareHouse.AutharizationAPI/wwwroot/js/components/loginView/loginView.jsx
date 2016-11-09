@@ -20,13 +20,25 @@ var LoginView = React.createClass({
         new AccountRepository().login(this.state.name, this.state.password, this.successLogin);      
     },
 
+    Register: function () {
+        if (!this.isValidValues()) {
+            new ErrorView().error('Shaytan');
+            return;
+        }
+
+        new AccountRepository().register(this.state.name, this.state.password, this.successLogin);
+    },
+
     successLogin: function (token) {
         if (!token) {
             new ErrorView().error('Shaytan');
             return;
         }
 
-        window.location.replace(GenerateRedirectUri(token));
+        var redirectUri = GenerateRedirectUri(token);
+
+        if (redirectUri)
+            window.location.replace(redirectUri);
     },
 
     isValidValues: function(){
@@ -57,10 +69,13 @@ var LoginView = React.createClass({
                         <div className="col-sm-1">
                             <button type="submit" className="btn btn-success" onClick={this.Login}>Login</button>
                         </div>
-                        <div className="col-sm-1 col-lg-offset-1">
+                        <div className="col-sm-1 col-sm-offset-1">
+                            <button type="submit" className="btn btn-success" onClick={this.Register}>Register</button>
+                        </div>
+                        <div className="col-sm-1 col-sm-offset-1">
                             <button type="submit" className="btn btn-default" onClick={this.Send}>Vk</button>
                         </div>
-                        <div className="col-sm-1 col-lg-offset-1">
+                        <div className="col-sm-1 col-sm-offset-1">
                             <button type="submit" className="btn btn-default" onClick={this.Send}>Facebook</button>
                         </div>
                     </div>

@@ -49,7 +49,7 @@ namespace WareHouse.Domain.Service.HttpHelper
               {
                   httpResponse = await httpWebRequest.GetResponseAsync();
               }
-              catch
+              catch(Exception e)
               {
   
               }

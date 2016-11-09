@@ -15,14 +15,25 @@ namespace WareHouse.Domain.Service.ConcreteServices
         {
         }
 
-        public async Task<Employee>  AssignWithApplicationUser(int employeeId, string userId)
+        public async Task<Employee> AddOrAssignWithApplicationUser(string employeeName, string userId)
         {
-            var employee = MapToServiceModel(await ((EmployeeRepository)repository).AssignWithApplicationUser(employeeId, userId));
+            var employee = await GetEmployeeByName(employeeName, false);
 
-            if (employee != null)
-                OnNext(employee);
+            if (employee == null)
+            {
+                await Add(new Employee { Name = employeeName, UserId = userId });
 
-            return employee;
+                return await GetEmployeeByName(employeeName, false);
+            }
+            else
+            {
+                var result = MapToServiceModel(await ((EmployeeRepository)repository).AssignWithApplicationUser(employee.Id, userId));
+
+                if (result != null)
+                    OnNext(result);
+
+                return result;
+            }
         }
 
         public async Task<Employee> GetEmployeeByIdentityId(string identityId)

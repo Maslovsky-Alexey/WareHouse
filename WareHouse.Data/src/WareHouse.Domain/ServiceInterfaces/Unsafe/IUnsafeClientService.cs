@@ -14,6 +14,6 @@ namespace WareHouse.Domain.ServiceInterfaces.Unsafe
 
         Task<bool> RemoveClientByName(Client value);
 
-        Task<Client> AssignWithApplicationUser(int clientId, string userId);
+        Task<Client> AddOrAssignWithApplicationUser(string clientName, string userId);
     }
 }

@@ -33,14 +33,11 @@ var LoginView = React.createClass({
     },
 
     render: function() {
-
-
         return (
             <div className="row login-form">
                 <div className="col-sm-4 col-sm-offset-4">
                     <button type="submit" className="btn btn-default" onClick={this.Send}>Enter</button>
                 </div>
-
             </div>
         );
     }

@@ -23,6 +23,26 @@ var AccountRepository = function() {
                 success(token);
             });
     };
+
+    this.register = function (username, password, success) {
+        var model = {
+            username: username,
+            password: password
+        };
+
+        serverMediator.sendRequest("api/account/register",
+            "post",
+            JSON.stringify(model),
+            function (data, httpContext) {
+                var token = null;
+
+                if (data != "null") {
+                    token = httpContext.getResponseHeader("Authorization");
+                }
+
+                success(token);
+            });
+    };
 };
 
 exports.AccountRepository = AccountRepository;

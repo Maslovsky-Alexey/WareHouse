@@ -17,29 +17,25 @@ var EmployeeView = React.createClass({
     },
 
     registerClient: function () {
-        this.accountRepository.registerClient($('#client-name').val(), $('#client-password').val(), () => {
+        this.accountRepository.addClientRole($('#client-name').val(), () => {
             $('#client-name').val('');
-            $('#client-password').val('');
         });
     },
 
     registerEmployee: function () {
-        this.accountRepository.registerEmployee($('#employee-name').val(), $('#employee-password').val(), () => {
+        this.accountRepository.addEmployeeRole($('#employee-name').val(), () => {
             $('#employee-name').val('');
-            $('#employee-password').val('');
         });
     },
 
     render: function () {
         return (
             <div className="row">
-                Client name <input id='client-name'/>
-                Password <input id='client-password'/>
+                Client name <input id='client-name'/>              
                 <button onClick={this.registerClient}>Add</button>
                 <br/>
 
                 Employee name <input id='employee-name'/>
-                Password <input id='employee-password'/>
                 <button onClick={this.registerEmployee}>Add</button>
                 <br/>
 

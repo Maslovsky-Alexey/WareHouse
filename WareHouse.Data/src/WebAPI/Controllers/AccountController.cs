@@ -79,5 +79,21 @@ namespace WebAPI.Controllers
 
             return user;
         }
+
+        [Route("users/{username}/roles")]
+        [HttpPost]
+        [Authorize(Roles = "employee")]
+        public async Task<UserModel> AddRole([FromQuery]string role, string username)
+        {
+            var user = await unsafeAccountService.AddRole(username, role);
+
+            if (user == null)
+            {
+                BadRequest();
+                return null;
+            }
+
+            return user;
+        }
     }
 }

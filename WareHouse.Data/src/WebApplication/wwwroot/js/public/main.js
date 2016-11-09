@@ -34480,14 +34480,11 @@
 	    },
 
 	    render: function() {
-
-
 	        return (
 	            React.createElement("div", {className: "row login-form"}, 
 	                React.createElement("div", {className: "col-sm-4 col-sm-offset-4"}, 
 	                    React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.Send}, "Enter")
 	                )
-
 	            )
 	        );
 	    }
@@ -34564,6 +34561,26 @@
 
 	                success(JSON.parse(data));
 	            });
+	    };
+
+	    var addRole = function (username, role, success) {
+	        serverMediator.sendRequest("api/account/users/" + username + "/roles/?role=" + role,
+	            "post",
+	            null,
+	            function (data) {
+	                if (data == "")
+	                    data = "null";
+
+	                success(JSON.parse(data));
+	            });
+	    };
+
+	    this.addEmployeeRole = function (username, success) {
+	        addRole(username, 'employee', success);
+	    };
+
+	    this.addClientRole = function (username, success) {
+	        addRole(username, 'client', success);
 	    };
 	};
 
@@ -37844,16 +37861,14 @@
 	    },
 
 	    registerClient: function () {
-	        this.accountRepository.registerClient($('#client-name').val(), $('#client-password').val(), function()  {
+	        this.accountRepository.addClientRole($('#client-name').val(), function()  {
 	            $('#client-name').val('');
-	            $('#client-password').val('');
 	        });
 	    },
 
 	    registerEmployee: function () {
-	        this.accountRepository.registerEmployee($('#employee-name').val(), $('#employee-password').val(), function()  {
+	        this.accountRepository.addEmployeeRole($('#employee-name').val(), function()  {
 	            $('#employee-name').val('');
-	            $('#employee-password').val('');
 	        });
 	    },
 
@@ -37861,12 +37876,10 @@
 	        return (
 	            React.createElement("div", {className: "row"}, 
 	                "Client name ", React.createElement("input", {id: "client-name"}), 
-	                "Password ", React.createElement("input", {id: "client-password"}), 
 	                React.createElement("button", {onClick: this.registerClient}, "Add"), 
 	                React.createElement("br", null), 
 
 	                "Employee name ", React.createElement("input", {id: "employee-name"}), 
-	                "Password ", React.createElement("input", {id: "employee-password"}), 
 	                React.createElement("button", {onClick: this.registerEmployee}, "Add"), 
 	                React.createElement("br", null), 
 

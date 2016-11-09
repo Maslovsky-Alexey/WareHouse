@@ -74,6 +74,20 @@ namespace WareHouse.AutharizationAPI.Controllers
             return user;
         }
 
-       
+        [Route("{username}/roles")]
+        [HttpPost]
+        public async Task<UserModel> AddRole([FromQuery]string role, string username)
+        {
+            if (await applicationUserService.AddRole(username, role) == OperationStatus.Failed)
+            {
+                BadRequest();
+                return null;
+            }
+
+
+            return await applicationUserService.GetUserByName(username);
+        }
+
+
     }
 }

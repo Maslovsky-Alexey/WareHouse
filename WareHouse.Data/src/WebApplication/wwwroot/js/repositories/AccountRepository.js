@@ -64,6 +64,26 @@ var AccountRepository = function() {
                 success(JSON.parse(data));
             });
     };
+
+    var addRole = function (username, role, success) {
+        serverMediator.sendRequest("api/account/users/" + username + "/roles/?role=" + role,
+            "post",
+            null,
+            function (data) {
+                if (data == "")
+                    data = "null";
+
+                success(JSON.parse(data));
+            });
+    };
+
+    this.addEmployeeRole = function (username, success) {
+        addRole(username, 'employee', success);
+    };
+
+    this.addClientRole = function (username, success) {
+        addRole(username, 'client', success);
+    };
 };
 
 exports.AccountRepository = AccountRepository;

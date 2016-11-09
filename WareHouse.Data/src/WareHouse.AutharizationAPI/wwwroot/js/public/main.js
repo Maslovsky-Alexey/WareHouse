@@ -28794,13 +28794,25 @@
 	        new AccountRepository().login(this.state.name, this.state.password, this.successLogin);      
 	    },
 
+	    Register: function () {
+	        if (!this.isValidValues()) {
+	            new ErrorView().error('Shaytan');
+	            return;
+	        }
+
+	        new AccountRepository().register(this.state.name, this.state.password, this.successLogin);
+	    },
+
 	    successLogin: function (token) {
 	        if (!token) {
 	            new ErrorView().error('Shaytan');
 	            return;
 	        }
 
-	        window.location.replace(GenerateRedirectUri(token));
+	        var redirectUri = GenerateRedirectUri(token);
+
+	        if (redirectUri)
+	            window.location.replace(redirectUri);
 	    },
 
 	    isValidValues: function(){
@@ -28831,10 +28843,13 @@
 	                        React.createElement("div", {className: "col-sm-1"}, 
 	                            React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.Login}, "Login")
 	                        ), 
-	                        React.createElement("div", {className: "col-sm-1 col-lg-offset-1"}, 
+	                        React.createElement("div", {className: "col-sm-1 col-sm-offset-1"}, 
+	                            React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.Register}, "Register")
+	                        ), 
+	                        React.createElement("div", {className: "col-sm-1 col-sm-offset-1"}, 
 	                            React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.Send}, "Vk")
 	                        ), 
-	                        React.createElement("div", {className: "col-sm-1 col-lg-offset-1"}, 
+	                        React.createElement("div", {className: "col-sm-1 col-sm-offset-1"}, 
 	                            React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.Send}, "Facebook")
 	                        )
 	                    )
@@ -28885,6 +28900,26 @@
 
 	                if (data != "null") {
 	                    token = httpContext.getResponseHeader("Authorization");                   
+	                }
+
+	                success(token);
+	            });
+	    };
+
+	    this.register = function (username, password, success) {
+	        var model = {
+	            username: username,
+	            password: password
+	        };
+
+	        serverMediator.sendRequest("api/account/register",
+	            "post",
+	            JSON.stringify(model),
+	            function (data, httpContext) {
+	                var token = null;
+
+	                if (data != "null") {
+	                    token = httpContext.getResponseHeader("Authorization");
 	                }
 
 	                success(token);

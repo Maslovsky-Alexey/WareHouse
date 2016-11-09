@@ -10,6 +10,6 @@ namespace WareHouse.Domain.ServiceInterfaces.Unsafe
 {
     public interface IUnsafeEmployeeService : IUnsafeService<Employee, Data.Model.Employee>
     {
-        Task<Employee> AssignWithApplicationUser(int employeeId, string userId);
+        Task<Employee> AddOrAssignWithApplicationUser(string employeeName, string userId);
     }
 }

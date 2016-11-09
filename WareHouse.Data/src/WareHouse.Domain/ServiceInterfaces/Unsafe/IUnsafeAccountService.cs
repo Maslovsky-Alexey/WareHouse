@@ -13,5 +13,7 @@ namespace WareHouse.Domain.ServiceInterfaces.Unsafe
         Task<UserModel> RegisterClient(RegisterModel model);
 
         Task<UserModel> RegisterEmployee(RegisterModel model);
+
+        Task<UserModel> AddRole(string username, string role);
     }
 }
