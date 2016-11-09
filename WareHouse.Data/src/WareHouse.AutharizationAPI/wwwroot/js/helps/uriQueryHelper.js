@@ -1,20 +1,8 @@
-﻿function QueryString() {
-    var query_string = {};
-    var query = window.location.search.substring(1);
-    var vars = query.split("&");
-    for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split("=");
+﻿function GenerateRedirectUri(token) {
+    var redirect_uri = URI(window.location.href).search(true).redirect_uri;
+    var uri = URI(redirect_uri).addSearch("token", token);
 
-        if (typeof query_string[pair[0]] === "undefined") {
-            query_string[pair[0]] = decodeURIComponent(pair[1]);
-        } else if (typeof query_string[pair[0]] === "string") {
-            var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
-            query_string[pair[0]] = arr;
-        } else {
-            query_string[pair[0]].push(decodeURIComponent(pair[1]));
-        }
-    }
-    return query_string;
+    return uri.href();
 }
 
-exports.QueryString = QueryString;
+exports.GenerateRedirectUri = GenerateRedirectUri;

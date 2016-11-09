@@ -1,35 +1,36 @@
 ﻿var React = require("react");
 var ReactDom = require("react-dom");
 
-var QueryString = require("../../helps/uriqueryhelper.js").QueryString;
+var GenerateRedirectUri = require("../../helps/uriqueryhelper.js").GenerateRedirectUri;
 var AccountRepository = require("../../repositories/accountrepository.js").AccountRepository;
 var ErrorView = require("../../errorview/errorview.js").ErrorView;
 
 var LoginView = React.createClass({
 
     getInitialState: function () {
-
         return { name: "", password: "" };
     },
 
     Login: function () {
-        if (!this.state.name || !this.state.password) {
+        if (!this.isValidValues()) {
             new ErrorView().error('Shaytan');
             return;
         }
 
-        new AccountRepository().login(this.state.name, this.state.password, function (token) {
-            if (!token) {
-                new ErrorView().error('Shaytan');
-                return;
-            }
+        new AccountRepository().login(this.state.name, this.state.password, this.successLogin);      
+    },
 
-      
-            var redirect_uri = URI(window.location.href).search(true).redirect_uri;
-            var uri = URI(redirect_uri).addSearch("token", token);
+    successLogin: function (token) {
+        if (!token) {
+            new ErrorView().error('Shaytan');
+            return;
+        }
 
-            window.location.replace(uri.href());
-        });      
+        window.location.replace(GenerateRedirectUri(token));
+    },
+
+    isValidValues: function(){
+        return this.state.name && this.state.password;
     },
 
     nameChanged: function (e) {

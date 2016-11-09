@@ -34456,12 +34456,11 @@
 	    accountRepository: new AccountRepository.AccountRepository(),
 
 
-	    componentDidMount: function() {
-	        var token = URI(window.location.href).search(true).token;
+	    componentDidMount: function () {
+	        var token = this.getTokenFromUri();
 
-	        if (!token) {
+	        if (!token)
 	            return;
-	        }
 
 	        window.localStorage.setItem("AuthToken", token);
 
@@ -34470,6 +34469,10 @@
 	            if (user != null)
 	                Redirecter.redirect("/items");
 	        });
+	    },
+
+	    getTokenFromUri: function(){
+	        return URI(window.location.href).search(true).token;
 	    },
 
 	    Send: function () {
