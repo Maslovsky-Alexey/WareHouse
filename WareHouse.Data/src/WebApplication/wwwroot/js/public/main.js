@@ -8180,6 +8180,7 @@
 	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 	var ReactRouter = __webpack_require__(464);
+	var browserHistory = __webpack_require__(464).browserHistory;
 
 	var LoginView = __webpack_require__(527).LoginView;
 	var ItemsView = __webpack_require__(531).ItemsView;
@@ -8193,7 +8194,7 @@
 
 
 	ReactDOM.render((
-	        React.createElement(ReactRouter.Router, null, 
+	        React.createElement(ReactRouter.Router, {history: browserHistory}, 
 	            React.createElement(ReactRouter.Route, {component: Layout}, 
 	                React.createElement(ReactRouter.Route, {path: "/", components: LoginView}), 
 	                React.createElement(ReactRouter.Route, {path: "/items", component: ItemsView}), 
@@ -8205,7 +8206,7 @@
 	            )
 	        )
 	    ),
-	    document.getElementById("root"));
+	document.getElementById("root"));
 
 /***/ },
 /* 299 */
@@ -34444,58 +34445,46 @@
 /* 527 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/** @jsx React.DOM */
-
-	var React = __webpack_require__(299);
+	/** @jsx React.DOM */var React = __webpack_require__(299);
 	var ReactDom = __webpack_require__(300);
 
 	var AccountRepository = __webpack_require__(528);
 	var Redirecter = __webpack_require__(530).Redirecter;
+	var AuthAPI = __webpack_require__(571).AuthAPI;
 
 	var LoginView = React.createClass({displayName: "LoginView",
 	    accountRepository: new AccountRepository.AccountRepository(),
 
 
 	    componentDidMount: function() {
+	        var token = URI(window.location.href).search(true).token;
 
-	        this.accountRepository.getCurrentUser(function(user) {
+	        if (!token) {
+	            return;
+	        }
+
+	        window.localStorage.setItem("AuthToken", token);
+
+	        this.accountRepository.getCurrentUser(function (user) {
 	            console.debug(user);
 	            if (user != null)
 	                Redirecter.redirect("/items");
 	        });
 	    },
 
-	    Send: function() {
-	        var name = $("#username1").val();
-	        var password = $("#password1").val();
-
-	        this.accountRepository.login(name, password, this.loginSuccess);
-	    },
-
-	    loginSuccess: function(isSuccess) {
-	        isSuccess = isSuccess == "true";
-	        console.debug(isSuccess);
-
-	        if (isSuccess == true)
-	            Redirecter.redirect("/items");
-	        else
-	            alert("OOOPPS :( ");
+	    Send: function () {
+	        new AuthAPI().login();
 	    },
 
 	    render: function() {
 
 
 	        return (
-	            React.createElement("div", {className: "login-form"}, 
-	                React.createElement("div", {className: "form-group"}, 
-	                    React.createElement("label", {htmlFor: "username1"}, "Username"), 
-	                    React.createElement("input", {className: "form-control", id: "username1", placeholder: "Username"})
-	                ), 
-	                React.createElement("div", {className: "form-group"}, 
-	                    React.createElement("label", {htmlFor: "password1"}, "Password"), 
-	                    React.createElement("input", {type: "password", className: "form-control", id: "password1", placeholder: "Password"})
-	                ), 
-	                React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.Send}, "Submit")
+	            React.createElement("div", {className: "row login-form"}, 
+	                React.createElement("div", {className: "col-sm-4 col-sm-offset-4"}, 
+	                    React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.Send}, "Enter")
+	                )
+
 	            )
 	        );
 	    }
@@ -34549,6 +34538,7 @@
 	                success(isSuccess);
 	            });
 	    };
+
 	    this.getCurrentUser = function(success) {
 	        serverMediator.sendRequest("api/account/currentuser",
 	            "get",
@@ -34616,8 +34606,8 @@
 
 	var Redirecter = {
 	    redirect: function(url) {
-	        //browserHistory.push(url);
-	        window.location.href = "/#" + url;
+
+	        browserHistory.push(url);
 	    }
 	};
 
@@ -38123,6 +38113,20 @@
 	});
 
 	exports.ConcreteItemView = ConcreteItemView;
+
+/***/ },
+/* 571 */
+/***/ function(module, exports) {
+
+	var AuthAPI = function() {
+	    var uri = "http://localhost:11492/";
+
+	    this.login = function () {
+	        window.location.replace(uri + "?redirect_uri=" + URI(window.location.href).origin());
+	    };
+	};
+
+	exports.AuthAPI = AuthAPI;
 
 /***/ }
 /******/ ]);

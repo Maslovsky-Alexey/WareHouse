@@ -104,12 +104,26 @@ namespace WareHouse.AutharizationAPI
             app.UseCors("AllowSpecificOrigin");
 
             app.UseApplicationInsightsRequestTelemetry();
-
+            if (env.IsDevelopment())
+            {
+               // app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
+            }
+            else
+            {
+                //app.UseExceptionHandler("/Home/Error");
+            }
             app.UseApplicationInsightsExceptionTelemetry();
+            app.UseStaticFiles();
             app.UseIdentity();
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
 
-       
+
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿var React = require("react");
 var ReactDom = require("react-dom");
 var ReactRouter = require("react-router");
+var browserHistory = require("react-router").browserHistory;
 
 var LoginView = require("../loginview/loginview.jsx").LoginView;
 var ItemsView = require("../itemsview/itemsview.jsx").ItemsView;
@@ -14,7 +15,7 @@ var ConcreteItemView = require("../concreteitemview/concreteitemview.jsx").Concr
 
 
 ReactDOM.render((
-        <ReactRouter.Router>
+        <ReactRouter.Router history={browserHistory}>
             <ReactRouter.Route component={Layout}>
                 <ReactRouter.Route path="/" components={LoginView}/>
                 <ReactRouter.Route path="/items" component={ItemsView}/>
@@ -26,4 +27,4 @@ ReactDOM.render((
             </ReactRouter.Route>
         </ReactRouter.Router>
     ),
-    document.getElementById("root"));
+document.getElementById("root"));

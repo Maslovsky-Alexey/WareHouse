@@ -2,8 +2,8 @@
 
 var Redirecter = {
     redirect: function(url) {
-        //browserHistory.push(url);
-        window.location.href = "/#" + url;
+
+        browserHistory.push(url);
     }
 };
 

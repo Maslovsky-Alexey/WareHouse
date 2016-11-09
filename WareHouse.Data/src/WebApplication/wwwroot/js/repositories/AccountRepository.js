@@ -40,6 +40,7 @@ var AccountRepository = function() {
                 success(isSuccess);
             });
     };
+
     this.getCurrentUser = function(success) {
         serverMediator.sendRequest("api/account/currentuser",
             "get",
