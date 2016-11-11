@@ -15,16 +15,14 @@ namespace WebAPI
 {
     public class AuthenticationMddleware
     {
-        private readonly IEncryptor encryptor;
         private readonly RequestDelegate next;
         private readonly ISafeAccountService safeAccountService;
 
 
-        public AuthenticationMddleware(RequestDelegate next, ISafeAccountService safeAccountService, IEncryptor encryptor)
+        public AuthenticationMddleware(RequestDelegate next, ISafeAccountService safeAccountService)
         {
             this.next = next;
             this.safeAccountService = safeAccountService;
-            this.encryptor = encryptor;
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -51,19 +49,17 @@ namespace WebAPI
             if (token.StartsWith("Bearer"))
                 try
                 {
-                    var name = encryptor.Decrypt(token.Substring(6));
                     UserModel user;
 
                     lock(this)
                     {
-                        user = safeAccountService.GetUserByName(name).Result;
+                        user = safeAccountService.GetUserByToken(token.Substring(6)).Result;
                                     
-
-                    if (user == null)
-                        throw new Exception();
+                        if (user == null)
+                            throw new Exception();
                      
-                    httpContext.User = new GenericPrincipal(new UserIndentity(new ApplicaitonUser { UserName = user.Name }),
-                        (safeAccountService.GetUserRoles(name).Result).ToArray());
+                        httpContext.User = new GenericPrincipal(new UserIndentity(new ApplicaitonUser { UserName = user.Login }),
+                            (safeAccountService.GetUserRoles(user.Login).Result).ToArray());
                     }
                 }
                 catch

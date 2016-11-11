@@ -53,6 +53,11 @@ var LoginView = React.createClass({
         this.setState({ name: this.state.name, password: e.target.value });
     },
 
+    Send: function(){
+        new AccountRepository().logVk(GenerateRedirectUri());
+    },
+
+
     render: function () {
         return (
             <div className="login-form row">

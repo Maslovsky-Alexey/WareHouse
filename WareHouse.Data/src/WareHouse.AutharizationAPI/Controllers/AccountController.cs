@@ -5,6 +5,13 @@ using WareHouse.AutharizationAPI.Repositories.Interfaces;
 using WareHouse.AutharizationAPI.Repositories.Models;
 using WareHouse.AutharizationAPI.Context.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http.Authentication;
+using WareHouse.AutharizationAPI.SocialNetworks.SocialAPI;
+using WareHouse.AutharizationAPI.SocialNetworks.Interfaces;
+using WareHouse.AutharizationAPI.HttpHelper;
+using WareHouse.AutharizationAPI.SocialNetworks.Models;
+using WareHouse.AutharizationAPI.Repositories;
+using WareHouse.AutharizationAPI.SocialNetworks.UriExtension;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,11 +23,13 @@ namespace WareHouse.AutharizationAPI.Controllers
     {
         private readonly IApplicationUserRepository applicationUserService;
         private readonly IEncryptor encryptor;
+        private ISocialAPIRepository api;
 
-        public AccountController(IApplicationUserRepository applicationUserService, IEncryptor encryptor)
+        public AccountController(IApplicationUserRepository applicationUserService, ISocialAPIRepository socialApiRepository, IEncryptor encryptor)
         {
             this.applicationUserService = applicationUserService;
             this.encryptor = encryptor;
+            api = socialApiRepository;
         }
 
         [Route("login")]
@@ -38,10 +47,45 @@ namespace WareHouse.AutharizationAPI.Controllers
             return null;
         }
 
+        [Route("login/vk")]
+        [HttpPost]
+        public async Task<string> LoginVk([FromQuery(Name = "redirect_uri")] string redirectUri)
+        {
+            return api.GetUriToGetCode("http://localhost:11492/api/account/logincallback", new KeyValue("red", redirectUri));
+        }
+
+        [Route("logincallback")]
+        public async Task LoginCallback([FromQuery(Name = "red")] string redirectUri)
+        {
+            var token = await api.GetAccessToken(Request, "http://localhost:11492/api/account/logincallback?red="+redirectUri);
+
+            if (string.IsNullOrEmpty(redirectUri) || string.IsNullOrEmpty(token.Access_Token))
+            {
+                Response.Redirect("http://localhost:11492/");
+            }
+            else
+            {
+                var user = await api.GetUserByToken(token);
+
+                if (user == null)
+                {
+                    user = await api.RegisterUser(token, token.User_Id);
+                }
+                 
+                Response.Redirect(redirectUri + "?token=Bearer%20" + encryptor.Encrypt(user.UserName));
+            }            
+        }
+
         [Route("register")]
         [HttpPost]
         public async Task<UserModel> Register([FromBody] RegisterModel model)
         {
+            if (model.Password.Length < 5)
+            {
+                BadRequest();
+                return null;
+            }
+
             var user = await applicationUserService.Register(model);
 
             if (user != null)
@@ -55,8 +99,13 @@ namespace WareHouse.AutharizationAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<UserModel> GetUserByName([FromQuery]string name)
+        public async Task<UserModel> GetUserByName([FromQuery]string name, [FromQuery] string token)
         {
+            if (!string.IsNullOrEmpty(token))
+            {
+                name = encryptor.Decrypt(token);
+            }
+
             if (string.IsNullOrEmpty(name))
             {
                 BadRequest();
@@ -89,5 +138,15 @@ namespace WareHouse.AutharizationAPI.Controllers
         }
 
 
+
+
+
+
+
+
+
+
+
+       
     }
 }

@@ -69,5 +69,10 @@ namespace WareHouse.Domain.Service.ProxyServices
         {
             return await safeAccountService.GetCurrentUser(httpContext);
         }
+
+        public async Task<UserModel> GetUserByToken(string token)
+        {
+            return await safeAccountService.GetUserByToken(token);
+        }
     }
 }

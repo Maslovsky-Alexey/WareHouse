@@ -28777,7 +28777,7 @@
 
 	var GenerateRedirectUri = __webpack_require__(465).GenerateRedirectUri;
 	var AccountRepository = __webpack_require__(466).AccountRepository;
-	var ErrorView = __webpack_require__(469).ErrorView;
+	var ErrorView = __webpack_require__(468).ErrorView;
 
 	var LoginView = React.createClass({displayName: "LoginView",
 
@@ -28827,6 +28827,11 @@
 	        this.setState({ name: this.state.name, password: e.target.value });
 	    },
 
+	    Send: function(){
+	        new AccountRepository().logVk(GenerateRedirectUri());
+	    },
+
+
 	    render: function () {
 	        return (
 	            React.createElement("div", {className: "login-form row"}, 
@@ -28869,10 +28874,14 @@
 
 	function GenerateRedirectUri(token) {
 	    var redirect_uri = URI(window.location.href).search(true).redirect_uri;
-	    var uri = URI(redirect_uri).addSearch("token", token);
+	    var uri = URI(redirect_uri);
+
+	    if (token)
+	        uri.addSearch("token", token);
 
 	    return uri.href();
 	}
+
 
 	exports.GenerateRedirectUri = GenerateRedirectUri;
 
@@ -28925,6 +28934,17 @@
 	                success(token);
 	            });
 	    };
+
+
+	    this.logVk = function (redirect) {
+	        serverMediator.sendRequest("api/account/login/vk?redirect_uri=" + redirect,
+	            "post",
+	            null
+	            ,
+	            function (redirectUri) {
+	                window.location.href = redirectUri;
+	            });
+	    };
 	};
 
 	exports.AccountRepository = AccountRepository;
@@ -28936,9 +28956,7 @@
 	var ServerMediator = function() {
 	    this.host = "http://localhost:11492/";
 
-	    this.sendRequest = function(url, type, data, success) {
-	        url = this.host + url;
-
+	    var sendReq = function (url, type, data, success) {
 	        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
 
 	        var xhr = new XHR();
@@ -28948,19 +28966,26 @@
 	        xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
 	        xhr.setRequestHeader("Accept", "application/json");
 
-	        xhr.onload = function(a, b) {
+	        xhr.onload = function (a, b) {
 	            success(xhr.response, xhr);
 	        };
 
 	        xhr.send(data);
+	    };
+
+	    this.sendRequest = function(url, type, data, success) {
+	        sendReq(this.host + url, type, data, success);
+	    };
+
+	    this.sendAnotherRequest = function (url, type, data, success) {
+	        window.location.href = url;
 	    };
 	};
 
 	exports.ServerMediator = ServerMediator;
 
 /***/ },
-/* 468 */,
-/* 469 */
+/* 468 */
 /***/ function(module, exports) {
 
 	var ErrorView = function () {

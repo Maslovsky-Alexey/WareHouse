@@ -76,11 +76,6 @@ namespace WebAPI
             ApplicationContainer = containerBuilder.Build();
             ApplicationContainer.ResolveKeyed<ILog>("SignIn");
 
-            var tokenEncryptor = ApplicationContainer.Resolve<IEncryptor>();
-
-            tokenEncryptor.Key = Configuration.GetSection("Encrypt").GetValue<string>("Key");
-            tokenEncryptor.VI = Configuration.GetSection("Encrypt").GetValue<string>("VI");
-
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(ApplicationContainer);
         }
@@ -173,8 +168,6 @@ namespace WebAPI
             containerBuilder.RegisterType<AccountService>();           
             containerBuilder.Register(context => new AccountProxyService(context.Resolve<AccountService>(new NamedParameter("autharizationApiUrl", "http://localhost:11492")), null));
             containerBuilder.Register(context => context.Resolve<AccountProxyService>()).As<ISafeAccountService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance));
-
-            containerBuilder.Register(c => TokenEncryptor.Instance).As<IEncryptor>().SingleInstance();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

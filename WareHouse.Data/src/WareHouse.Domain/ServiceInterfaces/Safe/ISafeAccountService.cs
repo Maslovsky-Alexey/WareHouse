@@ -17,5 +17,7 @@ namespace WareHouse.Domain.ServiceInterfaces.Safe
 
         Task<IEnumerable<string>> GetUserRoles(string name);
         Task<UserModel> GetCurrentUser(HttpContext httpContext);
+
+        Task<UserModel> GetUserByToken(string token);
     }
 }

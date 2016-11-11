@@ -27,14 +27,14 @@ var ItemsFiltredView = React.createClass({
                             );
                         if (property.type === 'button')
                             result = (
-                                <button onClick={() => property.onClick(item)}>{property.caption}</button>
+                                <button onClick={() => property.onClick(item) }>{property.caption}</button>
                             );
 
                         return result;
                     }
                 );
 
-                return (<div className="col-xs-12 profile-items-row" key={i}>{result}</div>);
+                return (<div className="col-xs-12 profile-items-row" key={i }>{result}</div>);
             }
         );
 

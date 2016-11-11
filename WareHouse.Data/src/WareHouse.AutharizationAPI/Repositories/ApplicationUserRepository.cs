@@ -30,6 +30,11 @@ namespace WareHouse.AutharizationAPI.Repositories
             return await MapToUserModel(await GetApplicationUserByName(username));
         }
 
+        public async Task<UserModel> GetUserById(string id)
+        {
+            return await MapToUserModel(await context.Users.FirstOrDefaultAsync(x => x.Id == id));
+        }
+
         public async Task<OperationStatus> Login(LoginModel model)
         {
             var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
@@ -101,5 +106,7 @@ namespace WareHouse.AutharizationAPI.Repositories
         {
             return await context.Users.FirstOrDefaultAsync(x => x.UserName == username);
         }
+
+
     }
 }

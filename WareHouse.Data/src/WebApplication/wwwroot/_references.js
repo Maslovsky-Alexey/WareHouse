@@ -23,6 +23,7 @@
 /// <reference path="js/dispatcher/dispatcher.js" />
 /// <reference path="js/helpers/authapi.js" />
 /// <reference path="js/helpers/redirecter.js" />
+/// <reference path="js/helpers/requestHelper.js" />
 /// <reference path="js/models/models.js" />
 /// <reference path="js/public/main.js" />
 /// <reference path="js/repositories/AccountRepository.js" />

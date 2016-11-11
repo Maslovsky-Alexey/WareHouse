@@ -36,7 +36,6 @@ var ProfileView = React.createClass({
     },
 
     onOrdersGeted: function (orders) {
-        console.debug(orders);
         this.setState({
             profile: this.state.profile,
             isInvalidUser: this.state.isInvalidUser,

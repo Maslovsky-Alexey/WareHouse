@@ -15,6 +15,9 @@ using Microsoft.EntityFrameworkCore;
 using WareHouse.AutharizationAPI.Repositories.Interfaces;
 using WareHouse.AutharizationAPI.Repositories;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc;
+using WareHouse.AutharizationAPI.SocialNetworks.SocialAPI;
+using WareHouse.AutharizationAPI.SocialNetworks.Interfaces;
 
 namespace WareHouse.AutharizationAPI
 {
@@ -54,17 +57,6 @@ namespace WareHouse.AutharizationAPI
                 options.Password.RequireDigit = false;
             });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials()
-                        .WithExposedHeaders("Authorization"));
-            });
-
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
@@ -89,19 +81,30 @@ namespace WareHouse.AutharizationAPI
             var connection = Configuration.GetConnectionString("DefaultConnection");
             var builder = new DbContextOptionsBuilder<UsersContext>().UseSqlServer(connection);
 
+            //var vk = new VkAPI("5479644", "BT4nkJ6dHJFsr0gzz850");
+            //var facebook = new FacebookAPI("1548476495447487", "675f1a2e04bd4e7ca961901207004bcc");
+
             containerBuilder.Register(context => { return new UsersContext(builder.Options); })
                 .InstancePerDependency();
 
             containerBuilder.Register(c => TokenEncryptor.Instance).As<IEncryptor>().SingleInstance();
             containerBuilder.RegisterType<ApplicationUserRepository>().As<IApplicationUserRepository>();
+
+            //containerBuilder.RegisterType<FacebookAPI>().As<ISocialAPI>()
+            //    .WithParameter("appId", "1548476495447487")
+            //    .WithParameter("appSecret", "675f1a2e04bd4e7ca961901207004bcc");
+
+            containerBuilder.RegisterType<VkAPI>().As<ISocialAPI>()
+                .WithParameter("appId", "5479644")
+                .WithParameter("appSecret", "BT4nkJ6dHJFsr0gzz850");
+
+            containerBuilder.RegisterType<SocialAPIRepository>().As<ISocialAPIRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            app.UseCors("AllowSpecificOrigin");
 
             app.UseApplicationInsightsRequestTelemetry();
             if (env.IsDevelopment())
@@ -116,6 +119,7 @@ namespace WareHouse.AutharizationAPI
             app.UseApplicationInsightsExceptionTelemetry();
             app.UseStaticFiles();
             app.UseIdentity();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

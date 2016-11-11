@@ -15,46 +15,55 @@ namespace WareHouse.Domain.Service.HttpHelper
     {
         public WebRequestHelper()
         {
-            
+
         }
 
         public async Task<WebResponse> SendRequest(string uri, string type, string body)
         {
-              var httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
-  
-              httpWebRequest.ContentType = "application/json; charset=UTF-8";
-  
-              httpWebRequest.Method = type;
-  
-              if (!string.IsNullOrEmpty(body))
-                  await WriteJsonToHttpWebReques(httpWebRequest, body);
-  
-              return await GetResponse(httpWebRequest);
-          }
-  
-          private async Task WriteJsonToHttpWebReques(HttpWebRequest httpWebRequest, string content)
-          {
-              using (var streamWriter = new StreamWriter(await httpWebRequest.GetRequestStreamAsync()))
-              {
-                  streamWriter.Write(content);
-                  streamWriter.Flush();
-              }
-          }
-  
-          private async Task<WebResponse> GetResponse(HttpWebRequest httpWebRequest)
-          {
-              WebResponse httpResponse = null;
-  
-              try
-              {
-                  httpResponse = await httpWebRequest.GetResponseAsync();
-              }
-              catch(Exception e)
-              {
-  
-              }
-  
-              return httpResponse;
-          }
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
+
+            httpWebRequest.ContentType = "application/json; charset=UTF-8";
+
+            httpWebRequest.Method = type;
+
+            if (!string.IsNullOrEmpty(body))
+                await WriteJsonToHttpWebReques(httpWebRequest, body);
+
+            return await GetResponse(httpWebRequest);
+        }
+
+        private async Task WriteJsonToHttpWebReques(HttpWebRequest httpWebRequest, string content)
+        {
+            using (var streamWriter = new StreamWriter(await httpWebRequest.GetRequestStreamAsync()))
+            {
+                streamWriter.Write(content);
+                streamWriter.Flush();
+            }
+        }
+
+        private async Task<WebResponse> GetResponse(HttpWebRequest httpWebRequest)
+        {
+            WebResponse httpResponse = null;
+
+            try
+            {
+                httpResponse = await httpWebRequest.GetResponseAsync();
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return httpResponse;
+        }
+
+        public T GetObjectFromResponse<T>(WebResponse httpResponse)
+        {
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+                return JsonConvert.DeserializeObject<T>(result);
+            }
+        }
     }
 }

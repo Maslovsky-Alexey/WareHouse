@@ -43,6 +43,17 @@ var AccountRepository = function() {
                 success(token);
             });
     };
+
+
+    this.logVk = function (redirect) {
+        serverMediator.sendRequest("api/account/login/vk?redirect_uri=" + redirect,
+            "post",
+            null
+            ,
+            function (redirectUri) {
+                window.location.href = redirectUri;
+            });
+    };
 };
 
 exports.AccountRepository = AccountRepository;

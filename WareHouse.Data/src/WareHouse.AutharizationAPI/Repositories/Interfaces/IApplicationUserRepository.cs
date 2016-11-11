@@ -22,6 +22,8 @@ namespace WareHouse.AutharizationAPI.Repositories.Interfaces
 
         Task<UserModel> GetUserByName(string username);
 
+        Task<UserModel> GetUserById(string id);
+
         Task<OperationStatus> AddRole(string username, string role);
 
         Task<OperationStatus> RemoveRole(string username, string role);

@@ -24,7 +24,7 @@ var LoginView = React.createClass({
         });
     },
 
-    getTokenFromUri: function(){
+    getTokenFromUri: function () {
         return URI(window.location.href).search(true).token;
     },
 
