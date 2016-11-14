@@ -32,7 +32,14 @@ namespace WareHouse.AutharizationAPI.Repositories
 
         public async Task<UserModel> GetUserById(string id)
         {
-            return await MapToUserModel(await context.Users.FirstOrDefaultAsync(x => x.Id == id));
+            var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return await MapToUserModel(user);
         }
 
         public async Task<OperationStatus> Login(LoginModel model)

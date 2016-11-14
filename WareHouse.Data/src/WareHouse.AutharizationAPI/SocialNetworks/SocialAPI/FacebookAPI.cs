@@ -40,6 +40,15 @@ namespace WareHouse.AutharizationAPI.SocialNetworks.SocialAPI
 
             var accessTokenModel = webRequestHelper.GetObjectFromResponse<TokenModel>(await webRequestHelper.SendRequest(accessTokenUri, "get", ""));
 
+
+            if (accessTokenModel != null && accessTokenModel.Access_Token != null)
+            {
+                var uriToGetUser = new UriBuilder("https://graph.facebook.com/me");
+                uriToGetUser.AddGetParameter("access_token", accessTokenModel.Access_Token);
+                var face = webRequestHelper.GetObjectFromResponse<FacebookUserModel>(await webRequestHelper.SendRequest(uriToGetUser.ToString(), "get", ""));
+                accessTokenModel.User_Id = face.Id;
+            }
+          
             return accessTokenModel;
         }
 

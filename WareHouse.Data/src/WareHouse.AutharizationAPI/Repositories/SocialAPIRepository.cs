@@ -15,16 +15,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WareHouse.AutharizationAPI.Repositories
 {
-    public class SocialAPIRepository : ISocialAPIRepository
+    public class SocialAPIRepository : ISocialAPIRepository, ISocialAPIRepositoryVk, ISocialAPIRepositoryFacebook
     {
-        private readonly ISocialAPI socialAPI;
+        private ISocialAPI socialAPI;
 
         private readonly IApplicationUserRepository userRepository;
 
         private readonly UsersContext context;
 
 
-        public SocialAPIRepository(ISocialAPI socialAPI, IApplicationUserRepository userRepository, UsersContext context)
+        public SocialAPIRepository(IApplicationUserRepository userRepository, ISocialAPI socialAPI, UsersContext context)
         {
             this.socialAPI = socialAPI;
             this.userRepository = userRepository;
@@ -70,7 +70,7 @@ namespace WareHouse.AutharizationAPI.Repositories
 
         public async Task<UserModel> GetUserByToken(TokenModel token)
         {
-            var getUserId = context.UserTokens.Where(x => x.LoginProvider == socialAPI.ProviderName).FirstOrDefault(x => x.Value == token.User_Id).UserId;
+            var getUserId = context.UserTokens.Where(x => x.LoginProvider == socialAPI.ProviderName).FirstOrDefault(x => x.Value == token.User_Id)?.UserId;
 
             return await userRepository.GetUserById(getUserId);
         }

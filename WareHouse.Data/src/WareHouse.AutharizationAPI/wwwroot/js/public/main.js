@@ -28827,10 +28827,13 @@
 	        this.setState({ name: this.state.name, password: e.target.value });
 	    },
 
-	    Send: function(){
+	    SendVk: function(){
 	        new AccountRepository().logVk(GenerateRedirectUri());
 	    },
 
+	    SendFacebook: function () {
+	        new AccountRepository().logFacebook(GenerateRedirectUri());
+	    },
 
 	    render: function () {
 	        return (
@@ -28852,10 +28855,10 @@
 	                            React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.Register}, "Register")
 	                        ), 
 	                        React.createElement("div", {className: "col-sm-1 col-sm-offset-1"}, 
-	                            React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.Send}, "Vk")
+	                            React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.SendVk}, "Vk")
 	                        ), 
 	                        React.createElement("div", {className: "col-sm-1 col-sm-offset-1"}, 
-	                            React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.Send}, "Facebook")
+	                            React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.SendFacebook}, "Facebook")
 	                        )
 	                    )
 	                )
@@ -28938,6 +28941,16 @@
 
 	    this.logVk = function (redirect) {
 	        serverMediator.sendRequest("api/account/login/vk?redirect_uri=" + redirect,
+	            "post",
+	            null
+	            ,
+	            function (redirectUri) {
+	                window.location.href = redirectUri;
+	            });
+	    };
+
+	    this.logFacebook = function (redirect) {
+	        serverMediator.sendRequest("api/account/login/facebook?redirect_uri=" + redirect,
 	            "post",
 	            null
 	            ,

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WareHouse.AutharizationAPI.Context.Models;
 using WareHouse.AutharizationAPI.Repositories.Models;
+using WareHouse.AutharizationAPI.SocialNetworks.Interfaces;
 using WareHouse.AutharizationAPI.SocialNetworks.Models;
 using WareHouse.AutharizationAPI.SocialNetworks.UriExtension;
 

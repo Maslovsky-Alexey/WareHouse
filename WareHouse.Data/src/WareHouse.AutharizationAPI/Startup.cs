@@ -18,6 +18,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
 using WareHouse.AutharizationAPI.SocialNetworks.SocialAPI;
 using WareHouse.AutharizationAPI.SocialNetworks.Interfaces;
+using System.Reflection;
 
 namespace WareHouse.AutharizationAPI
 {
@@ -90,15 +91,23 @@ namespace WareHouse.AutharizationAPI
             containerBuilder.Register(c => TokenEncryptor.Instance).As<IEncryptor>().SingleInstance();
             containerBuilder.RegisterType<ApplicationUserRepository>().As<IApplicationUserRepository>();
 
-            //containerBuilder.RegisterType<FacebookAPI>().As<ISocialAPI>()
-            //    .WithParameter("appId", "1548476495447487")
-            //    .WithParameter("appSecret", "675f1a2e04bd4e7ca961901207004bcc");
+            containerBuilder.RegisterType<FacebookAPI>().Keyed<ISocialAPI>("facebook")
+                .WithParameter("appId", "1548476495447487")
+                .WithParameter("appSecret", "675f1a2e04bd4e7ca961901207004bcc");
 
-            containerBuilder.RegisterType<VkAPI>().As<ISocialAPI>()
+            containerBuilder.RegisterType<VkAPI>().Keyed<ISocialAPI>("vk")
                 .WithParameter("appId", "5479644")
                 .WithParameter("appSecret", "BT4nkJ6dHJFsr0gzz850");
+     
 
-            containerBuilder.RegisterType<SocialAPIRepository>().As<ISocialAPIRepository>();
+
+            containerBuilder.RegisterType<SocialAPIRepository>().As<ISocialAPIRepositoryVk>().WithParameter(
+                (ParameterInfo info, IComponentContext ctx) => info.Name == "socialAPI", 
+                (ParameterInfo info, IComponentContext ctx) => ctx.ResolveKeyed<ISocialAPI>("vk"));
+
+            containerBuilder.RegisterType<SocialAPIRepository>().As<ISocialAPIRepositoryFacebook>().WithParameter(
+                (ParameterInfo info, IComponentContext ctx) => info.Name == "socialAPI",
+                (ParameterInfo info, IComponentContext ctx) => ctx.ResolveKeyed<ISocialAPI>("facebook"));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

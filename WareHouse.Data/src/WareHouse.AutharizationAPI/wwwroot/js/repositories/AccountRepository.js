@@ -54,6 +54,16 @@ var AccountRepository = function() {
                 window.location.href = redirectUri;
             });
     };
+
+    this.logFacebook = function (redirect) {
+        serverMediator.sendRequest("api/account/login/facebook?redirect_uri=" + redirect,
+            "post",
+            null
+            ,
+            function (redirectUri) {
+                window.location.href = redirectUri;
+            });
+    };
 };
 
 exports.AccountRepository = AccountRepository;

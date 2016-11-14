@@ -18,6 +18,5 @@ namespace WareHouse.AutharizationAPI.SocialNetworks.Interfaces
         AuthorizationAnswerCode GetCode(HttpRequest httpRequest);
 
         string GetUriToGetCode(string redirectUri);
-
     }
 }

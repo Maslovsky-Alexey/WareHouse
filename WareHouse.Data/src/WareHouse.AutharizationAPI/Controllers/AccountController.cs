@@ -12,7 +12,10 @@ using WareHouse.AutharizationAPI.HttpHelper;
 using WareHouse.AutharizationAPI.SocialNetworks.Models;
 using WareHouse.AutharizationAPI.Repositories;
 using WareHouse.AutharizationAPI.SocialNetworks.UriExtension;
-
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using Microsoft.AspNetCore.Http.Extensions;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,13 +26,17 @@ namespace WareHouse.AutharizationAPI.Controllers
     {
         private readonly IApplicationUserRepository applicationUserService;
         private readonly IEncryptor encryptor;
-        private ISocialAPIRepository api;
 
-        public AccountController(IApplicationUserRepository applicationUserService, ISocialAPIRepository socialApiRepository, IEncryptor encryptor)
+        private ISocialAPIRepositoryVk apiVk;
+        private ISocialAPIRepositoryFacebook apiFacebook;
+
+        public AccountController(IApplicationUserRepository applicationUserService, ISocialAPIRepositoryVk socialApiRepositoryVk, ISocialAPIRepositoryFacebook socialApiRepositoryFacebook, IEncryptor encryptor)
         {
             this.applicationUserService = applicationUserService;
             this.encryptor = encryptor;
-            api = socialApiRepository;
+
+            apiVk = socialApiRepositoryVk;
+            apiFacebook = socialApiRepositoryFacebook;
         }
 
         [Route("login")]
@@ -49,31 +56,51 @@ namespace WareHouse.AutharizationAPI.Controllers
 
         [Route("login/vk")]
         [HttpPost]
-        public async Task<string> LoginVk([FromQuery(Name = "redirect_uri")] string redirectUri)
+        public string LoginVk([FromQuery(Name = "redirect_uri")] string redirectUri)
         {
-            return api.GetUriToGetCode("http://localhost:11492/api/account/logincallback", new KeyValue("red", redirectUri));
+            return apiVk.GetUriToGetCode("http://localhost:11492/api/account/logincallback/vk", new KeyValue("redirectUri", redirectUri.Replace("/", "slash").Replace(":", "dvoetochie")));
         }
 
-        [Route("logincallback")]
-        public async Task LoginCallback([FromQuery(Name = "red")] string redirectUri)
+        [Route("login/facebook")]
+        [HttpPost]
+        public string LoginFacebook([FromQuery(Name = "redirect_uri")] string redirectUri)
         {
-            var token = await api.GetAccessToken(Request, "http://localhost:11492/api/account/logincallback?red="+redirectUri);
+            return apiFacebook.GetUriToGetCode("http://localhost:11492/api/account/logincallback/facebook", new KeyValue("redirectUri", redirectUri.Replace("/", "slash").Replace(":", "dvoetochie")));
+        }
 
-            if (string.IsNullOrEmpty(redirectUri) || string.IsNullOrEmpty(token.Access_Token))
+        [Route("logincallback/vk")]
+        public async Task LoginCallbackVk([FromQuery(Name = "redirectUri")] string redirectUri)
+        {
+            await LoginCallBack(apiVk, redirectUri);
+        }
+
+        [Route("logincallback/facebook")]
+        public async Task LoginCallbackFacebook([FromQuery(Name = "redirectUri")] string redirectUri)
+        {
+            await LoginCallBack(apiFacebook, redirectUri);
+        }
+
+        private async Task LoginCallBack(ISocialAPIRepository api, string redirectUri)
+        {
+            var token = await api.GetAccessToken(Request, Request.GetDisplayUrl());
+
+            if (redirectUri == null || string.IsNullOrEmpty(token.Access_Token))
             {
                 Response.Redirect("http://localhost:11492/");
             }
             else
             {
+                redirectUri = redirectUri.Replace("dvoetochie", ":").Replace("slash", "/");
+
                 var user = await api.GetUserByToken(token);
 
                 if (user == null)
                 {
                     user = await api.RegisterUser(token, token.User_Id);
                 }
-                 
+
                 Response.Redirect(redirectUri + "?token=Bearer%20" + encryptor.Encrypt(user.UserName));
-            }            
+            }
         }
 
         [Route("register")]

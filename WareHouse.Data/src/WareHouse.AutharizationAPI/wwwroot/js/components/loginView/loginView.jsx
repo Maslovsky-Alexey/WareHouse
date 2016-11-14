@@ -53,10 +53,13 @@ var LoginView = React.createClass({
         this.setState({ name: this.state.name, password: e.target.value });
     },
 
-    Send: function(){
+    SendVk: function(){
         new AccountRepository().logVk(GenerateRedirectUri());
     },
 
+    SendFacebook: function () {
+        new AccountRepository().logFacebook(GenerateRedirectUri());
+    },
 
     render: function () {
         return (
@@ -78,10 +81,10 @@ var LoginView = React.createClass({
                             <button type="submit" className="btn btn-success" onClick={this.Register}>Register</button>
                         </div>
                         <div className="col-sm-1 col-sm-offset-1">
-                            <button type="submit" className="btn btn-default" onClick={this.Send}>Vk</button>
+                            <button type="submit" className="btn btn-default" onClick={this.SendVk}>Vk</button>
                         </div>
                         <div className="col-sm-1 col-sm-offset-1">
-                            <button type="submit" className="btn btn-default" onClick={this.Send}>Facebook</button>
+                            <button type="submit" className="btn btn-default" onClick={this.SendFacebook}>Facebook</button>
                         </div>
                     </div>
                 </div>
