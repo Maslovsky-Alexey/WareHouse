@@ -20,6 +20,7 @@ namespace WareHouse.Domain.Service.ProxyServices
         public SupplyProxyService(ISafeService<Model.Supply, Data.Model.Supply> safeService, ICache cache) : base(safeService, cache)
         {
             this.safeSupplyService = (ISafeSupplyService)safeService;
+            cache.Clear();
         }
 
 

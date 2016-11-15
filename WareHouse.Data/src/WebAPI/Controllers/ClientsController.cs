@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
         public async Task Post([FromBody] Client value)
         {           
             var isSuccess = await unsafeClientService.AddWithoutRepetition(value);
-            HttpContext.Response.StatusCode = isSuccess ? 201 : 409; //TODO: Лучше использовать this.Request.CreateResponse
+            HttpContext.Response.StatusCode = isSuccess ? 201 : 409; //TODO: Лучше использовать this.Request.CreateResponse (нет его)
         }
 
         // DELETE api/values/5

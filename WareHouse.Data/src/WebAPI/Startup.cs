@@ -22,6 +22,7 @@ using WareHouse.Domain.Service.ModelsMapper.Configurators;
 using WareHouse.LogHelper;
 using WareHouse.MyEventStream;
 using Autofac.Core;
+using WareHouse.Domain.Service.ElasticSearchProviders;
 
 namespace WebAPI
 {
@@ -119,6 +120,7 @@ namespace WebAPI
             containerBuilder.RegisterType<WarehouseItemMapConfigurator>();
             containerBuilder.RegisterType<ProviderMapConfigurator>();
 
+            containerBuilder.RegisterType<ElasticSearchProvider>().As<IElasticSearchtemProvider>();
 
             containerBuilder.RegisterType<ClientRepository>().As<BaseRepository<Client>>();
             containerBuilder.Register(context => new ClientService(context.Resolve<BaseRepository<Client>>(), context.Resolve<ClientMapConfigurator>())).As<IUnsafeClientService>();
@@ -143,8 +145,8 @@ namespace WebAPI
             containerBuilder.Register(context => new ItemStatusService(context.Resolve<BaseRepository<ItemStatus>>(), context.Resolve<ItemStatusMapConfigurator>())).As<ISafeItemStatusService>();
 
             containerBuilder.RegisterType<WarehouseItemRepository>().As<BaseRepository<WarehouseItem>>();
-            containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>())).As<IUnsafeWarehouseItemService>();
-            containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>())).As<ISafeWarehouseItemService>();
+            containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>(), context.Resolve<IElasticSearchtemProvider>())).As<IUnsafeWarehouseItemService>();
+            containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>(), context.Resolve<IElasticSearchtemProvider>())).As<ISafeWarehouseItemService>();
 
             containerBuilder.RegisterType<OrderRepository>().As<BaseRepository<Order>>();
             containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<IUnsafeOrderService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance)); ;

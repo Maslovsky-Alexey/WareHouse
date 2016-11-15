@@ -17,5 +17,6 @@ namespace WareHouse.Domain.ServiceInterfaces.Safe
         Task<WarehouseItem> GetItemByName(string name, bool ignoreCase);
 
         Task<WarehouseItemViewModel> GetItemByIdAsViewModel(int id);
+
     }
 }

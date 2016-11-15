@@ -70,7 +70,7 @@ namespace WareHouse.Data.EF.Repository
             return OperationStatus.Removed;
         }
 
-        public async Task<T> GetItem(int id)
+        public virtual async Task<T> GetItem(int id)
         {
             return await table.FirstOrDefaultAsync(item => item.Id == id);
         }

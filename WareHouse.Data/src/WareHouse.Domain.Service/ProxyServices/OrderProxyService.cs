@@ -20,6 +20,7 @@ namespace WareHouse.Domain.Service.ProxyServices
         public OrderProxyService(ISafeService<Model.Order, Data.Model.Order> safeService, ICache cache) : base(safeService, cache)
         {
             this.safeOrderService = (ISafeOrderService)safeService;
+            cache.Clear();
         }
 
         public async Task<IEnumerable<OrderViewModel>> GetAllAsViewModel()

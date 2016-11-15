@@ -49,5 +49,10 @@ namespace WareHouse.Data.EF.Repository
 
             return (await SaveChanges()) > 0;
         }
+
+        public override async Task<WarehouseItem> GetItem(int id)
+        {
+            return await table.Include(x => x.Item).FirstOrDefaultAsync(item => item.Id == id);
+        }
     }
 }

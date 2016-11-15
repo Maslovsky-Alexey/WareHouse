@@ -13,7 +13,7 @@ var ItemsView = React.createClass({
         var filter = "?";
 
         if (searchName != null && searchName.length > 0)
-            filter += "$property1=item.name&$filter1=" + searchName;
+            filter += "$property1=search&$filter1=" + searchName;
 
 
         if (minCount != null && maxCount != null)

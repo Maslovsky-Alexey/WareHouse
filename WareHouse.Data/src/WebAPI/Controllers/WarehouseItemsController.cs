@@ -32,7 +32,6 @@ namespace WebAPI.Controllers
             return await safeWarehouseItemService.GetAllAsViewModel();
         }
 
-
         [Route("pages")]
         [HttpGet]
         [Authorize]

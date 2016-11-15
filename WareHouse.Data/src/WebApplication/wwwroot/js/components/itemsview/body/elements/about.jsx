@@ -11,7 +11,7 @@ var About = React.createClass({
                 <h4>
                     <a href={itemInfo.link ? itemInfo.link : "#" }>{itemInfo.name ? itemInfo.name : "Noname"}</a>
                 </h4>
-                <p>{itemInfo.about}</p>
+                <p>{itemInfo.description}</p>
             </div>
         );
     }
