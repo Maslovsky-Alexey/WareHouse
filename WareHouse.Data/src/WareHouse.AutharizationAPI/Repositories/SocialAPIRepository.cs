@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WareHouse.AutharizationAPI.Repositories
 {
-    public class SocialAPIRepository : ISocialAPIRepository, ISocialAPIRepositoryVk, ISocialAPIRepositoryFacebook
+    public class SocialAPIRepository : ISocialAPIRepository, ISocialAPIRepositoryVk, ISocialAPIRepositoryFacebook // TODO: спросить как лучше через DI все это органищовать.
     {
         private ISocialAPI socialAPI;
 
