@@ -82,8 +82,11 @@ namespace WareHouse.AutharizationAPI
             var connection = Configuration.GetConnectionString("DefaultConnection");
             var builder = new DbContextOptionsBuilder<UsersContext>().UseSqlServer(connection);
 
-            //var vk = new VkAPI("5479644", "BT4nkJ6dHJFsr0gzz850");
-            //var facebook = new FacebookAPI("1548476495447487", "675f1a2e04bd4e7ca961901207004bcc");
+            var faceboookAppId = GetSocialApiId("facebook");
+            var facebookAppSecret = GetSocialApiSecret("facebook");
+
+            var vkAppId = GetSocialApiId("vk");
+            var vkAppSecret = GetSocialApiSecret("vk");
 
             containerBuilder.Register(context => { return new UsersContext(builder.Options); })
                 .InstancePerDependency();
@@ -91,16 +94,15 @@ namespace WareHouse.AutharizationAPI
             containerBuilder.Register(c => TokenEncryptor.Instance).As<IEncryptor>().SingleInstance();
             containerBuilder.RegisterType<ApplicationUserRepository>().As<IApplicationUserRepository>();
 
+
             containerBuilder.RegisterType<FacebookAPI>().Keyed<ISocialAPI>("facebook")
-                .WithParameter("appId", "1548476495447487")
-                .WithParameter("appSecret", "675f1a2e04bd4e7ca961901207004bcc");
+                .WithParameter("appId", faceboookAppId)
+                .WithParameter("appSecret", facebookAppSecret);
 
             containerBuilder.RegisterType<VkAPI>().Keyed<ISocialAPI>("vk")
-                .WithParameter("appId", "5479644")
-                .WithParameter("appSecret", "BT4nkJ6dHJFsr0gzz850");
+                .WithParameter("appId", vkAppId)
+                .WithParameter("appSecret", vkAppSecret);
      
-
-
             containerBuilder.RegisterType<SocialAPIRepository>().As<ISocialAPIRepositoryVk>().WithParameter(
                 (ParameterInfo info, IComponentContext ctx) => info.Name == "socialAPI", 
                 (ParameterInfo info, IComponentContext ctx) => ctx.ResolveKeyed<ISocialAPI>("vk"));
@@ -137,6 +139,16 @@ namespace WareHouse.AutharizationAPI
             });
 
 
+        }
+
+        private string GetSocialApiId(string provider)
+        {
+            return Configuration.GetSection("SocialAPI").GetSection(provider).GetValue<string>("id");
+        }
+
+        private string GetSocialApiSecret(string provider)
+        {
+            return Configuration.GetSection("SocialAPI").GetSection(provider).GetValue<string>("secret");
         }
     }
 }

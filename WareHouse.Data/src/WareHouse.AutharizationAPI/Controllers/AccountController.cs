@@ -58,14 +58,16 @@ namespace WareHouse.AutharizationAPI.Controllers
         [HttpPost]
         public string LoginVk([FromQuery(Name = "redirect_uri")] string redirectUri)
         {
-            return apiVk.GetUriToGetCode("http://localhost:11492/api/account/logincallback/vk", new KeyValue("redirectUri", redirectUri.Replace("/", "slash").Replace(":", "dvoetochie")));
+            var encodeUri = new HttpRefactor().EncodeUri(redirectUri);
+            return apiVk.GetUriToGetCode(GenerateUri("/api/account/logincallback/vk"), new KeyValue("redirectUri", encodeUri));
         }
 
         [Route("login/facebook")]
         [HttpPost]
         public string LoginFacebook([FromQuery(Name = "redirect_uri")] string redirectUri)
         {
-            return apiFacebook.GetUriToGetCode("http://localhost:11492/api/account/logincallback/facebook", new KeyValue("redirectUri", redirectUri.Replace("/", "slash").Replace(":", "dvoetochie")));
+            var encodeUri = new HttpRefactor().EncodeUri(redirectUri);
+            return apiFacebook.GetUriToGetCode(GenerateUri("/api/account/logincallback/facebook"), new KeyValue("redirectUri", encodeUri));
         }
 
         [Route("logincallback/vk")]
@@ -86,11 +88,11 @@ namespace WareHouse.AutharizationAPI.Controllers
 
             if (redirectUri == null || string.IsNullOrEmpty(token.Access_Token))
             {
-                Response.Redirect("http://localhost:11492/");
+                Response.Redirect(GenerateUri(""));
             }
             else
             {
-                redirectUri = redirectUri.Replace("dvoetochie", ":").Replace("slash", "/");
+                redirectUri = new HttpRefactor().DecodeUri(redirectUri);
 
                 var user = await api.GetUserByToken(token);
 
@@ -160,20 +162,17 @@ namespace WareHouse.AutharizationAPI.Controllers
                 return null;
             }
 
-
             return await applicationUserService.GetUserByName(username);
         }
 
 
 
 
+        private string GenerateUri(string localUri)
+        {
+            var uri = new UriBuilder(Request.GetDisplayUrl());
 
-
-
-
-
-
-
-       
+            return $"{uri.Scheme}://{uri.Host}{(uri.Port > 0 ? $":{uri.Port}" : "")}{localUri}";
+        }       
     }
 }
