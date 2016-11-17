@@ -103,11 +103,11 @@ namespace WareHouse.AutharizationAPI
                 .WithParameter("appId", vkAppId)
                 .WithParameter("appSecret", vkAppSecret);
      
-            containerBuilder.RegisterType<SocialAPIRepository>().As<ISocialAPIRepositoryVk>().WithParameter(
+            containerBuilder.RegisterType<SocialAPIVkRepository>().As<ISocialAPIRepositoryVk>().WithParameter(
                 (ParameterInfo info, IComponentContext ctx) => info.Name == "socialAPI", 
                 (ParameterInfo info, IComponentContext ctx) => ctx.ResolveKeyed<ISocialAPI>("vk"));
 
-            containerBuilder.RegisterType<SocialAPIRepository>().As<ISocialAPIRepositoryFacebook>().WithParameter(
+            containerBuilder.RegisterType<SocialAPIFacebookRepository>().As<ISocialAPIRepositoryFacebook>().WithParameter(
                 (ParameterInfo info, IComponentContext ctx) => info.Name == "socialAPI",
                 (ParameterInfo info, IComponentContext ctx) => ctx.ResolveKeyed<ISocialAPI>("facebook"));
         }
