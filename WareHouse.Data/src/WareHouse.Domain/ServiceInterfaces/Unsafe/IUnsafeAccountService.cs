@@ -9,11 +9,7 @@ using WareHouse.Domain.Model.ViewModel;
 namespace WareHouse.Domain.ServiceInterfaces.Unsafe
 {
     public interface IUnsafeAccountService
-    {
-        Task<UserModel> RegisterClient(RegisterModel model);
-
-        Task<UserModel> RegisterEmployee(RegisterModel model);
-
+    { 
         Task<UserModel> AddRole(string username, string role);
     }
 }

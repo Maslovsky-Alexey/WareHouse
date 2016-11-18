@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WareHouse.AutharizationAPI.HttpHelper;
 using WareHouse.AutharizationAPI.Repositories.Interfaces;
 using WareHouse.AutharizationAPI.SocialNetworks.Interfaces;
 using WareHouse.AutharizationAPI.SocialNetworks.UriExtension;
@@ -12,6 +11,7 @@ using WareHouse.AutharizationAPI.SocialNetworks.Models;
 using WareHouse.AutharizationAPI.Repositories.Models;
 using WareHouse.AutharizationAPI.Context;
 using Microsoft.EntityFrameworkCore;
+using WareHouse.AutharizationAPI.PasswordGenerators;
 
 namespace WareHouse.AutharizationAPI.Repositories
 {
@@ -23,12 +23,15 @@ namespace WareHouse.AutharizationAPI.Repositories
 
         private readonly UsersContext context;
 
+        private readonly IPasswordGenerator passwordGenerator;
 
-        public SocialAPIRepository(IApplicationUserRepository userRepository, ISocialAPI socialAPI, UsersContext context)
+
+        public SocialAPIRepository(IApplicationUserRepository userRepository, ISocialAPI socialAPI, UsersContext context, IPasswordGenerator passwordGenerator)
         {
             this.socialAPI = socialAPI;
             this.userRepository = userRepository;
             this.context = context;
+            this.passwordGenerator = passwordGenerator;
         }
 
         public string GetUriToGetCode(string redirectUri, params KeyValue[] parameters)
@@ -37,7 +40,6 @@ namespace WareHouse.AutharizationAPI.Repositories
 
             foreach (var parameter in parameters)
                 uri.AddGetParameter(parameter.Key, parameter.Value);
-
 
             return socialAPI.GetUriToGetCode(uri.ToString());
         }
@@ -49,7 +51,7 @@ namespace WareHouse.AutharizationAPI.Repositories
 
         public async Task<UserModel> RegisterUser(TokenModel token, string userName)
         {
-            var user = await userRepository.Register(new RegisterModel { Username = userName, Password = "12345" }); // TODO: Если нельзя создать пользователя без пароля, то пароль должен генерироваться надежно и безопасно.
+            var user = await userRepository.Register(new RegisterModel { Username = userName, Password = passwordGenerator.GeneratePassword(20, 30) });
 
             if (user != null)
             {

@@ -5,6 +5,7 @@ using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.Domain.ServiceInterfaces.Unsafe;
+using WareHouse.HttpExtensions;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,20 +22,6 @@ namespace WebAPI.Controllers
         {
             this.safeAccountService = safeAccountService;
             this.unsafeAccountService = unsafeAccountService;
-        }
-
-        [HttpPost("clients/actions/register")]
-        [Authorize(Roles = "employee")]
-        public async Task<UserModel> RegisterClient([FromBody] RegisterModel model)
-        {
-            return await unsafeAccountService.RegisterClient(model);
-        }
-
-        [HttpPost("employees/actions/register")]
-        [Authorize(Roles = "employee")]
-        public async Task<UserModel> RegisterEmployee([FromBody] RegisterModel model)
-        {
-            return await unsafeAccountService.RegisterEmployee(model);
         }
 
         [HttpPost("login")] 

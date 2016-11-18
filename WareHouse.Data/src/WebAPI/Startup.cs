@@ -23,6 +23,8 @@ using WareHouse.LogHelper;
 using WareHouse.MyEventStream;
 using Autofac.Core;
 using WareHouse.Domain.Service.ElasticSearchProviders;
+using WareHouse.MyOData;
+using HttpWebHelperLibrary;
 
 namespace WebAPI
 {
@@ -83,9 +85,6 @@ namespace WebAPI
 
         private void RegistrTypes(ContainerBuilder containerBuilder, DbContextOptions<WareHouseDbContext> options)
         {
-
-
-
             var redisUrl = "localhost:6379";
 
             containerBuilder.Register(context => { return new WareHouseDbContext(options); })
@@ -110,6 +109,8 @@ namespace WebAPI
 
             containerBuilder.Register(c => FileLog<WareHouse.Domain.Model.ViewModel.SignInLogModel>.Instance("d:\\log.txt")).Keyed<ILog>("SignIn").SingleInstance().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
             containerBuilder.RegisterType<ConsoleLog>().As<ILog>();
+
+            containerBuilder.RegisterType<WebRequestHelper>().As<IWebRequestHelper>();
 
             containerBuilder.RegisterType<ClientMapConfigurator>();
             containerBuilder.RegisterType<EmployeeMapConfigurator>();
@@ -166,7 +167,7 @@ namespace WebAPI
             containerBuilder.RegisterType<OperationService>();
             containerBuilder.Register(context => context.Resolve<OperationService>()).As<ISafeOperationService>();
 
-            containerBuilder.RegisterType<AccountService>().As<IUnsafeAccountService>().WithParameter("autharizationApiUrl", "http://localhost:11492");
+            containerBuilder.RegisterType<AccountService>().As<IUnsafeAccountService>().WithParameter("autharizationApiUrl", "http://localhost:11492"); //TODO: не забыть вынести в конфиг
             containerBuilder.RegisterType<AccountService>();           
             containerBuilder.Register(context => new AccountProxyService(context.Resolve<AccountService>(new NamedParameter("autharizationApiUrl", "http://localhost:11492")), null));
             containerBuilder.Register(context => context.Resolve<AccountProxyService>()).As<ISafeAccountService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance));

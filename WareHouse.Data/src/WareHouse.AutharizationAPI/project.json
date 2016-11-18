@@ -21,7 +21,11 @@
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
     "Autofac.Extensions.DependencyInjection": "4.0.0",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
-    "Microsoft.AspNetCore.StaticFiles": "1.0.0"
+    "Microsoft.AspNetCore.StaticFiles": "1.0.0",
+    "Novell.Directory.Ldap.NETStandard": "2.3.5",
+    "HttpWebHelperLibrary": "1.0.0-*",
+    "HttpExtensions": "1.0.0-*",
+    "WareHouse.LogHelper": "1.0.0-*"
   },
 
   "tools": {

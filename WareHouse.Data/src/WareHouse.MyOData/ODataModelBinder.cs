@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using WareHouse.MyOData;
 
-namespace WebAPI
+namespace WareHouse.MyOData
 {
-    // TODO: а почему это не часть MyOData?
     public class ODataModelBinder : IModelBinder
     {
         private SimpleTypeModelBinder baseBinder;

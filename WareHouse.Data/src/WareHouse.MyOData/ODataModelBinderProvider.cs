@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using WareHouse.MyOData;
 
-namespace WebAPI
+namespace WareHouse.MyOData
 {
-    // TODO: а почему это не часть MyOData?
     public class ODataModelBinderProvider : IModelBinderProvider
     {
         public IModelBinder GetBinder(ModelBinderProviderContext context)

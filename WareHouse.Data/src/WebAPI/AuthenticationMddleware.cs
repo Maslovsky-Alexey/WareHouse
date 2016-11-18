@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.Domain.Model.ViewModel;
+using WebAPI.Controllers;
+using WareHouse.HttpExtensions;
 
 namespace WebAPI
 {
@@ -24,48 +26,56 @@ namespace WebAPI
 
         public async Task Invoke(HttpContext httpContext)
         {
-            var header = httpContext.Request.Headers.Where(x => x.Key == "Authorization").ToArray(); // TODO: почему установка и чтение этого заголовка происходит не однообразно (HeadersHelper.AddAuthorizationHeader)
+            var header = httpContext.GetAuthorizationHeader();
 
-            //await next.Invoke(httpContext);
-            //return;
+            if (header != null)
+            {
+                SetHttpUserContext(header, httpContext);
+            }
+               
 
-            if (header.Count() == 1)
-                await SetHttpUserContext(header, httpContext);
-
-            if ((httpContext.Response.StatusCode == 400) || (httpContext.Response.StatusCode == 401))
-                return;
-
-            await next.Invoke(httpContext);
+            if ((httpContext.Response.StatusCode != 400) && (httpContext.Response.StatusCode != 401))
+            {
+                await next.Invoke(httpContext);
+            }         
         }
 
-        // TODO: async без await нет смысла использовать, мжно просто вернуть Task
-        private async Task SetHttpUserContext(IEnumerable<KeyValuePair<string, StringValues>> header,
-            HttpContext httpContext)
+        private void SetHttpUserContext(string token, HttpContext httpContext)
         {
-            var token = header.First().Value.First();
-
             if (token.StartsWith("Bearer"))
-                try
-                {
-                    UserModel user;
-
-                    lock(this)
-                    {
-                        user = safeAccountService.GetUserByToken(token.Substring(6)).Result;
-                                    
-                        if (user == null)
-                            throw new Exception(); // TODO: тут точно нужно исключение? тем более без как-то информации. Кажется это BadRequest с invalid token
-                     
-                        httpContext.User = new GenericPrincipal(new UserIndentity(new ApplicaitonUser { UserName = user.Login }),
-                            (safeAccountService.GetUserRoles(user.Login).Result).ToArray());
-                    }
-                }
-                catch
-                {
-                    httpContext.Response.StatusCode = 401;
-                }
+            {
+                SetUser(token, httpContext);
+            }
             else
+            {
                 httpContext.Response.StatusCode = 400;
+            }             
+        }
+
+        private void SetUser(string token, HttpContext httpContext)
+        {
+            try
+            {
+                UserModel user;
+
+                lock (this)
+                {
+                    user = safeAccountService.GetUserByToken(token.Substring(6)).Result;
+
+                    if (user == null)
+                    {
+                        httpContext.Response.StatusCode = 400;
+                        return;
+                    }
+
+                    httpContext.User = new GenericPrincipal(new UserIndentity(new ApplicaitonUser { UserName = user.Login }),
+                        (safeAccountService.GetUserRoles(user.Login).Result).ToArray());
+                }
+            }
+            catch
+            {
+                httpContext.Response.StatusCode = 401;
+            }
         }
     }
 }

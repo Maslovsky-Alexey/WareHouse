@@ -19,6 +19,10 @@ using Microsoft.AspNetCore.Mvc;
 using WareHouse.AutharizationAPI.SocialNetworks.SocialAPI;
 using WareHouse.AutharizationAPI.SocialNetworks.Interfaces;
 using System.Reflection;
+using Novell.Directory.Ldap;
+using WareHouse.AutharizationAPI.RolesMapper.Models;
+using WareHouse.AutharizationAPI.RolesMapper;
+using WareHouse.AutharizationAPI.LdapHelper;
 
 namespace WareHouse.AutharizationAPI
 {
@@ -82,6 +86,14 @@ namespace WareHouse.AutharizationAPI
             var connection = Configuration.GetConnectionString("DefaultConnection");
             var builder = new DbContextOptionsBuilder<UsersContext>().UseSqlServer(connection);
 
+            LdapHelper.LdapHelper ldap = new LdapHelper.LdapHelper(
+                Configuration.GetValue<string>("LdapSettings", "baseSearchCatalog"),
+                Configuration.GetValue<string>("LdapSettings", "hostname"),
+                Configuration.GetValue<int>("LdapSettings", "port")
+            );
+
+            var adRoles = Configuration.GetValueFromJSON<IEnumerable<LdapConfigurationRole>>("LdapSettings", "rolesMapping");
+
             var faceboookAppId = GetSocialApiId("facebook");
             var facebookAppSecret = GetSocialApiSecret("facebook");
 
@@ -91,9 +103,10 @@ namespace WareHouse.AutharizationAPI
             containerBuilder.Register(context => { return new UsersContext(builder.Options); })
                 .InstancePerDependency();
 
+            containerBuilder.RegisterType<PasswordGenerators.PasswordGenerator>().As<PasswordGenerators.IPasswordGenerator>();
+
             containerBuilder.Register(c => TokenEncryptor.Instance).As<IEncryptor>().SingleInstance();
             containerBuilder.RegisterType<ApplicationUserRepository>().As<IApplicationUserRepository>();
-
 
             containerBuilder.RegisterType<FacebookAPI>().Keyed<ISocialAPI>("facebook")
                 .WithParameter("appId", faceboookAppId)
@@ -110,6 +123,12 @@ namespace WareHouse.AutharizationAPI
             containerBuilder.RegisterType<SocialAPIFacebookRepository>().As<ISocialAPIRepositoryFacebook>().WithParameter(
                 (ParameterInfo info, IComponentContext ctx) => info.Name == "socialAPI",
                 (ParameterInfo info, IComponentContext ctx) => ctx.ResolveKeyed<ISocialAPI>("facebook"));
+
+            containerBuilder.RegisterType<RolesMapper.RolesMapper>().As<IRolesMapper>().WithParameter(
+                (ParameterInfo info, IComponentContext ctx) => info.GetType() == typeof(IEnumerable<LdapConfigurationRole>),
+                (ParameterInfo info, IComponentContext ctx) => adRoles);
+
+            containerBuilder.Register(ctx => ldap).As<ILdapHelper>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -142,13 +161,13 @@ namespace WareHouse.AutharizationAPI
         }
 
         private string GetSocialApiId(string provider)
-        {
-            return Configuration.GetSection("SocialAPI").GetSection(provider).GetValue<string>("id");
+        {          
+            return Configuration.GetValue<string>("SocialAPI", provider, "id");
         }
 
         private string GetSocialApiSecret(string provider)
         {
-            return Configuration.GetSection("SocialAPI").GetSection(provider).GetValue<string>("secret");
+            return Configuration.GetValue<string>("SocialAPI", provider, "secret");
         }
     }
 }

@@ -41,13 +41,15 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<TServiceModel> GetItem(int id)
         {
-            var item = cache.Get<TServiceModel>($"item{id}");// TODO: вместо item лучше использовать название модели
+            var name = typeof(TServiceModel).Name;
+
+            var item = cache.Get<TServiceModel>($"{name}{id}");
 
             if (item != null)
                 return item;
 
             item = await safeService.GetItem(id);
-            cache.AddOrUpdate($"item{id}", item);
+            cache.AddOrUpdate($"{name}{id}", item);
 
             return item;
         }

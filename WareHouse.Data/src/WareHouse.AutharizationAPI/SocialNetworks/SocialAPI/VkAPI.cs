@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Http;
 using WareHouse.AutharizationAPI.SocialNetworks.Models;
 using WareHouse.AutharizationAPI.SocialNetworks.UriExtension;
 using WareHouse.AutharizationAPI.SocialNetworks.Interfaces;
-using WareHouse.AutharizationAPI.HttpHelper;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http.Extensions;
+using HttpWebHelperLibrary;
 
 namespace WareHouse.AutharizationAPI.SocialNetworks.SocialAPI
 {
@@ -16,12 +16,15 @@ namespace WareHouse.AutharizationAPI.SocialNetworks.SocialAPI
     {
         private string appId;
 
-        private string appSecret; 
+        private string appSecret;
 
-        public VkAPI(string appId, string appSecret)
+        private readonly IWebRequestHelper webRequest;
+
+        public VkAPI(string appId, string appSecret, IWebRequestHelper webRequest)
         {
             this.appId = appId;
             this.appSecret = appSecret;
+            this.webRequest = webRequest;
         }
 
         public string ProviderName
@@ -38,9 +41,7 @@ namespace WareHouse.AutharizationAPI.SocialNetworks.SocialAPI
 
             var accessTokenUri = GetUriToGetToken(redirectUri, codeModel.Code);
 
-            var webRequestHelper = new WebRequestHelper();
-
-            var accessTokenModel = webRequestHelper.GetObjectFromResponse<Models.TokenModel>(await webRequestHelper.SendRequest(accessTokenUri, "get", ""));
+            var accessTokenModel = webRequest.GetObjectFromResponse<Models.TokenModel>(await webRequest.SendRequest(accessTokenUri, "get", ""));
 
             return accessTokenModel;
         }

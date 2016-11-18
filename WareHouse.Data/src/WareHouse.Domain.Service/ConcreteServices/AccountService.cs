@@ -9,7 +9,6 @@ using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.Domain.ServiceInterfaces.Unsafe;
 using System;
 using System.Collections.Generic;
-using WareHouse.Domain.Service.HttpHelper;
 using System.Text;
 using System.Net.Http;
 using Newtonsoft.Json;
@@ -17,6 +16,7 @@ using WareHouse.Domain.Model.AutharizationAPIModel;
 using Newtonsoft.Json.Serialization;
 using System.IO;
 using System.Net;
+using HttpWebHelperLibrary;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
@@ -28,11 +28,13 @@ namespace WareHouse.Domain.Service.ConcreteServices
         private readonly ISafeEmployeeService safeEmployeeService;
         private readonly IUnsafeEmployeeService unsafeEmployeeService;
         private readonly string autharizationApiUrl;
+        private readonly IWebRequestHelper webRequestHelper;
 
         public AccountService(
             string autharizationApiUrl,
             ISafeClientService safeClientService, IUnsafeClientService unsafeClientService,
-            ISafeEmployeeService safeEmployeeService, IUnsafeEmployeeService unsafeEmployeeService)
+            ISafeEmployeeService safeEmployeeService, IUnsafeEmployeeService unsafeEmployeeService,
+            IWebRequestHelper webRequestHelper)
         {
             this.safeClientService = safeClientService;
             this.unsafeClientService = unsafeClientService;
@@ -41,13 +43,14 @@ namespace WareHouse.Domain.Service.ConcreteServices
             this.unsafeEmployeeService = unsafeEmployeeService;
 
             this.autharizationApiUrl = autharizationApiUrl;
+            this.webRequestHelper = webRequestHelper;
         }
 
         public async Task<UserModel> GetCurrentUser(HttpContext httpContext)
         {
-            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account?name={httpContext.User.Identity.Name}", "get", "");
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account?name={httpContext.User.Identity.Name}", "get", "");
 
-            UserAPIModel apiUser = new WebRequestHelper().GetObjectFromResponse<UserAPIModel>(response);
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
             if (apiUser == null)
                 return null;
@@ -57,9 +60,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<string> Login(LoginModel model)
         {
-            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account/login", "post", ToJson(model));
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account/login", "post", ToJson(model));
 
-            UserAPIModel apiUser = new WebRequestHelper().GetObjectFromResponse<UserAPIModel>(response);
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
             if (apiUser == null)
                 return null;
@@ -67,44 +70,34 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return !string.IsNullOrEmpty(response.Headers["Authorization"]) ? response.Headers["Authorization"] : null;
         }
 
-        public async Task<UserModel> RegisterClient(RegisterModel model)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<UserModel> RegisterEmployee(RegisterModel model)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<UserModel> GetUserByName(string username)
         {
-            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account?name={username}", "get", "");
-            UserAPIModel apiUser = new WebRequestHelper().GetObjectFromResponse<UserAPIModel>(response);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account?name={username}", "get", "");
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
             return await MapToUserModel(apiUser);
         }
 
         public async Task<UserModel> GetUserByToken(string token)
         {
-            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account?token={token}", "get", "");
-            UserAPIModel apiUser = new WebRequestHelper().GetObjectFromResponse<UserAPIModel>(response);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account?token={token}", "get", "");
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
             return await MapToUserModel(apiUser);
         }
 
         public async Task<IEnumerable<string>> GetUserRoles(string name)
         {
-            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account?name={name}", "get", "");
-            UserAPIModel apiUser = new WebRequestHelper().GetObjectFromResponse<UserAPIModel>(response);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account?name={name}", "get", "");
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
             return apiUser.Roles;
         }
 
         private async Task<UserAPIModel> RegisterUserWithRole(RegisterModel model, string role)
         {
-            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account/register", "post", ToJson(MapToRegisterModelAPI(model, role)));
-            UserAPIModel apiUser = new WebRequestHelper().GetObjectFromResponse<UserAPIModel>(response);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account/register", "post", ToJson(MapToRegisterModelAPI(model, role)));
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
             if (apiUser == null)
                 return null;
@@ -152,9 +145,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<UserModel> AddRole(string username, string role)
         {
-            var response = await new WebRequestHelper().SendRequest($"{autharizationApiUrl}/api/account/{username}/roles/?role={role}", "post", null);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account/{username}/roles/?role={role}", "post", null);
 
-            UserAPIModel apiUser = new WebRequestHelper().GetObjectFromResponse<UserAPIModel>(response);
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
             if (role == "employee")
             {

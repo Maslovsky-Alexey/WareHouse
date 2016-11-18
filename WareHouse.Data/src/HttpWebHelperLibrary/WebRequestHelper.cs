@@ -8,14 +8,18 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
+using WareHouse.LogHelper;
 
-namespace WareHouse.AutharizationAPI.HttpHelper
+
+namespace HttpWebHelperLibrary
 {
-    public class WebRequestHelper
+    public class WebRequestHelper : IWebRequestHelper
     {
-        public WebRequestHelper()
-        {
+        private readonly ILog log;
 
+        public WebRequestHelper(ILog log)
+        {
+            this.log = log;
         }
 
         public async Task<WebResponse> SendRequest(string uri, string type, string body)
@@ -51,17 +55,14 @@ namespace WareHouse.AutharizationAPI.HttpHelper
             }
             catch (Exception e)
             {
-
+                log.Log(e.Message);
             }
 
             return httpResponse;
         }
 
-        public T GetObjectFromResponse<T>(WebResponse httpResponse) where T : class
+        public T GetObjectFromResponse<T>(WebResponse httpResponse)
         {
-            if (httpResponse == null)
-                return null;
-
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
                 var result = streamReader.ReadToEnd();

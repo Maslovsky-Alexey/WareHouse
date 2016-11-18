@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http.Authentication;
 using WareHouse.AutharizationAPI.SocialNetworks.SocialAPI;
 using WareHouse.AutharizationAPI.SocialNetworks.Interfaces;
-using WareHouse.AutharizationAPI.HttpHelper;
 using WareHouse.AutharizationAPI.SocialNetworks.Models;
 using WareHouse.AutharizationAPI.Repositories;
 using WareHouse.AutharizationAPI.SocialNetworks.UriExtension;
@@ -16,6 +15,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Http.Extensions;
+using WareHouse.HttpExtensions;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -128,7 +128,7 @@ namespace WareHouse.AutharizationAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<UserModel> GetUserByName([FromQuery]string name, [FromQuery] string token)
+        public async Task<UserModel> GetUser([FromQuery]string name, [FromQuery] string token)
         {
             if (!string.IsNullOrEmpty(token))
             {

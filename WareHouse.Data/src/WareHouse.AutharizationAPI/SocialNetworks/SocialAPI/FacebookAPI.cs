@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using WareHouse.AutharizationAPI.SocialNetworks.Models;
 using WareHouse.AutharizationAPI.SocialNetworks.UriExtension;
 using WareHouse.AutharizationAPI.SocialNetworks.Interfaces;
-using WareHouse.AutharizationAPI.HttpHelper;
+using HttpWebHelperLibrary;
 
 namespace WareHouse.AutharizationAPI.SocialNetworks.SocialAPI
 {
@@ -14,9 +14,11 @@ namespace WareHouse.AutharizationAPI.SocialNetworks.SocialAPI
     {
         private string appId;
 
-        private string appSecret; 
+        private string appSecret;
 
-        public FacebookAPI(string appId, string appSecret)
+        private readonly IWebRequestHelper webRequest;
+
+        public FacebookAPI(string appId, string appSecret, IWebRequestHelper webRequest)
         {
             this.appId = appId;
             this.appSecret = appSecret;
@@ -36,16 +38,14 @@ namespace WareHouse.AutharizationAPI.SocialNetworks.SocialAPI
 
             var accessTokenUri = GetUriToGetToken(redirectUri, codeModel.Code);
 
-            var webRequestHelper = new WebRequestHelper();
-
-            var accessTokenModel = webRequestHelper.GetObjectFromResponse<TokenModel>(await webRequestHelper.SendRequest(accessTokenUri, "get", ""));
+            var accessTokenModel = webRequest.GetObjectFromResponse<TokenModel>(await webRequest.SendRequest(accessTokenUri, "get", ""));
 
 
             if (accessTokenModel != null && accessTokenModel.Access_Token != null)
             {
                 var uriToGetUser = new UriBuilder("https://graph.facebook.com/me");
                 uriToGetUser.AddGetParameter("access_token", accessTokenModel.Access_Token);
-                var face = webRequestHelper.GetObjectFromResponse<FacebookUserModel>(await webRequestHelper.SendRequest(uriToGetUser.ToString(), "get", ""));
+                var face = webRequest.GetObjectFromResponse<FacebookUserModel>(await webRequest.SendRequest(uriToGetUser.ToString(), "get", ""));
                 accessTokenModel.User_Id = face.Id;
             }
           
