@@ -51,7 +51,7 @@ namespace WareHouse.Domain.Service.HttpHelper
             }
             catch (Exception e)
             {
-
+                // TODO: Нехорошо глушить ошибки, хотя бы в лог писать.
             }
 
             return httpResponse;

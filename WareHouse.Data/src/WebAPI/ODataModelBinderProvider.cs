@@ -3,6 +3,7 @@ using WareHouse.MyOData;
 
 namespace WebAPI
 {
+    // TODO: а почему это не часть MyOData?
     public class ODataModelBinderProvider : IModelBinderProvider
     {
         public IModelBinder GetBinder(ModelBinderProviderContext context)

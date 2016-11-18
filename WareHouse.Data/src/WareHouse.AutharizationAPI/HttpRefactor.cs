@@ -8,6 +8,7 @@ namespace WareHouse.AutharizationAPI
 {
     public class HttpRefactor
     {
+        // TODO: а стандартного UrlEncode для Core нет?
         public string EncodeUri(string uri)
         {
             return uri.Replace("/", "slash").Replace(":", "dvoetochie");

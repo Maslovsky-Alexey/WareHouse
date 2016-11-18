@@ -6,7 +6,7 @@ using StackExchange.Redis;
 using Newtonsoft.Json;
 
 namespace WareHouse.Domain.Service.ProxyServices.Cache
-{
+{    
     public class RedisCache : ICache
     {
         private ConnectionMultiplexer redis;

@@ -41,7 +41,7 @@ namespace WareHouse.Domain.Service.ProxyServices
 
         public async Task<TServiceModel> GetItem(int id)
         {
-            var item = cache.Get<TServiceModel>($"item{id}");
+            var item = cache.Get<TServiceModel>($"item{id}");// TODO: вместо item лучше использовать название модели
 
             if (item != null)
                 return item;

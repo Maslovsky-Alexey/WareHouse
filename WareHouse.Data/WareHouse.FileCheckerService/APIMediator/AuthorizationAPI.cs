@@ -19,6 +19,7 @@ namespace WareHouse.FileCheckerService.APIMediator
             this.webRequestHelper = webRequestHelper;
         }
 
+        // TODO: операция дублируется в WareHouse.Domain.Service.ConcreteServices.AccountService.Login. Нужно создать nuget пакет по работе с AuthAPI
         public string Login(LoginAPIModel model)
         {
             var response = webRequestHelper.Post("/api/account/login", JsonConvert.SerializeObject(model), "application/json; charset=UTF-8", "");

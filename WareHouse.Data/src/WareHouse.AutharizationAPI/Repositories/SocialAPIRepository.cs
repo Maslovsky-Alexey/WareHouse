@@ -49,7 +49,7 @@ namespace WareHouse.AutharizationAPI.Repositories
 
         public async Task<UserModel> RegisterUser(TokenModel token, string userName)
         {
-            var user = await userRepository.Register(new RegisterModel { Username = userName, Password = "12345" });
+            var user = await userRepository.Register(new RegisterModel { Username = userName, Password = "12345" }); // TODO: Если нельзя создать пользователя без пароля, то пароль должен генерироваться надежно и безопасно.
 
             if (user != null)
             {

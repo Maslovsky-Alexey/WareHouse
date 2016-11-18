@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         [Route("supplies")]
         [HttpPost]
         [Authorize(Roles = "employee")]
-        public async Task AddSupply([FromBody] SupplyViewModel value)
+        public async Task AddSupply([FromBody] SupplyViewModel value) // TOOD: Для операций на изменение нужно добавить валидацию данных (FluentValidation)
         {
             var status = await unsafeOperationService.AddSupply(value);
 
