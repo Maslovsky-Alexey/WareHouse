@@ -28794,6 +28794,15 @@
 	        new AccountRepository().login(this.state.name, this.state.password, this.successLogin);      
 	    },
 
+	    LoginAD: function () {
+	        if (!this.isValidValues()) {
+	            new ErrorView().error('Shaytan');
+	            return;
+	        }
+
+	        new AccountRepository().loginAD(this.state.name, this.state.password, this.successLogin);
+	    },
+
 	    Register: function () {
 	        if (!this.isValidValues()) {
 	            new ErrorView().error('Shaytan');
@@ -28850,6 +28859,9 @@
 	                    React.createElement("div", {className: "row"}, 
 	                        React.createElement("div", {className: "col-sm-1"}, 
 	                            React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.Login}, "Login")
+	                        ), 
+	                        React.createElement("div", {className: "col-sm-1"}, 
+	                            React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.LoginAD}, "Login as Active Directory")
 	                        ), 
 	                        React.createElement("div", {className: "col-sm-1 col-sm-offset-1"}, 
 	                            React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.Register}, "Register")
@@ -28912,6 +28924,26 @@
 
 	                if (data != "null") {
 	                    token = httpContext.getResponseHeader("Authorization");                   
+	                }
+
+	                success(token);
+	            });
+	    };
+
+	    this.loginAD = function (username, password, success) {
+	        var model = {
+	            username: username,
+	            password: password
+	        };
+
+	        serverMediator.sendRequest("api/account/login/activedirectory",
+	            "post",
+	            JSON.stringify(model),
+	            function (data, httpContext) {
+	                var token = null;
+
+	                if (data != "null") {
+	                    token = httpContext.getResponseHeader("Authorization");
 	                }
 
 	                success(token);

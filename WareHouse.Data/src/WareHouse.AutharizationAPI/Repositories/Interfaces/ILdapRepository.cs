@@ -9,7 +9,5 @@ namespace WareHouse.AutharizationAPI.Repositories.Interfaces
     public interface ILdapRepository
     {
         Task<OperationStatus> Login(LoginModel model);
-
-        Task<UserModel> GetUserByName(string username);
     }
 }

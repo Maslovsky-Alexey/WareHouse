@@ -90,6 +90,8 @@ namespace WareHouse.AutharizationAPI
 
             LdapHelper.LdapHelper ldap = new LdapHelper.LdapHelper(
                 Configuration.GetValue<string>("LdapSettings", "baseSearchCatalog"),
+                Configuration.GetValue<string>("LdapSettings", "admin", "nickname"),
+                Configuration.GetValue<string>("LdapSettings", "admin", "password"),
                 Configuration.GetValue<string>("LdapSettings", "hostname"),
                 Configuration.GetValue<int>("LdapSettings", "port")
             );
@@ -134,6 +136,8 @@ namespace WareHouse.AutharizationAPI
                 (ParameterInfo info, IComponentContext ctx) => adRoles);
 
             containerBuilder.Register(ctx => ldap).As<ILdapHelper>();
+            containerBuilder.RegisterType<LdapRepository>().As<ILdapRepository>();
+
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

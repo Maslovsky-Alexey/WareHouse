@@ -12,6 +12,9 @@ namespace WareHouse.AutharizationAPI.LdapHelper
         private LdapConnection connection = new LdapConnection();
         private string baseSearchCatalog;
 
+        private string adminName;
+        private string adminPassword;
+
         public bool isConnected
         {
             get
@@ -19,14 +22,19 @@ namespace WareHouse.AutharizationAPI.LdapHelper
                 return connection.Connected;
             }
         }
-        public LdapHelper(string baseSearchCatalog)
+        public LdapHelper(string baseSearchCatalog, string adminName, string adminPassword)
         {
             this.baseSearchCatalog = baseSearchCatalog;
+            this.adminName = adminName;
+            this.adminPassword = adminPassword;
         }
 
-        public LdapHelper(string baseSearchCatalog, string host, int port)
+        public LdapHelper(string baseSearchCatalog, string adminName, string adminPassword, string host, int port)
         {
             this.baseSearchCatalog = baseSearchCatalog;
+            this.adminName = adminName;
+            this.adminPassword = adminPassword;
+
             Connect(host, port);
         }
 
@@ -57,11 +65,7 @@ namespace WareHouse.AutharizationAPI.LdapHelper
 
         public LdapUser Login(string username, string password)
         {            
-            try
-            {
-                connection.Bind(username, password);
-            }
-            catch(Exception e)
+            if (!LoginInLdap(username, password))
             {
                 return null;
             }
@@ -103,8 +107,13 @@ namespace WareHouse.AutharizationAPI.LdapHelper
 
         private LdapEntry GetLdapUser(string username)
         {
-            try
+            if (!LoginInLdap(adminName, adminPassword))
             {
+                return null;
+            }
+
+            try
+            {               
                 var ldapSearchResult = connection.Search(baseSearchCatalog, LdapConnection.SCOPE_SUB, $"(&(userPrincipalName={username}))", null, false);
                 var user = ldapSearchResult.next();
                 return user;
@@ -112,6 +121,19 @@ namespace WareHouse.AutharizationAPI.LdapHelper
             catch(Exception e)
             {
                 return null;
+            }
+        }
+
+        private bool LoginInLdap(string username, string password)
+        {
+            try
+            {
+                connection.Bind(username, password);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
             }
         }
     }

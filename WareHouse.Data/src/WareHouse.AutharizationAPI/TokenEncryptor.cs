@@ -44,6 +44,8 @@ namespace WareHouse.AutharizationAPI
 
             var textInBytes = Convert.FromBase64String(text);
             var result = t.TransformFinalBlock(textInBytes, 0, textInBytes.Length);
+
+            text = text.Replace("tochka", ".");
             return Encoding.UTF8.GetString(result);
         }
     }

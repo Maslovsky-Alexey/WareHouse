@@ -27,7 +27,14 @@ namespace WareHouse.AutharizationAPI.Repositories
 
         public async Task<UserModel> GetUserByName(string username)
         {
-            return await MapToUserModel(await GetApplicationUserByName(username));
+            var user = await GetApplicationUserByName(username);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return await MapToUserModel(user);
         }
 
         public async Task<UserModel> GetUserById(string id)

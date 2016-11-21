@@ -60,7 +60,7 @@ namespace WebAPI
 
                 lock (this)
                 {
-                    user = safeAccountService.GetUserByToken(token.Substring(6)).Result;
+                    user = safeAccountService.GetUserByToken(token.Substring(6).Replace(" ", "")).Result;
 
                     if (user == null)
                     {

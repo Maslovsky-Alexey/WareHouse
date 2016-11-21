@@ -29,11 +29,14 @@ namespace WareHouse.AutharizationAPI.Controllers
 
         private ISocialAPIRepositoryVk apiVk;
         private ISocialAPIRepositoryFacebook apiFacebook;
+        private ILdapRepository ldapRepository;
 
-        public AccountController(IApplicationUserRepository applicationUserService, ISocialAPIRepositoryVk socialApiRepositoryVk, ISocialAPIRepositoryFacebook socialApiRepositoryFacebook, IEncryptor encryptor)
+        public AccountController(IApplicationUserRepository applicationUserService, ISocialAPIRepositoryVk socialApiRepositoryVk, 
+            ISocialAPIRepositoryFacebook socialApiRepositoryFacebook, IEncryptor encryptor, ILdapRepository ldapRepository)
         {
             this.applicationUserService = applicationUserService;
             this.encryptor = encryptor;
+            this.ldapRepository = ldapRepository;
 
             apiVk = socialApiRepositoryVk;
             apiFacebook = socialApiRepositoryFacebook;
@@ -46,8 +49,8 @@ namespace WareHouse.AutharizationAPI.Controllers
             if (await applicationUserService.Login(model) == OperationStatus.OK)
             {
                 HttpContext.AddAuthorizationHeader(encryptor.Encrypt(model.Username));
-                var a = await applicationUserService.GetUserByName(model.Username);
-                return a;
+                var user = await applicationUserService.GetUserByName(model.Username);
+                return user;
             }
 
             Unauthorized();
@@ -68,6 +71,21 @@ namespace WareHouse.AutharizationAPI.Controllers
         {
             var encodeUri = new HttpRefactor().EncodeUri(redirectUri);
             return apiFacebook.GetUriToGetCode(GenerateUri("/api/account/logincallback/facebook"), new KeyValue("redirectUri", encodeUri));
+        }
+
+        [Route("login/activedirectory")]
+        [HttpPost]
+        public async Task<UserModel> LoginActiveDirectory([FromBody] LoginModel model)
+        {
+            if (await ldapRepository.Login(model) == OperationStatus.OK)
+            {
+                HttpContext.AddAuthorizationHeader(encryptor.Encrypt(model.Username.Substring(0, model.Username.IndexOf("@"))));
+                var user = await applicationUserService.GetUserByName(model.Username);
+                return user;
+            }
+
+            Unauthorized();
+            return null;
         }
 
         [Route("logincallback/vk")]

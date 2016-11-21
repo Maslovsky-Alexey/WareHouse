@@ -24,6 +24,26 @@ var AccountRepository = function() {
             });
     };
 
+    this.loginAD = function (username, password, success) {
+        var model = {
+            username: username,
+            password: password
+        };
+
+        serverMediator.sendRequest("api/account/login/activedirectory",
+            "post",
+            JSON.stringify(model),
+            function (data, httpContext) {
+                var token = null;
+
+                if (data != "null") {
+                    token = httpContext.getResponseHeader("Authorization");
+                }
+
+                success(token);
+            });
+    };
+
     this.register = function (username, password, success) {
         var model = {
             username: username,

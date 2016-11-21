@@ -6,7 +6,7 @@ namespace WareHouse.HttpEx
     {
         public static void AddAuthorizationHeader(this HttpContext httpContext, string token)
         {
-            httpContext.Response.Headers.Add("Authorization", new[] {token});
+            httpContext.Response.Headers.Add("Authorization", new[] { $"Bearer {token}" });
         }
 
         public static string GetAuthorizationHeader(this HttpContext httpContext)

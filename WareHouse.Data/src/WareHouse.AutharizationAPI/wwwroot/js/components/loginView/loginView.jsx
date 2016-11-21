@@ -20,6 +20,15 @@ var LoginView = React.createClass({
         new AccountRepository().login(this.state.name, this.state.password, this.successLogin);      
     },
 
+    LoginAD: function () {
+        if (!this.isValidValues()) {
+            new ErrorView().error('Shaytan');
+            return;
+        }
+
+        new AccountRepository().loginAD(this.state.name, this.state.password, this.successLogin);
+    },
+
     Register: function () {
         if (!this.isValidValues()) {
             new ErrorView().error('Shaytan');
@@ -76,6 +85,9 @@ var LoginView = React.createClass({
                     <div className="row">
                         <div className="col-sm-1">
                             <button type="submit" className="btn btn-success" onClick={this.Login}>Login</button>
+                        </div>
+                        <div className="col-sm-1">
+                            <button type="submit" className="btn btn-success" onClick={this.LoginAD}>Login as Active Directory</button>
                         </div>
                         <div className="col-sm-1 col-sm-offset-1">
                             <button type="submit" className="btn btn-success" onClick={this.Register}>Register</button>
