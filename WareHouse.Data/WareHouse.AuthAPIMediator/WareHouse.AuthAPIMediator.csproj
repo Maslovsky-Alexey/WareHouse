@@ -38,9 +38,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="HttpWebHelperLibrary">
+      <HintPath>..\src\HttpWebHelperLibrary\bin\Debug\netstandard1.6\HttpWebHelperLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -53,7 +57,11 @@
       <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\portable-net45+win8+wpa81\System.Net.Http.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WareHouse.LogHelper">
+      <HintPath>..\src\HttpWebHelperLibrary\bin\Debug\netstandard1.6\WareHouse.LogHelper.dll</HintPath>
+    </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

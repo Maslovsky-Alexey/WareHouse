@@ -8,7 +8,7 @@ using Microsoft.Extensions.Primitives;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.Domain.Model.ViewModel;
 using WebAPI.Controllers;
-using WareHouse.HttpExtensions;
+using WareHouse.HttpEx;
 
 namespace WebAPI
 {

@@ -25,6 +25,7 @@ using Autofac.Core;
 using WareHouse.Domain.Service.ElasticSearchProviders;
 using WareHouse.MyOData;
 using HttpWebHelperLibrary;
+using WareHouse.AuthAPIHelper;
 
 namespace WebAPI
 {
@@ -167,9 +168,10 @@ namespace WebAPI
             containerBuilder.RegisterType<OperationService>();
             containerBuilder.Register(context => context.Resolve<OperationService>()).As<ISafeOperationService>();
 
-            containerBuilder.RegisterType<AccountService>().As<IUnsafeAccountService>().WithParameter("autharizationApiUrl", "http://localhost:11492"); //TODO: не забыть вынести в конфиг
+            containerBuilder.RegisterType<AuthHelper>().As<IAuthHelper>().WithParameter("autharizationApiUrl", "http://localhost:11492"); //TODO: не забыть вынести в конфиг
+            containerBuilder.RegisterType<AccountService>().As<IUnsafeAccountService>();
             containerBuilder.RegisterType<AccountService>();           
-            containerBuilder.Register(context => new AccountProxyService(context.Resolve<AccountService>(new NamedParameter("autharizationApiUrl", "http://localhost:11492")), null));
+            containerBuilder.Register(context => new AccountProxyService(context.Resolve<AccountService>(), null));
             containerBuilder.Register(context => context.Resolve<AccountProxyService>()).As<ISafeAccountService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance));
         }
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace WareHouse.HttpExtensions
+namespace WareHouse.HttpEx
 {
     public static class HeadersHelper
     {

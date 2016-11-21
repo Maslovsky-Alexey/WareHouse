@@ -24,9 +24,7 @@
     "Microsoft.AspNetCore.StaticFiles": "1.0.0",
     "Novell.Directory.Ldap.NETStandard": "2.3.5",
     "HttpWebHelperLibrary": "1.0.0-*",
-    "HttpExtensions": "1.0.0-*",
-    "WareHouse.LogHelper": "1.0.0-*"
-  },
+    "HttpExtensions": "1.0.0-*" },
 
   "tools": {
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"

@@ -97,8 +97,8 @@
     <Compile Include="APIMediator\Interfaces\ISenderAPI.cs" />
     <Compile Include="APIMediator\OrdersAPI.cs" />
     <Compile Include="APIMediator\ItemsAPI.cs" />
-    <Compile Include="APIMediator\WebRequestHelper\WebRequestHelper.cs" />
     <Compile Include="APIMediator\WebRequestHelper\IWebRequestHelper.cs" />
+    <Compile Include="APIMediator\WebRequestHelper\WebRequestHelper.cs" />
     <Compile Include="ConfigurationManager.cs" />
     <Compile Include="Configurator.cs" />
     <Compile Include="Context\HistoryDbContext.cs" />

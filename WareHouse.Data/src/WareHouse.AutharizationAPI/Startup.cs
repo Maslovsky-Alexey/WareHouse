@@ -23,6 +23,8 @@ using Novell.Directory.Ldap;
 using WareHouse.AutharizationAPI.RolesMapper.Models;
 using WareHouse.AutharizationAPI.RolesMapper;
 using WareHouse.AutharizationAPI.LdapHelper;
+using HttpWebHelperLibrary;
+using WareHouse.LogHelper;
 
 namespace WareHouse.AutharizationAPI
 {
@@ -115,6 +117,9 @@ namespace WareHouse.AutharizationAPI
             containerBuilder.RegisterType<VkAPI>().Keyed<ISocialAPI>("vk")
                 .WithParameter("appId", vkAppId)
                 .WithParameter("appSecret", vkAppSecret);
+
+            containerBuilder.RegisterType<ConsoleLog>().As<ILog>();
+            containerBuilder.RegisterType<WebRequestHelper>().As<IWebRequestHelper>();
      
             containerBuilder.RegisterType<SocialAPIVkRepository>().As<ISocialAPIRepositoryVk>().WithParameter(
                 (ParameterInfo info, IComponentContext ctx) => info.Name == "socialAPI", 

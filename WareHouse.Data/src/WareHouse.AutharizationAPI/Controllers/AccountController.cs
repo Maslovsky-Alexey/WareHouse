@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Http.Extensions;
-using WareHouse.HttpExtensions;
+using WareHouse.HttpEx;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 

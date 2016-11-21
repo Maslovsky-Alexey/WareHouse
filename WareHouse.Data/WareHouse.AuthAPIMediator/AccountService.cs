@@ -1,12 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using WareHouse.Data.Model;
-using WareHouse.Domain.Model.ViewModel;
-using WareHouse.Domain.ServiceInterfaces;
-using Employee = WareHouse.Domain.Model.Employee;
-using WareHouse.Domain.ServiceInterfaces.Safe;
-using WareHouse.Domain.ServiceInterfaces.Unsafe;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,38 +9,28 @@ using Newtonsoft.Json.Serialization;
 using System.IO;
 using System.Net;
 using HttpWebHelperLibrary;
-using WareHouse.AuthAPIHelper;
-using WareHouse.AuthAPIHelper.AutharizationAPIModel;
 
-namespace WareHouse.Domain.Service.ConcreteServices
+namespace WareHouse.AuthAPIMediator
 {
-    public class AccountService : IAccountService
+    public class AccountService
     {
-        private readonly ISafeClientService safeClientService;
-        private readonly IUnsafeClientService unsafeClientService;
-
-        private readonly ISafeEmployeeService safeEmployeeService;
-        private readonly IUnsafeEmployeeService unsafeEmployeeService;
-
-        private readonly IAuthHelper authHelper;
+        private readonly string autharizationApiUrl;
+        private readonly IWebRequestHelper webRequestHelper;
 
         public AccountService(
-            ISafeClientService safeClientService, IUnsafeClientService unsafeClientService,
-            ISafeEmployeeService safeEmployeeService, IUnsafeEmployeeService unsafeEmployeeService,
-            IAuthHelper authHelper)
+            string autharizationApiUrl,
+            IWebRequestHelper webRequestHelper)
         {
-            this.safeClientService = safeClientService;
-            this.unsafeClientService = unsafeClientService;
-
-            this.safeEmployeeService = safeEmployeeService;
-            this.unsafeEmployeeService = unsafeEmployeeService;
-
-            this.authHelper = authHelper;
+            this.autharizationApiUrl = autharizationApiUrl;
+            this.webRequestHelper = webRequestHelper;
         }
 
         public async Task<UserModel> GetCurrentUser(HttpContext httpContext)
+
         {
-            var apiUser = await authHelper.GetUserByName(httpContext.User.Identity.Name);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account?name={httpContext.User.Identity.Name}", "get", "");
+
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
             if (apiUser == null)
                 return null;
@@ -57,33 +40,47 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<string> Login(LoginModel model)
         {
-            var token = await authHelper.Login(new PasswordNameModel { Password = model.Password, Username = model.Username });
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account/login", "post", ToJson(model));
 
-            return token;
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
+
+            if (apiUser == null)
+                return null;
+
+            return !string.IsNullOrEmpty(response.Headers["Authorization"]) ? response.Headers["Authorization"] : null;
         }
 
         public async Task<UserModel> GetUserByName(string username)
         {
-            var apiUser = await authHelper.GetUserByName(username);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account?name={username}", "get", "");
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
             return await MapToUserModel(apiUser);
         }
 
         public async Task<UserModel> GetUserByToken(string token)
         {
-            var apiUser = await authHelper.GetUserByToken(token);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account?token={token}", "get", "");
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
             return await MapToUserModel(apiUser);
         }
 
         public async Task<IEnumerable<string>> GetUserRoles(string name)
         {
-            return await authHelper.GetUserRoles(name);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account?name={name}", "get", "");
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
+
+            return apiUser.Roles;
         }
 
         private async Task<UserAPIModel> RegisterUserWithRole(RegisterModel model, string role)
         {
-            var apiUser = await authHelper.RegisterUserWithRole(model.Username, model.Password, role);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account/register", "post", ToJson(MapToRegisterModelAPI(model, role)));
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
+
+            if (apiUser == null)
+                return null;
 
             return apiUser;
         }
@@ -128,28 +125,20 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<UserModel> AddRole(string username, string role)
         {
-            var apiUser = await authHelper.AddRole(username, role);
+            var response = await webRequestHelper.SendRequest($"{autharizationApiUrl}/api/account/{username}/roles/?role={role}", "post", null);
 
-            if (apiUser == null)
-            {
-                return null;
-            }
+            UserAPIModel apiUser = webRequestHelper.GetObjectFromResponse<UserAPIModel>(response);
 
-            await AddOrAssignWithApplicationUser(apiUser, role);
-
-            return await MapToUserModel(apiUser);
-        }
-
-        private async Task AddOrAssignWithApplicationUser(UserAPIModel apiUser, string role)
-        {
             if (role == "employee")
             {
-                await unsafeEmployeeService.AddOrAssignWithApplicationUser(apiUser.UserName, apiUser.Id);
+                await unsafeEmployeeService.AddOrAssignWithApplicationUser(username, apiUser.Id);
             }
             else if (role == "client")
             {
-                await unsafeClientService.AddOrAssignWithApplicationUser(apiUser.UserName, apiUser.Id);
+                await unsafeClientService.AddOrAssignWithApplicationUser(username, apiUser.Id);
             }
+            
+            return await MapToUserModel(apiUser);
         }
     }
 }

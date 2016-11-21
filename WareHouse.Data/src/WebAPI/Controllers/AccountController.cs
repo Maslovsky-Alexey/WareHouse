@@ -5,7 +5,7 @@ using WareHouse.Domain.Model.ViewModel;
 using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.Domain.ServiceInterfaces.Unsafe;
-using WareHouse.HttpExtensions;
+using WareHouse.HttpEx;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
