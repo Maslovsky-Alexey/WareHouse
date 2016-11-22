@@ -1,77 +1,82 @@
-﻿/// <reference path="form/formoperations.js" />
+﻿var React = require("react");
+var ReactDom = require("react-dom");
 
-/// <reference path="../../repositories/clientrepository.js" />
-/// <reference path="../../repositories/providerrepository.js" />
+var FormOperations = require("./form/formoperations.jsx");
+var Dispatcher = require("../../dispatcher/dispatcher.js").Dispatcher;
+var ClientStore = require("../../stores/clientstore.js").ClientStore;
+var ProviderStore = require("../../stores/providerstore.js").ProviderStore;
+var List = require("./list/list.jsx");
 
-var OperartionsView = React.createClass({
-    listItem: '',
-    providerRepos: new CreateProviderRepository(),
-    clientRepos: new CreateClientRepository(),
-
-    providers: [],
-    clients: [],
+var OperationsView = React.createClass({
     supplymode: true,
 
-    getInitialState: function(){
-        this.clientRepos.getClients(this.onClientsGeted);
-        this.providerRepos.getProviders(this.onProvidersGeted);
-
-        return {};
+    componentDidMount: function() {
+        ClientStore.addOnChangeListener(this.onClientsGeted);
+        ProviderStore.addOnChangeListener(this.onProvidersGeted);
     },
 
-    SelectedListItem: function(item){
-        this.listItem = item;
-        this.forceUpdate();
+    getInitialState: function() {
+        var clients = ClientStore.getClients(this.onClientsGeted).map((item) => item.name);
+        var providers = ProviderStore.getProviders(this.onProvidersGeted).map((item) => item.name);
+
+        return { clients: clients, providers: providers, listItem: -1 };
     },
 
-    onProvidersGeted: function (data) {
-        this.providers = data.map(function (item) {
-            return item.name;
+    SelectedListItem: function(item) {
+        this.setState({
+            clients: this.state.clients,
+            providers: this.state.providers,
+            listItem: item
         });
-
-        this.forceUpdate();
     },
 
-    onClientsGeted: function (data) {
-        this.clients = data.map(function (item) {
-            return item.name;
-        });
-
-        this.forceUpdate();
+    onProvidersGeted: function(data) {
+        this.setState({ clients: this.state.clients, providers: data });
     },
 
-    modeChange: function(isSupply){
+    onClientsGeted: function(data) {
+        this.setState({ clients: data, providers: this.state.providers });
+    },
+
+    modeChange: function(isSupply) {
         this.supplymode = isSupply;
         this.forceUpdate();
     },
 
-    providerAdded: function(value){
-        new CreateProviderRepository().addProvder({ name: value }, function () { });
+    providerAdded: function(value) {
+        Dispatcher.dispatch({
+            name: "add-provider",
+            data: { name: value }
+        });
     },
 
-    clientAdded: function (value) {
-        new CreateClientRepository().addClient({ name: value }, function () { });
+    clientAdded: function(value) {
+        Dispatcher.dispatch({
+            name: "add-client",
+            data: { name: value }
+        });
     },
 
-    render: function () {
+    render: function() {
 
         return (
             <div className="row">
                 <div className="col-xs-3">
-                    <List title="Providers" side="left" active={this.supplymode} changevalue={this.SelectedListItem} items={this.providers} onadded={this.providerAdded}/>
+                    <List
+                        .List title="Providers" side="left" active={this.supplymode} changevalue={this.SelectedListItem}
+                        items={this.state.providers} onadded={this.providerAdded}/>
                 </div>
                 <div className="col-xs-6">
-                    <FormOperations actor={this.listItem} changeMode={this.modeChange}/>
+                    <FormOperations.FormOperations actor={this.state.listItem} changeMode={this.modeChange}/>
                 </div>
                 <div className="col-xs-3">
-                    <List title="Clients" side="right" active={!this.supplymode} changevalue={this.selectedlistitem} items={this.clients} onadded={this.clientAdded}/>
-                </div>                            
+                    <List
+                        .List title="Clients" side="right" active={!this.supplymode} changevalue={this.SelectedListItem}
+                        items={this.state.clients} onadded={this.clientAdded}/>
+                </div>
             </div>
         );
     }
 });
 
-ReactDOM.render(
-  <OperartionsView />,
-  document.getElementById('root')
-);
+exports.OperationsView = OperationsView;

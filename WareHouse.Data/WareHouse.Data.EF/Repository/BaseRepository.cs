@@ -1,63 +1,65 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WareHouse.Data.EF.Context;
 using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
+using WareHouse.LogHelper;
 
 namespace WareHouse.Data.EF.Repository
 {
     public abstract class BaseRepository<T> : IRepository<T> where T : BaseModel
     {
-        protected DbSet<T> table;
         protected WareHouseDbContext context;
+        protected DbSet<T> table;
+        protected ILog log;
 
         public BaseRepository(WareHouseDbContext context)
         {
             this.context = context;
-            this.table = context.Set<T>();           
+            table = context.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public BaseRepository(WareHouseDbContext context, ILog log)
         {
-            return await table.ToArrayAsync();           
+            this.context = context;
+            table = context.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAllWithFilter(Expression<Func<T, bool>> filter)
-        {           
-            return await Task<IEnumerable<T>>.Factory.StartNew(() => table.Where(filter));
-        }
-
-        public IEnumerable<T> GetAllSync()
+        public virtual async Task<IEnumerable<T>> GetAll()
         {
-            return table.ToArray();
+            return await table.ToArrayAsync();
         }
 
         public async Task<OperationStatus> Add(T item)
         {
             var count = 0;
 
+            await Task.Factory.StartNew(() => table.Add(item));
+
             try
             {
-                await Task.Factory.StartNew(() => table.Add(item));
                 count = await SaveChanges();
             }
-            catch
+            catch (Exception e)
             {
+                log?.Log(e.Message + '\n' + e.InnerException);
                 return OperationStatus.Error;
             }
+
 
             return count > 0 ? OperationStatus.Added : OperationStatus.NotAdded;
         }
 
         public async Task<OperationStatus> Remove(T item)
         {
+            await Task.Factory.StartNew(() => table.Remove(item));
+
             try
             {
-                await Task.Factory.StartNew(() => table.Remove(item));
                 await SaveChanges();
             }
             catch
@@ -68,14 +70,24 @@ namespace WareHouse.Data.EF.Repository
             return OperationStatus.Removed;
         }
 
-        public async Task<T> GetItem(int id)
+        public virtual async Task<T> GetItem(int id)
         {
-            return await table.FirstAsync(item => item.Id == id);
+            return await table.FirstOrDefaultAsync(item => item.Id == id);
         }
 
         public async Task<int> Count()
         {
             return await table.CountAsync();
+        }
+
+        public virtual async Task<IEnumerable<T>> GetAllWithFilter(Expression<Func<T, bool>> filter)
+        {
+            return await Task<IEnumerable<T>>.Factory.StartNew(() => table.Where(filter));
+        }
+
+        public IEnumerable<T> GetAllSync()
+        {
+            return table.ToArray();
         }
 
         protected async Task<int> SaveChanges()

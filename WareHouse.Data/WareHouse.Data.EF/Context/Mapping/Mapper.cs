@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Reflection;
-using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore;
 
 namespace WareHouse.Data.EF.Context.Mapping
@@ -22,12 +20,13 @@ namespace WareHouse.Data.EF.Context.Mapping
         {
             var types = GetTypes(typeof(IMapper<>));
 
-            foreach (Type type in types)
+            foreach (var type in types)
             {
                 var genericType = type.GetTypeInfo().GetInterface(typeof(IMapper<>).Name).GetGenericArguments()[0];
-                var method = modelBuilder.GetType().GetMethod("Entity", new Type[] { }).MakeGenericMethod(genericType);
+                var method = modelBuilder.GetType().GetMethod("Entity", new Type[] {}).MakeGenericMethod(genericType);
 
-                type.GetMethod("Map").Invoke(Activator.CreateInstance(type), new[] {
+                type.GetMethod("Map").Invoke(Activator.CreateInstance(type), new[]
+                {
                     method.Invoke(modelBuilder, null)
                 });
             }

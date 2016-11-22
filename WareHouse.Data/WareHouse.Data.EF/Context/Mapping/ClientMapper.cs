@@ -1,6 +1,5 @@
-﻿using WareHouse.Data.Model;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using WareHouse.Data.Model;
 
 namespace WareHouse.Data.EF.Context.Mapping
 {
@@ -8,12 +7,10 @@ namespace WareHouse.Data.EF.Context.Mapping
     {
         public void Map(EntityTypeBuilder<Client> typeBuilder)
         {
-            typeBuilder
-                .ToTable("Clients")
-                .Property(client => client.Name)
-                .HasDefaultValue("Noname")
-                .HasMaxLength(25);
-
+            //typeBuilder
+            //    .HasOne(p => p.User)
+            //    .WithOne()
+            //    .HasForeignKey<Client>(p => p.UserId);
         }
     }
 }

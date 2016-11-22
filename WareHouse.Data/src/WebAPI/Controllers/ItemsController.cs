@@ -1,74 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WareHouse.Data.EF.Repository;
-using WareHouse.Data.EF.Context;
 using WareHouse.Domain.Model;
-using Microsoft.AspNetCore.Cors;
-using WareHouse.Domain.Service.ConcreteServices;
 using WareHouse.Domain.ServiceInterfaces;
-using WareHouse.MyOData;
+using Microsoft.AspNetCore.Authorization;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebAPI.Controllers
-{   
+{
     [Route("api/[controller]")]
     public class ItemsController : Controller
     {
-        private IItemService items;
+        private readonly ISafeItemService safeItemService;
 
-        public ItemsController(IItemService items)
+        public ItemsController(ISafeItemService safeItemService)
         {
-            this.items = items;
+            this.safeItemService = safeItemService;
         }
 
         // GET: api/values
         [HttpGet]
+        [Authorize]
         public async Task<IEnumerable<Item>> Get()
         {
-            return await items.GetAll();
+            return await safeItemService.GetAll();
         }
 
 
-        // POST api/values
-        [HttpPost]
-        public async Task Post([FromBody]Item value)
+        [HttpGet("{name}")]
+        [Authorize]
+        public async Task<Item> Get(string name)
         {
-            await items.AddOrUpdateCount(value);
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody]Item value)
-        {
-            var item = await items.GetItem(id);
-
-            item.Name = value.Name;
-            item.Count = value.Count;
-        }
-
-        // DELETE api/values/5
-        [HttpDelete]
-        public async Task Delete([FromBody]Item value)
-        {
-            await items.RemoveItem(value);
-        }
-
-        [Route("UpdateCount")]
-        [HttpPost]
-        public async Task UpdateCount([FromBody]Item value)
-        {     
-            await items.SubCount(value);
-        }
-
-        [Route("GetPage/{page}")]
-        [HttpPost("{page}")]
-        public async Task<PageModel> GetPage(int page)
-        {
-            return await items.GetPage(page, MyOData.GetConfiguratesFromQueryString(Request.QueryString.Value));
+            return await safeItemService.GetItemByName(name, true);
         }
     }
 }

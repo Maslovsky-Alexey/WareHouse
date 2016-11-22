@@ -48,7 +48,7 @@ var FilterForm = React.createClass({
 
         var orderby = $("#property-order-selection").val();
 
-        var isDown = $('#down').hasClass("active-arrow");
+        var isDown = $("#down").hasClass("active-arrow");
 
         this.props.search(search, this.values.min, this.values.max, orderby, isDown);
     },
@@ -67,7 +67,13 @@ var FilterForm = React.createClass({
                 React.createElement(
                     "div",
                     { className: "col-xs-5" },
-                    React.createElement("input", { className: "form-control search-name-input", placeholder: "Search", onKeyUp: this.changeSearch, id: "search-name-input" })
+                    React.createElement("input",
+                    {
+                        className: "form-control search-name-input",
+                        placeholder: "Search",
+                        onKeyUp: this.changeSearch,
+                        id: "search-name-input"
+                    })
                 )
             ),
             React.createElement(
@@ -94,13 +100,16 @@ var FilterForm = React.createClass({
                 React.createElement(
                     "div",
                     { className: "col-xs-2 padding-left-0" },
-                    React.createElement("i", { className: classNameUp, "aria-hidden": "true", onClick: this.changeOrder, id: "up" }),
-                    React.createElement("i", { className: classNameDown, "aria-hidden": "true", onClick: this.changeOrder, id: "down" })
+                    React.createElement("i",
+                        { className: classNameUp, "aria-hidden": "true", onClick: this.changeOrder, id: "up" }),
+                    React.createElement("i",
+                        { className: classNameDown, "aria-hidden": "true", onClick: this.changeOrder, id: "down" })
                 ),
                 React.createElement(
                     "div",
                     { className: "col-xs-5" },
-                    React.createElement(InputRange, {
+                    React.createElement(InputRange,
+                    {
                         className: "input-range",
                         maxValue: this.props.maxcount,
                         minValue: this.props.mincount,

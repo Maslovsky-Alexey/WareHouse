@@ -1,27 +1,18 @@
-﻿/// <reference path="servermediator.js" />
-var CreateProviderRepository = function() {
-    this.serverMediator = new CreateServerMediator(),
+﻿var ServerMediator = require("./ServerMediator.js");
 
-    this.getProviders = function (success) {
-        this.serverMediator.sendRequest('http://localhost:33649/api/providers/', 'get', null, function (data) {
-            success(JSON.parse(data));
-        });
-    },
-
-    this.addProvder = function (item, success) {
-        this.serverMediator.sendRequest('http://localhost:33649/api/providers', 'post', JSON.stringify(item), success);
-    }
+var ProviderRepository = function() {
+    serverMediator = new ServerMediator.ServerMediator(),
+        this.getProviders = function(success) {
+            serverMediator.sendRequest("api/providers/",
+                "get",
+                null,
+                function(data) {
+                    success(JSON.parse(data));
+                });
+        },
+        this.addProvder = function(item, success) {
+            serverMediator.sendRequest("api/providers", "post", JSON.stringify(item), success);
+        };
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
+exports.ProviderRepository = ProviderRepository;

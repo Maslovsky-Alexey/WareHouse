@@ -1,18 +1,12 @@
-﻿using WareHouse.Data.Model;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using WareHouse.Data.Model;
 
 namespace WareHouse.Data.EF.Context.Mapping
 {
-    public class ItemMapper : IMapper<Employee>
+    public class ItemMapper : IMapper<Item>
     {
-        public void Map(EntityTypeBuilder<Employee> typeBuilder)
+        public void Map(EntityTypeBuilder<Item> typeBuilder)
         {
-            typeBuilder
-                .Property(item => item.Name)
-                .IsRequired()
-                .HasMaxLength(50);
-
         }
     }
 }

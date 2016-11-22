@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WareHouse.Domain.Service.ConcreteServices;
-using WareHouse.Data.EF.Context;
-using WareHouse.Data.EF.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.ServiceInterfaces;
-using WareHouse.Data.Repository;
+using Microsoft.AspNetCore.Authorization;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
+
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,39 +15,72 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class ClientsController : Controller
     {
-        private IClientService clients;
+        private readonly ISafeClientService safeClientService;
+        private readonly IUnsafeClientService unsafeClientService;
 
-        public ClientsController(IClientService clients)
+        public ClientsController(ISafeClientService safeClientService, IUnsafeClientService unsafeClientService)
         {
-            this.clients = clients;
+            this.safeClientService = safeClientService;
+            this.unsafeClientService = unsafeClientService;
         }
 
         // GET: api/values
         [HttpGet]
+        [Authorize(Roles = "employee")]
         public async Task<IEnumerable<Client>> Get()
         {
-            return await clients.GetAll();
+            return await safeClientService.GetAll();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "employee")]
         public async Task<Client> Get(int id)
         {
-            return await clients.GetItem(id);
+            var client = await safeClientService.GetItem(id);
+
+            if (client == null)
+            {
+                NotFound();
+                return null;
+            }
+
+            return client;
+        }
+
+        [HttpGet("{name}")]
+        [Authorize(Roles = "employee")]
+        public async Task<Client> Get(string name)
+        {
+            var client = await safeClientService.GetClientByName(name, true);
+
+            if (client == null)
+            {
+                NotFound();
+                return null;
+            }
+
+            return client;
         }
 
         // POST api/values
         [HttpPost]
-        public async Task Post([FromBody]Client value)
-        {
-            await clients.AddWithoutRepetition(value);
+        [Authorize(Roles = "employee")]
+        public async Task Post([FromBody] Client value)
+        {           
+            var isSuccess = await unsafeClientService.AddWithoutRepetition(value);
+            HttpContext.Response.StatusCode = isSuccess ? 201 : 409;
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public async Task Delete([FromBody]Client value)
+        [Authorize(Roles = "employee")]
+        public async Task Delete([FromBody] Client value)
         {
-            await clients.RemoveClientByName(value);
+            var isRemoved = await unsafeClientService.RemoveClientByName(value);
+
+            if (!isRemoved)
+                NotFound();
         }
     }
 }

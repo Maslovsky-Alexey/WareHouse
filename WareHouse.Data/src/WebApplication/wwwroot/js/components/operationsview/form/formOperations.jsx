@@ -1,27 +1,30 @@
-﻿/// <reference path="../../../repositories/itemrepository.js" />
-/// <reference path="../../../repositories/providerrepository.js" />
-/// <reference path="../../../repositories/clientrepository.js" />
+﻿var React = require("react");
+var ReactDom = require("react-dom");
 
-/// <reference path="../../../autocompiler/inputcompiler.js" />
+
+var ItemRepository = require("../../../repositories/itemrepository.js");
+var OperationRepository = require("../../../repositories/operationrepository.js");
+var StatusSelect = require("./elements/statusselect.jsx");
 
 var FormOperations = React.createClass({
-    itemsRepos: new CreateItemRepository(),
+    itemsRepos: new ItemRepository.ItemRepository(),
+    warehouseItems: new OperationRepository.OperationRepository(),
 
     items: [],
+    itemId: -1,
 
-    getInitialState: function () {
+    getInitialState: function() {
         this.itemsRepos.getItems(this.onItemsGeted);
 
         return { supplymode: true };
     },
 
-    onItemsGeted: function(data){
+    onItemsGeted: function(data) {
         this.items = data;
-
         this.forceUpdate();
     },
 
-    modeChange: function (e) {
+    modeChange: function(e) {
         if (this.props.changeMode)
             this.props.changeMode(!this.state.supplymode);
 
@@ -30,62 +33,84 @@ var FormOperations = React.createClass({
 
     Send: function Send(e) {
         var input_name = $(e.target).parent().find(".item_name");
-       
-        var input_count = $(e.target).parent().find(".item_count");
-        var item = this.CreateItemValue(input_name.attr('id'), input_name.val(), input_count.val());
 
-        if (!this.IsFormValid(input_name, input_count)) {
+        var input_count = $(e.target).parent().find(".item_count");
+
+        if (!this.IsFormValid(input_count)) {
             alert("Pechal");
             return;
         }
 
         var sender = this;
         if (this.state.supplymode) {
-            new CreateItemRepository().addItem(item, function () { sender.emptyControlItems(input_name, input_count); });
-        }
-        else {
-            new CreateItemRepository().removeItem(item, function () { sender.emptyControlItems(input_name, input_count); });
+            this.warehouseItems.addSupply(this.CreateSupplyModel(this.itemId, input_count.val()),
+                function() { sender.emptyControlItems(input_name, input_count); });
+        } else {
+            this.warehouseItems.addOrder(this.CreateOrderModel(this.itemId, input_count.val()),
+                function() { sender.emptyControlItems(input_name, input_count); });
         }
     },
 
-    emptyControlItems: function (input_name, input_count) {
-        input_name.val('');
-        input_count.val('');
-        input_name.attr('id', '');
+    emptyControlItems: function(input_name, input_count) {
+        input_count.val("");
     },
 
-    CreateItemValue: function (id, name, count) {
+    CreateSupplyModel: function(id, count) {
         return {
-            name: name,
             count: count,
-            id: id
+            item: { id: id },
+            provider: { id: this.props.actor },
+            employee: {id: 1}//TODO: ЗАМЕНИТЬ!
         };
     },
 
-    IsFormValid: function (name, count) {
-        var countValue = parseInt(count.val());
-
-        return !this.IsEmptyString(name.val()) && !this.IsEmptyString(count.val()) && !Number.isNaN(countValue) && countValue > 0 && !this.IsEmptyString(this.props.actor);
+    CreateOrderModel: function(id, count) {
+        return {
+            count: count,
+            item: { id: id },
+            client: { id: this.props.actor },
+            employee: { id: 1 }//TODO: ЗАМЕНИТЬ!
+        };
     },
 
-    IsEmptyString: function (str) {
+    IsFormValid: function(count) {
+        var countValue = parseInt(count.val());
+
+        return !this.IsEmptyString(count.val()) && !Number.isNaN(countValue) && countValue > 0 && this.props.actor > -1;
+    },
+
+    IsEmptyString: function(str) {
         return str.replace(" ", "") == "";
     },
 
-    render: function () {
+    onChangeStatus: function(status, statusId) {
+        this.status = status;
+        this.statusId = statusId;
+    },
+
+    itemSelected: function(name, id) {
+        this.itemId = id;
+    },
+
+    render: function() {
         return (
             <div>
                 <label className="radio-inline radioleft">
-                    <input type="radio" name="inlineRadioOptions" id="supply" value="supply" onChange={this.modeChange} checked={this.state.supplymode} /> Supply
+                    <input type="radio" name="inlineRadioOptions" id="supply" value="supply" onChange={this.modeChange}
+                           checked={this.state.supplymode}/> Supply
                 </label>
                 <label className="radio-inline radioright">
-                    <input type="radio" name="inlineRadioOptions" id="order" value="order" onChange={this.modeChange} checked={!this.state.supplymode} /> Order
+                    <input type="radio" name="inlineRadioOptions" id="order" value="order" onChange={this.modeChange}
+                           checked={!this.state.supplymode}/> Order
                 </label>
 
-                <InputCompiler items={this.items} />
-                <input className="form-control item_count" placeholder="count" />
+                <StatusSelect.StatusSelect items={this.items} onchangevalue={this.itemSelected}/>
+
+                <input className="form-control item_count" placeholder="count"/>
                 <button className="btn btn-success btn-block btn-sm" onClick={this.Send}>Send</button>
             </div>
-            )
+        );
     }
 });
+
+exports.FormOperations = FormOperations;

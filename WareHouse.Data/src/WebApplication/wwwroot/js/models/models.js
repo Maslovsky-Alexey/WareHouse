@@ -1,9 +1,9 @@
 var Models;
 (function (Models) {
-    var Item = (function () {
-        function Item() {
+    var ItemView = (function () {
+        function ItemView() {
         }
-        return Item;
+        return ItemView;
     }());
-    Models.Item = Item;
+    Models.ItemView = ItemView;
 })(Models || (Models = {}));

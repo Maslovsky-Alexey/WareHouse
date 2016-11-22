@@ -18,7 +18,8 @@ var Ratings = React.createClass({
 
         for (var i = 0; i < this.maxStars; i++) {
             stars.push(this.createStar(i < starscount, i));
-        } return stars;
+        }
+        return stars;
     },
 
     render: function render() {

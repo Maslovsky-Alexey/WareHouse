@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using WareHouse.Domain.Model;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,36 +13,28 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class EmployeesController : Controller
     {
-        // GET: api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly ISafeEmployeeService safeEmployeeService;
+        private readonly IUnsafeEmployeeService usafeEmployeeService;
+
+        public EmployeesController(ISafeEmployeeService safeEmployeeService, IUnsafeEmployeeService usafeEmployeeService)
         {
-            return new string[] { "value1", "value2" };
+            this.safeEmployeeService = safeEmployeeService;
+            this.usafeEmployeeService = usafeEmployeeService;
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{name}")]
+        [Authorize(Roles = "employee")]
+        public async Task<Employee> Get(string name)
         {
-            return "value";
-        }
+            var employee = await safeEmployeeService.GetEmployeeByName(name, true);
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
+            if (employee == null)
+            {
+                NotFound();
+                return null;
+            }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return employee;
         }
     }
 }

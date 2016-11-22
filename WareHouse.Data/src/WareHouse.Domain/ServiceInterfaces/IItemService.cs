@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WareHouse.Domain.Model;
-using WareHouse.MyOData;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IItemService : IService<Domain.Model.Item, Data.Model.Item>
+    public interface IItemService : ISafeItemService, IUnsafeItemService
     {
-        Task<Model.Item> GetItemByName(string name, bool ignoreCase);
-
-        Task AddOrUpdateCount(Item value);
-
-        Task SubCount(Item value);
-
-        Task RemoveItem(Item value);
-
-        Task<PageModel> GetPage(int page, MyODataConfigurates config);
     }
 }

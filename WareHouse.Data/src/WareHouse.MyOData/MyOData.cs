@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Reflection;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace WareHouse.MyOData
 {
@@ -20,24 +19,44 @@ namespace WareHouse.MyOData
             configurates.OrderBy = orders.Count > 0 ? orders[orders.Count - 1].Groups["value"].Value : "";
 
             var types = MatchesBySelector("ordertype", queryString);
-            configurates.IsOrderAsceneding = types.Count > 0 ? types[types.Count - 1].Groups["value"].Value.ToLower() != "descending" : true;
+            configurates.IsOrderAsceneding = types.Count > 0
+                ? types[types.Count - 1].Groups["value"].Value.ToLower() != "descending"
+                : true;
 
             return configurates;
         }
 
         public static IEnumerable<T> ApplyMyODataCongigurates<T>(IEnumerable<T> items, MyODataConfigurates config)
         {
-            foreach (PropertyFilter prop in config.PropertiesFilter)
-                items = items.Where((item) => ((string)item.GetType().GetTypeInfo().GetProperty(prop.Name).GetValue(item)).IndexOf(prop.Filter) > -1);
+            foreach (var prop in config.PropertiesFilter)
+                items =
+                    items.Where(
+                        item =>
+                            ((string) item.GetType().GetTypeInfo().GetProperty(prop.Name).GetValue(item)).IndexOf(
+                                prop.Filter) > -1);
 
-            if (String.IsNullOrEmpty(config.OrderBy))
+            if (string.IsNullOrEmpty(config.OrderBy))
                 return items;
 
 
             if (config.IsOrderAsceneding)
-                items = items.OrderBy((item) => item.GetType().GetTypeInfo().GetProperty(config.OrderBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(item, null));
+                items =
+                    items.OrderBy(
+                        item =>
+                            item.GetType()
+                                .GetTypeInfo()
+                                .GetProperty(config.OrderBy,
+                                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
+                                .GetValue(item, null));
             else
-                items = items.OrderByDescending((item) => item.GetType().GetTypeInfo().GetProperty(config.OrderBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(item, null));
+                items =
+                    items.OrderByDescending(
+                        item =>
+                            item.GetType()
+                                .GetTypeInfo()
+                                .GetProperty(config.OrderBy,
+                                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
+                                .GetValue(item, null));
 
             return items;
         }
@@ -46,11 +65,11 @@ namespace WareHouse.MyOData
         {
             var filters = GetFiltersFromConfigurates<T>(config);
 
-            Expression<Func<T, bool>> firstFilter = filters.FirstOrDefault();
+            var firstFilter = filters.FirstOrDefault();
 
-            if (firstFilter == null)            
+            if (firstFilter == null)
                 return x => true;
-            
+
             var body = firstFilter.Body;
             var param = firstFilter.Parameters.ToArray();
 
@@ -67,13 +86,17 @@ namespace WareHouse.MyOData
         {
             var result = items;
 
-            if (String.IsNullOrEmpty(config.OrderBy))
+            if (string.IsNullOrEmpty(config.OrderBy))
                 return items;
 
             if (config.IsOrderAsceneding)
-                result = result.OrderBy((item) => item.GetType().GetTypeInfo().GetProperty(config.OrderBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(item, null));
+                result =
+                    result.OrderBy(
+                        item => item.GetValueFromPublicProperyWithIgnoreCase(config.OrderBy));
             else
-                result = result.OrderByDescending((item) => item.GetType().GetTypeInfo().GetProperty(config.OrderBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(item, null));
+                result =
+                    result.OrderByDescending(
+                        item => item.GetValueFromPublicProperyWithIgnoreCase(config.OrderBy));
 
             return result;
         }
@@ -82,37 +105,57 @@ namespace WareHouse.MyOData
         {
             var filters = new List<Expression<Func<T, bool>>>();
 
-            foreach (PropertyFilter prop in config.PropertiesFilter)
-                filters.Add((item) => GetFilter(prop, item));
+            foreach (var prop in config.PropertiesFilter)
+                filters.Add(item => GetFilter(prop, item));
 
             return filters;
         }
 
         private static bool GetFilter<T>(PropertyFilter prop, T item)
         {
-            bool result = true;
+            var result = true;
 
             var stringValue = GetPropertyValue(item, prop.Name).ToString();
-            var numberOrStringLength = stringValue.ToNullableDouble() == null ? stringValue.Length : stringValue.ToNullableDouble();
+            var numberOrStringLength = stringValue.ToNullableDouble() == null
+                ? stringValue.Length
+                : stringValue.ToNullableDouble();
 
             if (!string.IsNullOrEmpty(prop.Filter))
                 result &= stringValue.ToLower().IndexOf(prop.Filter.ToLower()) > -1;
 
-            if (result && prop.LessThan != null)
+            if (result && (prop.LessThan != null))
                 result &= numberOrStringLength < prop.LessThan;
 
-            if (result && prop.MoreThan != null)
+            if (result && (prop.MoreThan != null))
                 result &= numberOrStringLength > prop.MoreThan;
 
             return result;
         }
 
-        private static object GetPropertyValue<T>(T obj, string propertyName)
+        private static object GetPropertyValue(object obj, string propertyName)
+        {
+            if (propertyName.Contains('.'))
+            {
+                var propName = GetFirstPropertyName(propertyName);
+
+                return GetPropertyValue(GetProperty(obj, propName).GetValue(obj, null),
+                    propertyName.Remove(0, propName.Length + 1));
+            }
+
+            return GetProperty(obj, propertyName).GetValue(obj, null);
+        }
+
+        private static PropertyInfo GetProperty(object obj, string propertyName)
         {
             var typeInfo = obj.GetType().GetTypeInfo();
 
-            var property = typeInfo.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            return property.GetValue(obj, null);
+            return typeInfo.GetProperty(propertyName,
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        }
+
+        private static string GetFirstPropertyName(string propertyName)
+        {
+            return propertyName.Substring(0, propertyName.IndexOf('.'));
         }
 
         private static IEnumerable<PropertyFilter> GetPropertiesFilter(string source)
@@ -124,13 +167,13 @@ namespace WareHouse.MyOData
             var moreThan = GetElement("morethan", source);
             var lessthan = GetElement("lessthan", source);
 
-            foreach (Element element in properties)
-                result.Add(new PropertyFilter()
+            foreach (var element in properties)
+                result.Add(new PropertyFilter
                 {
                     Name = element.Value,
-                    Filter = filters.FirstOrDefault((filter) => filter.ID == element.ID)?.Value,
-                    MoreThan = moreThan.FirstOrDefault((x) => x.ID == x.ID)?.Value.ToNullableDouble(),
-                    LessThan = lessthan.FirstOrDefault((x) => x.ID == x.ID)?.Value.ToNullableDouble()
+                    Filter = filters.FirstOrDefault(filter => filter.ID == element.ID)?.Value,
+                    MoreThan = moreThan.FirstOrDefault(x => x.ID == x.ID)?.Value.ToNullableDouble(),
+                    LessThan = lessthan.FirstOrDefault(x => x.ID == x.ID)?.Value.ToNullableDouble()
                 });
 
             return result;
@@ -143,7 +186,8 @@ namespace WareHouse.MyOData
             var result = new List<Element>();
 
             foreach (Match match in matches)
-                result.Add(new Element() {
+                result.Add(new Element
+                {
                     ID = int.Parse(match.Groups["id"].Value),
                     Value = match.Groups["value"].Value
                 });
@@ -161,9 +205,9 @@ namespace WareHouse.MyOData
 
         private static string WordPatternToAnyRegister(string word)
         {
-            string result = "";
+            var result = "";
 
-            foreach (char c in word)
+            foreach (var c in word)
                 result += $"[{char.ToLower(c)}{char.ToUpper(c)}]";
 
             return result;

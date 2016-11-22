@@ -10,7 +10,7 @@ var ListBody = React.createClass({
         var itemclick = this.props.click;
         var filter = this.props.filter;
 
-        var itemsTemplate = data.map(function (item, index) {
+        var itemsTemplate = data.map(function(item, index) {
             if (!item.toLowerCase().includes(filter.toLowerCase())) return;
 
             return React.createElement(

@@ -1,15 +1,21 @@
-﻿/// <reference path="repositories/itemrepository.js" />
-
-/// <reference path="elements/about.js" />
+﻿/// <reference path="elements/about.js" />
 /// <reference path="elements/rating.js" />
+
+var React = require("react");
+var ReactDom = require("react-dom");
+
+var WarehouseItemsRepository = require("../../../repositories/warehouseitemrepository.js");
+
+var About = require("./elements/about.jsx");
+var Rating = require("./elements/rating.jsx");
 
 var Items = React.createClass({
     nextPage: 0,
     prevPage: 0,
-    itemRepos: new CreateItemRepository(),
+    itemRepos: new WarehouseItemsRepository.WarehouseItemsRepository(),
     isFirst: true,
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function(nextProps) {
         this.nextPage = 0;
         this.itemRepos.getPageItemsWithFilter(this.onItemsGeted, this.nextPage, nextProps.filter);
     },
@@ -28,6 +34,7 @@ var Items = React.createClass({
     },
 
     onItemsGeted: function onItemsGeted(data) {
+
         this.nextPage = data.nextPage;
         this.prevPage = data.prevPage;
         if (this.isFirst)
@@ -37,22 +44,24 @@ var Items = React.createClass({
     },
 
 
-    render: function () {
+    render: function() {
         var data = this.state.items;
-        var newsTemplate = data.map(function (item, index) {
-            return (
-                <div className="col-sm-4 col-lg-4 col-md-4" key={index }>
-                    <div className="thumbnail">
-                        <img src={item.imgSrc ? item.imgSrc : 'http://placehold.it/320x150'} alt="" />
-                        <About itemInfo={item } />
-                        <div className="ratings">
-                            <p className="pull-right">{item.views ? item.views : 0} reviews</p>
-                            <Ratings starscount={item.starscount ? item.starscount : 0 } />
+
+        if (data != null)
+            var newsTemplate = data.map(function(item, index) {
+                return (
+                    <div className="col-sm-4 col-lg-4 col-md-4" key={index }>
+                        <div className="thumbnail">
+                            <img src={item.imgSrc ? item.imgSrc : "http://placehold.it/320x150"} alt=""/>
+                            <About.About itemInfo={item }/>
+                            <div className="ratings">
+                                <p className="pull-right">{item.views ? item.views : 0} reviews</p>
+                                <Rating.Rating starscount={item.starscount ? item.starscount : 0 }/>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )
-        })
+                );
+            });
 
         return (
             <div>
@@ -62,8 +71,12 @@ var Items = React.createClass({
                 <div className="col-xs-12">
                     <nav aria-label="...">
                         <ul className="pager">
-                        <li><a onClick={this.PrevPage }>Previous</a></li>
-                        <li><a onClick={this.NextPage }>Next</a></li>
+                            <li>
+                                <a onClick={this.PrevPage }>Previous</a>
+                            </li>
+                            <li>
+                                <a onClick={this.NextPage }>Next</a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
@@ -71,3 +84,5 @@ var Items = React.createClass({
         );
     }
 });
+
+exports.Items = Items;

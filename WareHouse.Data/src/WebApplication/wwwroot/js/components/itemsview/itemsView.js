@@ -17,7 +17,8 @@ var ItemsView = React.createClass({
 
         if (searchName != null && searchName.length > 0) filter += "$property1=name&$filter1=" + searchName;
 
-        if (minCount != null && maxCount != null) filter += "&$property2=count&$morethan2=" + (minCount - 1) + "&$lessthan2=" + (maxCount + 1);
+        if (minCount != null && maxCount != null)
+            filter += "&$property2=count&$morethan2=" + (minCount - 1) + "&$lessthan2=" + (maxCount + 1);
 
         if (orderBy != null) filter += "&$orderby=" + orderBy;
 
@@ -27,7 +28,10 @@ var ItemsView = React.createClass({
     },
 
     changeMaxMinCount: function changeMaxMinCount(max, min) {
-        if (this.state.maxCount != max || this.state.minCount != min) this.setState({ filter: this.state.filter, maxCount: max, minCount: min });
+        if (this.state
+            .maxCount !=
+            max ||
+            this.state.minCount != min) this.setState({ filter: this.state.filter, maxCount: max, minCount: min });
     },
 
     render: function render() {
@@ -35,10 +39,9 @@ var ItemsView = React.createClass({
         return React.createElement(
             "div",
             { className: "app" },
-            React.createElement(FilterForm, { search: this.Search, maxcount: this.state.maxCount, mincount: this.state.minCount }),
+            React.createElement(FilterForm,
+                { search: this.Search, maxcount: this.state.maxCount, mincount: this.state.minCount }),
             React.createElement(Items, { filter: this.state.filter, changeMaxMinCount: this.changeMaxMinCount })
         );
     }
 });
-
-ReactDOM.render(React.createElement(ItemsView, null), document.getElementById('root'));
