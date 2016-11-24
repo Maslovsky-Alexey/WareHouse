@@ -1,0 +1,21 @@
+.profile-items-view{
+  border: 1px solid gray;
+  overflow: auto;
+}
+
+.profile-items-prop{
+  display: inline;
+  margin-left: 10px;
+}
+
+.profile-items-prop-text{
+  color: #505115;
+}
+
+.profile-items-row{
+    border-bottom: 1px solid blue;
+}
+
+.profile-items-row:last-child{
+    border-bottom: rgba(0, 0, 150, 0.7);
+}
