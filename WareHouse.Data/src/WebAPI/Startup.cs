@@ -151,10 +151,8 @@ namespace WebAPI
             containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>(), context.Resolve<IElasticSearchtemProvider>())).As<ISafeWarehouseItemService>();
 
             containerBuilder.RegisterType<OrderRepository>().As<BaseRepository<Order>>();
-            containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<IUnsafeOrderService>().OnActivated(h => MyEventStream.Instance.Add(h.Instance)); ;
-            containerBuilder.Register(context => new OrderProxyService(new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>()),
-                context.Resolve<ICacheManager>().AddOrGetExistSection("OrderService", context.ResolveKeyed<ICache>("Orders"))));
-            containerBuilder.Register(context => context.Resolve<OrderProxyService>()).As<ISafeOrderService>().OnActivated(h => MyEventStream.Instance.Subscribe(h.Instance));
+            containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<IUnsafeOrderService>();
+            containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<ISafeOrderService>();
 
 
             containerBuilder.RegisterType<SupplyRepository>().As<BaseRepository<Supply>>();

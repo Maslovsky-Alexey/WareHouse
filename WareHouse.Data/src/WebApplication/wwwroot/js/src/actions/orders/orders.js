@@ -7,7 +7,10 @@ import {
   CONFIRM_ORDER_SUCCESS,
 
   RETURN_ORDER_REQUEST,
-  RETURN_ORDER_SUCCESS
+  RETURN_ORDER_SUCCESS,
+
+  ADD_ORDER_REQUEST,
+  ADD_ORDER_SUCCESS
 } from '../../constants/orders/orders'
 
 import OrdersRepository from '../../repositories/OrdersRepository'
@@ -73,6 +76,23 @@ export function returnOrder(orderId){
       getOrders()(dispatch)
       dispatch({
         type: RETURN_ORDER_SUCCESS,
+        payload: {}
+      })
+    })
+  }
+}
+
+export function addOrder(itemName, count, client, employee){
+  return (dispatch) => {
+    dispatch({
+      type: ADD_ORDER_REQUEST,
+      payload: {}
+    })
+
+    new OperationsRepository().addOrder(itemName, count, client, employee, () =>{
+      getOrders()(dispatch)
+      dispatch({
+        type: ADD_ORDER_SUCCESS,
         payload: {}
       })
     })

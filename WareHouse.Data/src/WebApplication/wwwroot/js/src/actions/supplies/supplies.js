@@ -7,7 +7,10 @@ import {
   CONFIRM_SUPPLY_SUCCESS,
 
   RETURN_SUPPLY_REQUEST,
-  RETURN_SUPPLY_SUCCESS
+  RETURN_SUPPLY_SUCCESS,
+
+  ADD_SUPPLY_REQUEST,
+  ADD_SUPPLY_SUCCESS
 } from '../../constants/supplies/supplies'
 
 import SuppliesRepository from '../../repositories/SuppliesRepository'
@@ -73,6 +76,23 @@ export function returnSupply(supplyId){
       getSupplies()(dispatch)
       dispatch({
         type: RETURN_SUPPLY_SUCCESS,
+        payload: {}
+      })
+    })
+  }
+}
+
+export function addSupply(itemName, count, provider, employee){
+  return (dispatch) => {
+    dispatch({
+      type: ADD_SUPPLY_REQUEST,
+      payload: {}
+    })
+
+    new OperationsRepository().addSupply(itemName, count, provider, employee, () =>{
+      getSupplies()(dispatch)
+      dispatch({
+        type: ADD_SUPPLY_SUCCESS,
         payload: {}
       })
     })

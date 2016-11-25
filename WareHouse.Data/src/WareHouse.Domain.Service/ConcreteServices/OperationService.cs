@@ -30,13 +30,17 @@ namespace WareHouse.Domain.Service.ConcreteServices
         private readonly ISafeWarehouseItemService safeWarehouseItemService;
         private readonly IUnsafeWarehouseItemService unsafeWarehouseItemService;
 
+        private readonly ISafeEmployeeService safeEmployeeService;
+
 
         public OperationService(
             ISafeWarehouseItemService safeWarehouseItemService, IUnsafeWarehouseItemService unsafeWarehouseItemService,
             ISafeItemService safeItemService, IUnsafeItemService unsafeItemService,
             ISafeItemStatusService safeItemStatusService, IUnsafeItemStatusService unsafeItemStatusService,
             ISafeOrderService safeOrderService, IUnsafeOrderService unsafeOrderService,
-            ISafeSupplyService safeSupplyService, IUnsafeSupplyService unsafeSupplyService)
+            ISafeSupplyService safeSupplyService, IUnsafeSupplyService unsafeSupplyService,
+            ISafeEmployeeService safeEmployeeService
+            )
         {
             this.safeItemService = safeItemService;
             this.unsafeItemService = unsafeItemService;
@@ -52,6 +56,8 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
             this.safeWarehouseItemService = safeWarehouseItemService;
             this.unsafeWarehouseItemService = unsafeWarehouseItemService;
+
+            this.safeEmployeeService = safeEmployeeService;
         }
 
         public async Task AddItemWithoutRepetition(Item item)
@@ -72,7 +78,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return await unsafeOrderService.Add(new Order
             {
                 ClientId = item.Client.Id,
-                EmployeeId = item.Employee.Id,
+                EmployeeId = (await safeEmployeeService.GetEmployeeByName(item.Employee.Name, true)).Id,
                 ItemId = item.Item.Id,
                 StatusId = (await safeItemStatusService.GetStatus(Status.Processing)).Id,
                 Count = item.Count,
@@ -86,7 +92,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return await unsafeSupplyService.Add(new Supply
             {
                 ProviderId = supply.Provider.Id,
-                EmployeeId = supply.Employee.Id,
+                EmployeeId = (await safeEmployeeService.GetEmployeeByName(supply.Employee.Name, true)).Id,
                 ItemId = supply.Item.Id,
                 StatusId = (await safeItemStatusService.GetStatus(Status.Processing)).Id,
                 Count = supply.Count,

@@ -5,7 +5,7 @@ import admin from './profile/admin'
 import orders from './orders/orders'
 import supplies from './supplies/supplies'
 import page from './warehouseItems/warehouseItems'
-
+import items from './items/items'
 import { routerReducer } from 'react-router-redux'
 
 export default combineReducers({
@@ -14,5 +14,6 @@ export default combineReducers({
   supplies,
   admin,
   page,
+  items,
   routing: routerReducer
 })

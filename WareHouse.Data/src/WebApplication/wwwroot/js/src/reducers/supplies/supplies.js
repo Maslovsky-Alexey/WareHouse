@@ -7,7 +7,10 @@ import {
   CONFIRM_SUPPLY_SUCCESS,
 
   RETURN_SUPPLY_REQUEST,
-  RETURN_SUPPLY_SUCCESS
+  RETURN_SUPPLY_SUCCESS,
+
+  ADD_SUPPLY_REQUEST,
+  ADD_SUPPLY_SUCCESS
 } from '../../constants/supplies/supplies'
 
 const initialState = {
@@ -17,7 +20,10 @@ const initialState = {
 
 export default function supplies(state = initialState, action) {
   switch (action.type) {
+
    case GET_SUPPLIES_REQUEST:
+   case ADD_SUPPLY_REQUEST:
+   case ADD_SUPPLY_SUCCESS:
      return Object.assign({}, state, {
        errorMessage: null
      })

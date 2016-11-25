@@ -37,6 +37,9 @@ class WarehouseItems extends Component {
 
     render() {
       const changePage = this.props.pageActions.getPageWarehouseItems
+
+
+
       const nextPage = () => changePage(this.props.page.nextPage, this.filter)
       const prevPage = () => changePage(this.props.page.prevPage, this.filter)
       const {max, min} = this.props.page

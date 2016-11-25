@@ -11,6 +11,8 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import Layout from './containers/Layout'
 import WarehouseItems from './containers/WarehouseItems'
 import Profile from './containers/Profile'
+import AddItem from './containers/AddItem'
+import Operations from './containers/Operations'
 //import containers end
 
 
@@ -24,6 +26,8 @@ render(
       <Route component={Layout}>
         <Route path="/" component={Profile}/>
         <Route path="/items" component={WarehouseItems}/>
+        <Route path="/additem" component={AddItem}/>
+        <Route path="/operations" component={Operations}/>
       </Route>
     </Router>
   </Provider>,

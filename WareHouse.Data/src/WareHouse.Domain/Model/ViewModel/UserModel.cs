@@ -7,5 +7,7 @@
         public string Name { get; set; }
 
         public bool isEmployee { get; set; }
+
+        public string Id { get; set; }
     }
 }
