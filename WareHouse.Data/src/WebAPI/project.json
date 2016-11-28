@@ -37,7 +37,9 @@
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
     "HttpWebHelperLibrary": "1.0.0-*",
     "WareHouse.Domain.Service": "1.0.0-*",
-    "HttpExtensions": "1.0.0-*"},
+    "HttpExtensions": "1.0.0-*",
+    "FluentValidation.AspNetCore": "6.4.0-beta3"
+  },
 
   "tools": {
     "BundlerMinifier.Core": "2.0.238",

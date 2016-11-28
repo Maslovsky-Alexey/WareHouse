@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation.Attributes;
+using System;
 
 namespace WareHouse.Domain.Model.ViewModel
 {

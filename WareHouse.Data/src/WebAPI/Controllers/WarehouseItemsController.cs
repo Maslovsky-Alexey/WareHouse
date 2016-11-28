@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         [Authorize]
         public async Task<IEnumerable<WarehouseItemViewModel>> Get()
-        {
+        { 
             return await safeWarehouseItemService.GetAllAsViewModel();
         }
 

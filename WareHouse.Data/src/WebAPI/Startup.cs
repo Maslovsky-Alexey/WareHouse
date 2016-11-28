@@ -26,6 +26,8 @@ using WareHouse.Domain.Service.ElasticSearchProviders;
 using WareHouse.MyOData;
 using HttpWebHelperLibrary;
 using WareHouse.AuthAPIHelper;
+using FluentValidation.AspNetCore;
+using WareHouse.Domain.Model.ViewModel.ModelValidators;
 
 namespace WebAPI
 {
@@ -70,12 +72,18 @@ namespace WebAPI
                         .WithExposedHeaders("Authorization"));
             });
 
-            services.AddMvc(options => { options.ModelBinderProviders.Insert(0, new ODataModelBinderProvider()); });
+            services
+                .AddMvc(options => { options.ModelBinderProviders.Insert(0, new ODataModelBinderProvider()); })
+                .AddFluentValidation(ft => {
+                    ft.RegisterValidatorsFromAssemblyContaining<Startup>();
+                    ft.ValidatorFactoryType = typeof(ValidationFactory);
+                });
 
             var containerBuilder = new ContainerBuilder();
 
             RegistrTypes(containerBuilder, dboptions);
 
+            
             containerBuilder.Populate(services);
             ApplicationContainer = containerBuilder.Build();
             ApplicationContainer.ResolveKeyed<ILog>("SignIn");
@@ -178,7 +186,7 @@ namespace WebAPI
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
+        
             app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())

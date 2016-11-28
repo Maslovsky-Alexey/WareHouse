@@ -1,4 +1,7 @@
-﻿namespace WareHouse.Domain.Model
+﻿using FluentValidation.Attributes;
+using FluentValidation.Validators;
+
+namespace WareHouse.Domain.Model
 {
     public class Client : BaseModel
     {

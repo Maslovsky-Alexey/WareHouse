@@ -26,8 +26,13 @@ namespace WebAPI.Controllers
         [Route("supplies")]
         [HttpPost]
         [Authorize(Roles = "employee")]
-        public async Task AddSupply([FromBody] SupplyViewModel value) // TOOD: Для операций на изменение нужно добавить валидацию данных (FluentValidation)
+        public async Task AddSupply([FromBody] SupplyViewModel value)
         {
+            if (!ModelState.IsValid)
+            {
+                BadRequest();
+            }
+
             var status = await unsafeOperationService.AddSupply(value);
 
             if (status == WareHouse.Data.Repository.OperationStatus.Error)
@@ -41,6 +46,11 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task AddOrder([FromBody] OrderViewModel value)
         {
+            if (!ModelState.IsValid)
+            {
+                BadRequest();
+            }
+
             var status = await unsafeOperationService.AddOrder(value);
 
             if (status == WareHouse.Data.Repository.OperationStatus.Error)
