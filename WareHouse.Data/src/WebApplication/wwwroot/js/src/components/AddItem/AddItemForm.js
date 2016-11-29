@@ -3,6 +3,9 @@ import React, { PropTypes, Component } from 'react'
 import ValidationInput from '../others/validationInput/validationInput';
 import GetValidationRules from '../../validators/Validator';
 
+import BlockUi from 'react-block-ui';
+import 'react-block-ui/style.css'
+
 const validator = GetValidationRules();
 
 export default class AddItemForm extends Component {
@@ -26,23 +29,28 @@ export default class AddItemForm extends Component {
         return;
       }
 
-      this.props.send(this.name, this.desc);
-      $('#add-input-name input').val('');
-      $('#add-input-dis input').val('');
+      this.props.send(this.name, this.desc, this.success);
+  }
+
+  success(){
+    $('#add-input-name').val('');
+    $('#add-input-dis').val('');
   }
 
   render() {
-    return <div className="container body-content">
-      <div className="row">
-          <font size='4' color='#80b0aa'>Name</font>
-          <ValidationInput rule={validator.itemName} changeValid={::this.changeValidName} id='add-input-name'/>
+    return <BlockUi blocking={this.props.blocking}>
+      <div className="container body-content">
+        <div className="row">
+            <font size='4' color='#80b0aa'>Name</font>
+            <ValidationInput rule={validator.itemName} changeValid={::this.changeValidName} id='add-input-name'/>
 
-          <font size='4' color='#80b0aa'>Description</font>
-          <ValidationInput rule={validator.description} changeValid={::this.changeValidDesc} id='add-input-dis'/>
+            <font size='4' color='#80b0aa'>Description</font>
+            <ValidationInput rule={validator.description} changeValid={::this.changeValidDesc} id='add-input-dis'/>
 
-          <br/>
-          <button className='btn btn-success' onClick={::this.Send}>Add</button>
-      </div>
+            <br/>
+            <button className='btn btn-success' onClick={::this.Send}>Add</button>
+        </div>
     </div>
+</BlockUi>
   }
 }

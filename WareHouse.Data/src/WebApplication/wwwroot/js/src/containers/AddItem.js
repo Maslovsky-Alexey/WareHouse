@@ -12,14 +12,15 @@ class AddItem extends Component {
   }
 
   render(){
-    const {addItem} = this.props.itemActions
-    return <AddItemForm send={addItem}/>
+    const {addItem} = this.props.itemActions;
+    return <AddItemForm send={addItem} blocking={!this.props.ready}/>
   }
 }
 
 
 function mapStateToProps (state) {
   return {
+    ready: state.addItem.ready
   }
 }
 

@@ -15,6 +15,7 @@ import {
 
 const initialState = {
   items: [],
+  ready: true,
   errorMessage: null
 }
 
@@ -23,25 +24,33 @@ export default function orders(state = initialState, action) {
 
    case GET_ORDERS_REQUEST:
    case CONFIRM_ORDER_REQUEST:
-   case CONFIRM_ORDER_SUCCESS:
    case RETURN_ORDER_REQUEST:
-   case RETURN_ORDER_SUCCESS:
    case ADD_ORDER_REQUEST:
-   case ADD_ORDER_SUCCESS:
      return Object.assign({}, state, {
-       errorMessage: null
+       errorMessage: null,
+       ready: false
+     })
+
+   case ADD_ORDER_SUCCESS:
+   case RETURN_ORDER_SUCCESS:
+   case CONFIRM_ORDER_SUCCESS:
+     return Object.assign({}, state, {
+       errorMessage: null,
+       ready: true
      })
 
    case GET_ORDERS_SUCCESS:
      return Object.assign({}, state, {
        items: action.payload,
-       errorMessage: null
+       errorMessage: null,
+       ready: true
      })
 
     case GET_ORDERS_FAILED:
       return Object.assign({}, state, {
         items: [],
-        errorMessage: action.payload.errorMessage
+        errorMessage: action.payload.errorMessage,
+        ready: true
       })
 
      default:

@@ -18,7 +18,7 @@ export default class ValidationInput extends Component {
 
     render() {
       return <div>
-            <input className="form-control" onChange={::this.textChange} />
+            <input className="form-control" onChange={::this.textChange} id={this.props.id}/>
             <span hidden ref={(ref) => this.input = $(ref)[0]}>
               <font color="red" size="3">
                 {this.props.rule.hint('')}

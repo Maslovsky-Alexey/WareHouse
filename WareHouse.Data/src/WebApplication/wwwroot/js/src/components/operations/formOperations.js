@@ -3,8 +3,10 @@ import React, { PropTypes, Component } from 'react';
 import ValidationInput from '../others/validationInput/validationInput';
 import GetValidationRules from '../../validators/Validator';
 
-const validator = GetValidationRules();
+import BlockUi from 'react-block-ui';
+import 'react-block-ui/style.css'
 
+const validator = GetValidationRules();
 
 export default class FormOperations extends Component {
   provider = {}
@@ -27,7 +29,7 @@ export default class FormOperations extends Component {
     let client = this.getValueFromOption(this.client);
     let item = this.getValueFromOption(this.item);
 
-    this.props.send(provider, client, item, this.count, this.isSupply == true);
+    this.props.send(provider, client, item, this.count, this.isSupply == true, this.success);
   }
 
   supply(e){
@@ -43,8 +45,12 @@ export default class FormOperations extends Component {
     this.count = text;
   }
 
+  success(){
+      $("#input-count-form-operation").val('');
+  }
+
   render(){
-    return <div>
+    return <BlockUi tag="div" blocking={this.props.blocking}>
           <label className="radio-inline radioleft">
               <input type="radio" name="inlineRadioOptions" id="supply" value="supply" onChange={::this.supply}/> Supply
           </label>
@@ -79,9 +85,9 @@ export default class FormOperations extends Component {
             }
           </select>
 
-          <ValidationInput rule={validator.validateCount} changeValid={::this.changeValid}/>
+          <ValidationInput rule={validator.validateCount} changeValid={::this.changeValid} id="input-count-form-operation"/>
 
           <button className="btn btn-success btn-block btn-sm" onClick={::this.click}>Send</button>
-      </div>
+       </BlockUi>
   }
 }

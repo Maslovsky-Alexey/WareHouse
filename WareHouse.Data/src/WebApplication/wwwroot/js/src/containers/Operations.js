@@ -18,18 +18,18 @@ class Operations extends Component {
     this.props.itemsActions.getItems()
   }
 
-  addItem(provider, client, item, count, isSupply){
+  addItem(provider, client, item, count, isSupply, success){
     if (isSupply){
-      this.props.supplyActions.addSupply(item, count, provider, this.props.about.nickname)
+      this.props.supplyActions.addSupply(item, count, provider, this.props.about.nickname, success)
     }
     else{
-      this.props.orderActions.addOrder(item, count, client, this.props.about.nickname)
+      this.props.orderActions.addOrder(item, count, client, this.props.about.nickname, success)
     }
   }
 
   render(){
     return <div className="row">
-          <FormOperations clients={this.props.admin.clients} providers={this.props.admin.providers} items={this.props.items.items} send={::this.addItem}/>
+          <FormOperations clients={this.props.admin.clients} providers={this.props.admin.providers} items={this.props.items.items} send={::this.addItem} blocking={!this.props.ready}/>
      </div>
   }
 }
@@ -38,10 +38,9 @@ class Operations extends Component {
 function mapStateToProps (state) {
   return {
     admin: state.admin,
-    order: state.order,
-    supply: state.supply,
     about: state.about,
-    items: state.items
+    items: state.items,
+    ready: state.orders.ready && state.supplies.ready
   }
 }
 
