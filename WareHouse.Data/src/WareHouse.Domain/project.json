@@ -2,9 +2,11 @@
   "version": "1.0.0-*",
 
   "dependencies": {
+    "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
     "NETStandard.Library": "1.6.0",
     "WareHouse.Data": "1.0.0-*",
-    "WareHouse.MyOData": "1.0.0-*"
+    "WareHouse.MyOData": "1.0.0-*",
+    "FluentValidation.AspNetCore": "6.4.0-beta3"
   },
 
   "frameworks": {

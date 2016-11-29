@@ -1,12 +1,9 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore;
-using WareHouse.Data.Repository;
-using WareHouse.Data.Model;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using WareHouse.Data.EF.Context;
-
+using WareHouse.Data.Model;
+using WareHouse.Data.Repository;
 
 namespace WareHouse.Data.EF.Repository
 {
@@ -17,16 +14,28 @@ namespace WareHouse.Data.EF.Repository
             this.context = context;
         }
 
+        public async Task<Client> AssignWithApplicationUser(int clientId, string userId)
+        {
+            var client = await GetItem(clientId);
+
+            if (client == null)
+                return null;
+
+            client.UserId = userId;
+            await SaveChanges();
+            return client;
+        }
+
+        public async Task<Client> GetClientByIdentityId(string identityId)
+        {
+            return await context.Clients.FirstOrDefaultAsync(x => x.UserId == identityId);
+        }
+
         public async Task<Client> GetClientByName(string name, bool ignoreCase)
         {
             if (ignoreCase)
-            {
                 return await context.Clients.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
-            }
-            else
-            {
-                return await context.Clients.FirstOrDefaultAsync(x => x.Name == name);
-            }            
+            return await context.Clients.FirstOrDefaultAsync(x => x.Name == name);
         }
     }
 }

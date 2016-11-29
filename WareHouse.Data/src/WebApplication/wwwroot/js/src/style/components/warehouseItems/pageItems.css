@@ -1,0 +1,91 @@
+.slide-image {
+    width: 100%;
+}
+
+.carousel-holder {
+    margin-bottom: 30px;
+}
+
+.carousel-control,
+.item {
+    border-radius: 4px;
+}
+
+.caption {
+    height: 130px;
+    overflow: hidden;
+}
+
+.caption h4 {
+    white-space: nowrap;
+}
+
+.thumbnail img {
+    width: 100%;
+}
+
+.ratings {
+    padding-right: 10px;
+    padding-left: 10px;
+    color: #d17581;
+}
+
+.thumbnail {
+    padding: 0;
+}
+
+.thumbnail .caption-full {
+    padding: 9px;
+    color: #333;
+}
+
+footer {
+    margin: 50px 0;
+}
+
+.fa-long-arrow-up, .fa-long-arrow-down{
+    font-size: 15px;
+    margin-left: 5px;
+    color: #898080;
+}
+
+.fa-long-arrow-up:hover, .fa-long-arrow-down:hover{
+    color: #c5d4bf;
+    cursor: pointer;
+}
+
+.active-arrow{
+    color: #1ead29;
+}
+
+.active-arrow:hover{
+    color: #3bd447;
+}
+
+.input-range{
+    margin-top: 50px;
+}
+
+.property-order-selection{
+    padding: 1px;
+    height: auto;
+    display: inline-block;
+}
+
+.padding-left-0{
+    padding-left: 0
+}
+
+.padding-right-0{
+    padding-right: 0
+}
+
+.margin-top-5{
+    margin-top: 15px;
+    border-top: 1px solid #808080;
+    padding-top: 15px;
+
+    margin-bottom: 15px;
+    border-bottom: 1px solid #808080;
+    padding-bottom: 15px;
+}

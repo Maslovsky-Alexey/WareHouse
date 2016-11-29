@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WareHouse.Data.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using WareHouse.Data.EF.Context;
 
 namespace WareHouse.WebApplication
 {
@@ -19,6 +22,9 @@ namespace WareHouse.WebApplication
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
+
+
 
             if (env.IsDevelopment())
             {

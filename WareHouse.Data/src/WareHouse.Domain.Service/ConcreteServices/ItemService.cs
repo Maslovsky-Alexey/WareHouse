@@ -1,93 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
-using WareHouse.Domain.ServiceInterfaces;
+using WareHouse.Domain.Model;
 using WareHouse.Domain.Service.ModelsMapper;
 using WareHouse.Domain.Service.ModelsMapper.Configurators;
-using WareHouse.Domain.Model;
-using WareHouse.MyOData;
-using System.Linq.Expressions;
+using WareHouse.Domain.ServiceInterfaces;
+using System.Reactive.Subjects;
+using System;
+using System.Collections.Generic;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
-    public class ItemService : BaseService<Domain.Model.Item, Data.Model.Item>, IItemService
+    public class ItemService : BaseService<Item, Data.Model.Item>, IItemService
     {
-        public ItemService(BaseRepository<Data.Model.Item> repository) : base(repository,
-            new ModelsMapper<Data.Model.Item, Domain.Model.Item>(new ItemMapConfigurator()))
+        public ItemService(BaseRepository<Data.Model.Item> repository, IMapConfigurator mapConfigurator) : base(repository,
+            new ModelsMapper<Data.Model.Item, Item>(mapConfigurator))
         {
-
         }
 
-        public async Task<Model.Item> GetItemByName(string name, bool ignoreCase)
+        public async Task AddWithoutRepetition(Item model)
         {
-            return MapToServiceModel(await ((ItemRepository)repository).GetItemByName(name, ignoreCase));
-        }
+            var item = await GetItemByName(model.Name, true);
 
-        public async Task AddOrUpdateCount(Item value)
-        {
-            if (value.Id > 0)
-            {
-                await ((ItemRepository)repository).UpdateCount(value.Id, value.Count);
-            }
-            else
-            {
-                value.Id = 0;
-                await Add(value);
-            }
-        }
-
-        public async Task SubCount(Item value)
-        {
-            var oldItem = (await GetItemByName(value.Name, true));
-
-            if (oldItem == null)
+            if (item != null)
                 return;
 
-            var deltaCount = oldItem.Count - value.Count > 0 ? 0 - value.Count : 0;
-
-            if (deltaCount == 0)
-                return;
-
-            await ((ItemRepository)repository).UpdateCount(oldItem.Id, deltaCount);
+            if (await Add(model) == Data.Repository.OperationStatus.Added)
+                OnNext(model);
         }
 
-        public async Task RemoveItem(Item value)
-        {            
-            if (value.Id > 0)
-                await Remove(await GetItem(value.Id));
-        }
-
-        public async Task<PageModel> GetPage(int page, MyODataConfigurates config)
+        public async Task<Item> GetItemByName(string name, bool ignoreCase)
         {
-            var filter = MyOData.MyOData.CompileFilters<Data.Model.Item>(config);
-
-            var result = new PageModel();
-
-            var items = (await repository.GetAllWithFilter(filter)).Select((item) => MapToServiceModel(item));
-
-            items = MyOData.MyOData.OrderBy<Item>(items, config);
-
-            result.Items = items.Skip(page * 6).Take(6);
-
-            result.PrevPage = GetPrevPage(page);
-            result.NextPage = GetNextPage(page, items.Count());
-            result.Max = items.Max(item => item.Count);
-            result.Min = items.Min(item => item.Count);
-
-            return result;
-        }
-
-        private int GetPrevPage(int page)
-        {
-            return page - 1 < 0 ? 0 : page - 1;
-        }
-
-        private int GetNextPage(int page, int count)
-        {
-            var maxPage = (count - 1) / 6;
-            return page + 1 > maxPage ? maxPage : page + 1;
+            return MapToServiceModel(await ((ItemRepository) repository).GetItemByName(name, ignoreCase));
         }
     }
 }

@@ -2,8 +2,7 @@
 using WareHouse.Data.EF.Context.Mapping;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
-
-
+using System;
 
 namespace WareHouse.Data.EF.Context
 {
@@ -17,15 +16,36 @@ namespace WareHouse.Data.EF.Context
 
         public DbSet<Provider> Providers { get; set; }
 
-        public WareHouseDbContext(): base()
-        {
+        public DbSet<ItemStatus> ItemStatus { get; set; }
 
+        public DbSet<WarehouseItem> WarehouseItem { get; set; }
+
+
+        public WareHouseDbContext(DbContextOptions<WareHouseDbContext> options)
+            : base(options)
+        {
+            //Database.EnsureDeleted();
+
+            if (Database.EnsureCreated())
+            {
+                Seed();
+            }
         }
 
-        public WareHouseDbContext(DbContextOptions option) : base(option)
+
+        private void Seed()
         {
-            Database.EnsureCreated();
+            foreach (string name in Enum.GetNames(typeof(Status)))
+            {
+                ItemStatus.Add(new ItemStatus() {
+                    Name = name,
+                    Status = (Status)Enum.Parse(typeof(Status), name)
+                });
+            }
+       
+            SaveChanges();
         }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

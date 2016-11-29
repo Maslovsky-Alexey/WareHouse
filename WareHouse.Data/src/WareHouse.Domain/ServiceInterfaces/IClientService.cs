@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
+using WareHouse.Domain.Model;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IClientService : IService<Domain.Model.Client, Data.Model.Client>
+    public interface IClientService : ISafeClientService, IUnsafeClientService
     {
-        Task<Model.Client> GetClientByName(string name, bool ignoreCase);
-
-        Task AddWithoutRepetition(Model.Client value);
-
-        Task RemoveClientByName(Model.Client value);
     }
 }

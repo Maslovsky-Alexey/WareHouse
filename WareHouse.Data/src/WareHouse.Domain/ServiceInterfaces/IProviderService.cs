@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WareHouse.Domain.Model;
+using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Domain.ServiceInterfaces.Unsafe;
 
 namespace WareHouse.Domain.ServiceInterfaces
 {
-    public interface IProviderService : IService<Domain.Model.Provider, Data.Model.Provider>
+    public interface IProviderService : ISafeProviderService, IUnsafeProviderService
     {
-        Task<Model.Provider> GetProviderByName(string name, bool ignoreCase);
-
-        Task AddWithoutRepetition(Model.Provider value);
-
-        Task RemoveProviderByName(Provider value);
     }
 }

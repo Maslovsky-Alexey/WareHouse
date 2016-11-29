@@ -1,0 +1,44 @@
+1. Наблюдатель - 
+			Observer: https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WareHouse.Domain.Service/ProxyServices/BaseProxyService.cs
+			Subscribers: 
+				a) https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WareHouse.Domain.Service/ConcreteServices/BaseService.cs
+				b) https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WareHouse.LogHelper/FileLog.cs
+
+
+2. Медиатор - https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WareHouse.MyEventStream/MyEventStream.cs
+		в качестве "коллег" выступают обобщенные интерфейсы IObserver и IObserveble. Вместо того что бы подписывать в коде "слушателя" и "подписчика" напрямую, был создал данный класс. 
+																																							теперь подписчик "не знает" у кого он взял данные.
+
+
+
+3. Синглтон - 
+	source: 
+		1) https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WareHouse.LogHelper/FileLog.cs
+		2) https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WareHouse.AutharizationAPI/TokenEncryptor.cs
+		3) https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WareHouse.MyEventStream/MyEventStream.cs
+		4) https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WareHouse.Domain.Service/ProxyServices/Cache/CacheManager.cs
+
+
+4. Обобщенная абстрактная фабрика - DI контейнеры в проектах WebAPI и AuthorizationAPI. (https://github.com/Maslovsky-Alexey/WareHouse/tree/Dev/WareHouse.Data/src/WebAPI и https://github.com/Maslovsky-Alexey/WareHouse/tree/Dev/WareHouse.Data/src/WareHouse.AutharizationAPI)
+
+
+5. Фасад - 
+	1) https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WareHouse.Domain.Service/HttpHelper/WebRequestHelper.cs
+	2) https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/WareHouse.FileCheckerService/APIMediator/WebRequestHelper/WebRequestHelper.cs
+	3) https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WareHouse.AutharizationAPI/HttpHelper/WebRequestHelper.cs
+
+	тут я перенес работу с множеством интерфейсов (System.Net) для работы с http протоколом в один интерфейс WebRequestHelper.
+
+6. Proxy - https://github.com/Maslovsky-Alexey/WareHouse/tree/Dev/WareHouse.Data/src/WareHouse.Domain.Service/ProxyServices
+	классы "прокси сервисы" реализуют safe-интерфейсы сервисов и принимают в себя safe-интерфейс сервиса, но уже другую реализацию, конкретную https://github.com/Maslovsky-Alexey/WareHouse/tree/Dev/WareHouse.Data/src/WareHouse.Domain.Service/ConcreteServices
+	эти классы замещают конкретные сервисы и добавляют новую фичу (кэширование) но при это не изменяют результат метода конкретного интерфейса.
+
+
+7. Flux - архитектура WebApplication построена на Flux. 
+	
+	Хранилища - https://github.com/Maslovsky-Alexey/WareHouse/tree/Dev/WareHouse.Data/src/WebApplication/wwwroot/js/stores
+	Диспетчер - https://github.com/Maslovsky-Alexey/WareHouse/blob/Dev/WareHouse.Data/src/WebApplication/wwwroot/js/dispatcher/dispatcher.js
+	Представления - https://github.com/Maslovsky-Alexey/WareHouse/tree/Dev/WareHouse.Data/src/WebApplication/wwwroot/js/components
+
+	Представление посылает сообщения диспетчеру на какое-либо действие, диспетчер это сообщение передает всем подписанным хранилищам (можно разделить по группам хранилища), хранилища проверяют им ли это сообщения
+	и если им - выполняют действия и отправляют новые данные всем подписанным представлениям.

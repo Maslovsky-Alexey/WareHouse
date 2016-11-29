@@ -24,7 +24,12 @@
     "bootstrap": "3.3.7",
     "react.js": "0.14.7",
     "Node.js": "5.3.0",
-    "FontAwesome": "4.6.3" },
+    "FontAwesome": "4.6.3",
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
+    "Microsoft.AspNetCore.Identity": "1.0.0",
+    "WareHouse.Data": "1.0.0-*",
+    "WareHouse.Data.EF": "1.0.0-*"
+  },
 
   "tools": {
     "BundlerMinifier.Core": "2.0.238",
