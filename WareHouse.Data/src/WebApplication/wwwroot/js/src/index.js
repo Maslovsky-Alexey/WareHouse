@@ -1,24 +1,24 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
-import configureStore from './store/configureStore'
+import React from 'react';
+import { render } from 'react-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import configureStore from './store/configureStore';
 
-import { Router, Route, browserHistory } from 'react-router'
-import { syncHistoryWithStore } from 'react-router-redux'
+import { Router, Route, browserHistory } from 'react-router';
+import { syncHistoryWithStore } from 'react-router-redux';
 
 //import containers begin
-import Layout from './containers/Layout'
-import WarehouseItems from './containers/WarehouseItems'
-import Profile from './containers/Profile'
-import AddItem from './containers/AddItem'
-import Operations from './containers/Operations'
+import Layout from './containers/Layout';
+import WarehouseItems from './containers/WarehouseItems';
+import Profile from './containers/Profile';
+import AddItem from './containers/AddItem';
+import Operations from './containers/Operations';
 //import containers end
 
 
-const store = configureStore()
+const store = configureStore();
 
-const history = syncHistoryWithStore(browserHistory, store)
+const history = syncHistoryWithStore(browserHistory, store);
 
 render(
   <Provider store={store}>
@@ -32,4 +32,4 @@ render(
     </Router>
   </Provider>,
   document.getElementById('root')
-)
+);

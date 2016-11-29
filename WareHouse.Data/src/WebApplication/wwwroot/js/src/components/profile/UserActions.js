@@ -6,12 +6,10 @@ export default class UserActions extends Component {
 
     clientNameChange(e){
       this.clientName = $(e.target).val()
-      console.debug(this.clientName)
     }
 
     employeeNameChange(e){
       this.employeeName = $(e.target).val()
-      console.debug(this.employeeName)
     }
 
     registerClient(){

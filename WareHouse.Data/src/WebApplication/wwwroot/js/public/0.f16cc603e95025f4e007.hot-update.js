@@ -1,0 +1,10 @@
+webpackHotUpdate(0,{
+
+/***/ 184:
+/***/ function(module, exports) {
+
+	eval("\"use strict\";\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nvar AddItemValidator = function AddItemValidator() {\n  _classCallCheck(this, AddItemValidator);\n\n  this.itemName = {\n    check: function check(value) {\n      return value.length > 2;\n    },\n\n    hint: function hint(value) {\n      return \"Length must be greater than 2\";\n    }\n  };\n  this.description = {\n    check: function check(value) {\n      return value.length > 10;\n    },\n\n    hint: function hint(value) {\n      return \"Length must be greater than 10\";\n    }\n  };\n};\n\nexports.default = AddItemValidator;//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiMTg0LmpzIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vLy4vc3JjL3ZhbGlkYXRvcnMvQWRkSXRlbVZhbGlkYXRvci5qcz84MTFiIiwid2VicGFjazovLy8/ZDQxZCJdLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgZGVmYXVsdCBjbGFzcyBBZGRJdGVtVmFsaWRhdG9ye1xyXG4gIGl0ZW1OYW1lID0ge1xyXG4gICAgY2hlY2s6IHZhbHVlID0+IHtcclxuICAgICAgcmV0dXJuIHZhbHVlLmxlbmd0aCA+IDJcclxuICAgIH0sXHJcblxyXG4gICAgaGludDogdmFsdWUgPT4ge1xyXG4gICAgICByZXR1cm4gXCJMZW5ndGggbXVzdCBiZSBncmVhdGVyIHRoYW4gMlwiXHJcbiAgICB9XHJcbiAgfVxyXG5cclxuICBkZXNjcmlwdGlvbiA9IHtcclxuICAgIGNoZWNrOiB2YWx1ZSA9PiB7XHJcbiAgICAgIHJldHVybiB2YWx1ZS5sZW5ndGggPiAxMFxyXG4gICAgfSxcclxuXHJcbiAgICBoaW50OiB2YWx1ZSA9PiB7XHJcbiAgICAgIHJldHVybiBcIkxlbmd0aCBtdXN0IGJlIGdyZWF0ZXIgdGhhbiAxMFwiXHJcbiAgICB9XHJcbiAgfVxyXG59XHJcblxuXG5cbi8qKiBXRUJQQUNLIEZPT1RFUiAqKlxuICoqIC4vc3JjL3ZhbGlkYXRvcnMvQWRkSXRlbVZhbGlkYXRvci5qc1xuICoqLyIsInVuZGVmaW5lZFxuXG5cbi8qKiBXRUJQQUNLIEZPT1RFUiAqKlxuICoqIFxuICoqLyJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7QUFBQTs7O0FBQ0E7QUNDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQVBBO0FBVUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQVBBOzs7QUFYQSIsInNvdXJjZVJvb3QiOiIifQ==");
+
+/***/ }
+
+})

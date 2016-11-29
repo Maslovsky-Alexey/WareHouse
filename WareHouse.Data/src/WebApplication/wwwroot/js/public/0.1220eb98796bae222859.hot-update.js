@@ -1,0 +1,10 @@
+webpackHotUpdate(0,{
+
+/***/ 95:
+/***/ function(module, exports, __webpack_require__) {
+
+	eval("'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n   value: true\n});\nexports.default = GetValidationRules;\n\nvar _react = __webpack_require__(4);\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _AddItemValidator = __webpack_require__(184);\n\nvar _AddItemValidator2 = _interopRequireDefault(_AddItemValidator);\n\nvar _OperationValidator = __webpack_require__(185);\n\nvar _OperationValidator2 = _interopRequireDefault(_OperationValidator);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction GetValidationRules() {\n   var validators = [_AddItemValidator2.default, _OperationValidator2.default];\n\n   var rules = {};\n\n   for (var i = 0; i < validators.length; i++) {\n      Object.assign(rules, new validators[i]());\n   }\n\n   return rules;\n}//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiOTUuanMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9zcmMvdmFsaWRhdG9ycy9WYWxpZGF0b3IuanM/MGEyMiIsIndlYnBhY2s6Ly8vP2Q0MWQiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0LCB7IFByb3BUeXBlcywgQ29tcG9uZW50IH0gZnJvbSAncmVhY3QnXHJcblxyXG5pbXBvcnQgQWRkSXRlbVZhbGlkYXRvciBmcm9tICcuL0FkZEl0ZW1WYWxpZGF0b3InO1xyXG5pbXBvcnQgT3BlcmF0aW9uVmFsaWRhdG9yIGZyb20gJy4vT3BlcmF0aW9uVmFsaWRhdG9yJztcclxuXHJcbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIEdldFZhbGlkYXRpb25SdWxlcygpe1xyXG4gICBjb25zdCB2YWxpZGF0b3JzID0gW0FkZEl0ZW1WYWxpZGF0b3IsIE9wZXJhdGlvblZhbGlkYXRvcl07XHJcblxyXG4gICBsZXQgcnVsZXMgPSB7fTtcclxuXHJcbiAgIGZvciAodmFyIGkgPSAwOyBpIDwgdmFsaWRhdG9ycy5sZW5ndGg7IGkrKyl7XHJcbiAgICAgT2JqZWN0LmFzc2lnbihydWxlcywgbmV3IHZhbGlkYXRvcnNbaV0oKSk7XHJcblxyXG4gICB9XHJcblxyXG4gICByZXR1cm4gcnVsZXM7XHJcbn1cclxuXG5cblxuLyoqIFdFQlBBQ0sgRk9PVEVSICoqXG4gKiogLi9zcmMvdmFsaWRhdG9ycy9WYWxpZGF0b3IuanNcbiAqKi8iLCJ1bmRlZmluZWRcblxuXG4vKiogV0VCUEFDSyBGT09URVIgKipcbiAqKiBcbiAqKi8iXSwibWFwcGluZ3MiOiI7Ozs7O0FBS0E7QUFDQTtBQU5BO0FBQ0E7OztBQUNBO0FBQ0E7OztBQUFBO0FBQ0E7Ozs7O0FBQ0E7QUFDQTtBQUNBO0FDQ0E7QUFDQTtBQUNBO0FBQ0E7QUFFQTtBQUNBO0FBQ0E7Iiwic291cmNlUm9vdCI6IiJ9");
+
+/***/ }
+
+})

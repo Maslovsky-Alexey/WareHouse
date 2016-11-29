@@ -1,34 +1,49 @@
-import React, { PropTypes, Component } from 'react'
+import React, { PropTypes, Component } from 'react';
+
+import ValidationInput from '../others/validationInput/validationInput';
+import GetValidationRules from '../../validators/Validator';
+
+const validator = GetValidationRules();
+
 
 export default class FormOperations extends Component {
   provider = {}
   client = {}
   item = {}
-  count = {}
+  count = 0
   isSupply = true
+  isValid = false
 
   getValueFromOption(obj){
     return obj[obj.selectedIndex].id.substring(5)
   }
 
   click(){
-    let provider = this.getValueFromOption(this.provider)
-    let client = this.getValueFromOption(this.client)
-    let item = this.getValueFromOption(this.item)
-    let count = $(this.count).val()
+    if (this.isValid == false){
+      return;
+    }
 
-    this.props.send(provider, client, item, count, this.isSupply == true)    
+    let provider = this.getValueFromOption(this.provider);
+    let client = this.getValueFromOption(this.client);
+    let item = this.getValueFromOption(this.item);
+
+    this.props.send(provider, client, item, this.count, this.isSupply == true);
   }
 
   supply(e){
-    this.isSupply = true
+    this.isSupply = true;
   }
 
   order(e){
-    this.isSupply = false
+    this.isSupply = false;
   }
 
-  render() {
+  changeValid(isValid, text){
+    this.isValid = isValid;
+    this.count = text;
+  }
+
+  render(){
     return <div>
           <label className="radio-inline radioleft">
               <input type="radio" name="inlineRadioOptions" id="supply" value="supply" onChange={::this.supply}/> Supply
@@ -64,7 +79,8 @@ export default class FormOperations extends Component {
             }
           </select>
 
-          <input className="form-control item_count" placeholder="count" ref={(ref) => this.count = $(ref)[0]}/>
+          <ValidationInput rule={validator.validateCount} changeValid={::this.changeValid}/>
+
           <button className="btn btn-success btn-block btn-sm" onClick={::this.click}>Send</button>
       </div>
   }

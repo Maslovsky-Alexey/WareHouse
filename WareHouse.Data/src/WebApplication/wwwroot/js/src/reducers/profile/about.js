@@ -19,7 +19,6 @@ export default function about(state = initialState, action) {
      })
 
    case GET_USER_INFORMATION_SUCCESS:
-    console.debug(action.payload.id)
      return Object.assign({}, state, {
        name: action.payload.name,
        nickname: action.payload.login,
