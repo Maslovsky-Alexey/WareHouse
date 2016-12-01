@@ -32,6 +32,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (item == null)
             {
                 await Add(model);
+                elasticSearchProvider.AddUpdateEntity(MapToViewModel(model));
                 return;
             }
 
@@ -53,13 +54,13 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<IEnumerable<WarehouseItemViewModel>> GetAllAsViewModel()
         {
-            return (await ((WarehouseItemRepository) repository).GetAll())
+            return (await repository.GetAll())
                 .Select(MapToViewModel);
         }
 
         public async Task<WarehouseItem> GetItemByName(string name, bool ignoreCase)
         {
-            return MapToServiceModel(await ((WarehouseItemRepository) repository).GetItemByName(name, ignoreCase));
+            return MapToServiceModel(await (warehouseItemRepository.GetItemByName(name, ignoreCase)));
         }
 
 

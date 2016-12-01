@@ -112,9 +112,14 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (order.StatusId == statusSuccess)
                 return ConfirmationStatus.NotConfirmed;
 
-            await unsafeWarehouseItemService.UpdateCount((await GetWarehouseItemByItemId(order.ItemId)).Id, -order.Count);
-
             await unsafeOrderService.UpdateOrderStatus(orderId, await GetStatusId(Status.Success));
+
+
+            await unsafeWarehouseItemService.AddOrUpdate(new WarehouseItem
+            {
+                Count = order.Count,
+                Item = await safeItemService.GetItem(order.ItemId)
+            });
 
             return ConfirmationStatus.Confirmed;
         }

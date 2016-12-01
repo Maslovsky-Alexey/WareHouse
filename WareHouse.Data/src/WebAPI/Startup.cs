@@ -154,7 +154,7 @@ namespace WebAPI
             containerBuilder.Register(context => new ItemStatusService(context.Resolve<BaseRepository<ItemStatus>>(), context.Resolve<ItemStatusMapConfigurator>())).As<IUnsafeItemStatusService>();
             containerBuilder.Register(context => new ItemStatusService(context.Resolve<BaseRepository<ItemStatus>>(), context.Resolve<ItemStatusMapConfigurator>())).As<ISafeItemStatusService>();
 
-            containerBuilder.RegisterType<WarehouseItemRepository>().As<BaseRepository<WarehouseItem>>();
+            containerBuilder.RegisterType<WarehouseItemSQLRepository>().As<BaseRepository<WarehouseItem>>();
             containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>(), context.Resolve<IElasticSearchtemProvider>())).As<IUnsafeWarehouseItemService>();
             containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>(), context.Resolve<IElasticSearchtemProvider>())).As<ISafeWarehouseItemService>();
 

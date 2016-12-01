@@ -34,7 +34,7 @@ namespace WareHouse.Data.EF.Repository
             return await table.ToArrayAsync();
         }
 
-        public async Task<OperationStatus> Add(T item)
+        public virtual async Task<OperationStatus> Add(T item)
         {
             var count = 0;
 
@@ -50,11 +50,10 @@ namespace WareHouse.Data.EF.Repository
                 return OperationStatus.Error;
             }
 
-
             return count > 0 ? OperationStatus.Added : OperationStatus.NotAdded;
         }
 
-        public async Task<OperationStatus> Remove(T item)
+        public virtual async Task<OperationStatus> Remove(T item)
         {
             await Task.Factory.StartNew(() => table.Remove(item));
 
@@ -75,7 +74,7 @@ namespace WareHouse.Data.EF.Repository
             return await table.FirstOrDefaultAsync(item => item.Id == id);
         }
 
-        public async Task<int> Count()
+        public virtual async Task<int> Count()
         {
             return await table.CountAsync();
         }
@@ -85,7 +84,7 @@ namespace WareHouse.Data.EF.Repository
             return await Task<IEnumerable<T>>.Factory.StartNew(() => table.Where(filter));
         }
 
-        public IEnumerable<T> GetAllSync()
+        public virtual IEnumerable<T> GetAllSync()
         {
             return table.ToArray();
         }
