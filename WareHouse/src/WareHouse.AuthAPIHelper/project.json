@@ -1,0 +1,16 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "WareHouse.HttpWebHelperLibrary": "1.0.0-*",
+    "Microsoft.AspNetCore.Http.Extensions": "1.1.0",
+    "NETStandard.Library": "1.6.0",
+    "WareHouse.LogHelper": "1.0.0-*"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}
