@@ -28,6 +28,7 @@ using WareHouse.HttpWebHelperLibrary;
 using WareHouse.AuthAPIHelper;
 using FluentValidation.AspNetCore;
 using WareHouse.Domain.Model.ViewModel.ModelValidators;
+using WareHouse.Data.SQL.Repository;
 
 namespace WareHouse.WebAPI
 {

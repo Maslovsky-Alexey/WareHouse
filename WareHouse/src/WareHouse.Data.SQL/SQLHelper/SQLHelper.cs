@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace WareHouse.Data.EF.Repository.SQLHelper
+namespace WareHouse.Data.SQL.SQLHelper
 {
     public delegate object SQLGetAnswerMethod(SqlDataReader reader, Type type);
 
@@ -21,14 +21,14 @@ namespace WareHouse.Data.EF.Repository.SQLHelper
 
         public async Task<IEnumerable<T>> GetItemsAsync<T>(string query, params SqlParameter[] parameters) where T : new()
         {
-            return await ExecSQLAsync<IEnumerable<T>>(query, 
+            return await ExecStoredProcedureAsync<IEnumerable<T>>(query, 
                 (reader, type) => GetItemsFromReader<T>(reader, type.GenericTypeArguments.First())
                 , parameters);
         }
 
         public async Task<T> GetFirstItemAsync<T>(string query, params SqlParameter[] parameters) where T : new()
         {
-            return await ExecSQLAsync<T>(query, GetFirstItemFromReader, parameters);
+            return await ExecStoredProcedureAsync<T>(query, GetFirstItemFromReader, parameters);
         }
 
         private object GetFirstItemFromReader(SqlDataReader reader, Type type)
@@ -79,7 +79,7 @@ namespace WareHouse.Data.EF.Repository.SQLHelper
 
         public async Task<int> Count(string storedProcedureName)
         {
-            return await ExecSQLAsync<int>($"exec {storedProcedureName}", GetCountFromReader);
+            return await ExecStoredProcedureAsync<int>($"exec {storedProcedureName}", GetCountFromReader);
         }
 
         private object GetCountFromReader(SqlDataReader reader, Type type)
@@ -89,34 +89,37 @@ namespace WareHouse.Data.EF.Repository.SQLHelper
             return reader.GetInt32(0);
         }
 
-        public async Task ExecSQLAsync(string query, params SqlParameter[] parameters)
+        public async Task ExecStoredProcedureAsync(string query, params SqlParameter[] parameters)
         {
-            await ExecSQLAsync<object>(query, null, parameters);
+            await ExecStoredProcedureAsync<object>(query, null, parameters);
         }
 
-        public async Task<T> ExecSQLAsync<T>(string query, SQLGetAnswerMethod sqlGetAnswer, params SqlParameter[] parameters)
+        public async Task<T> ExecStoredProcedureAsync<T>(string query, SQLGetAnswerMethod sqlGetAnswer, params SqlParameter[] parameters)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
-                var reader = await CreateQuery(connection, query, parameters).ExecuteReaderAsync();
-
-                T result = default(T);
-
-                if (sqlGetAnswer != null && reader.HasRows)
+                using (var reader = await CreateQuery(connection, query, parameters).ExecuteReaderAsync())
                 {
-                    result = (T)sqlGetAnswer(reader, typeof(T));
-                }
+                    T result = default(T);
 
-                reader.Dispose();
-                return result;
+                    if (sqlGetAnswer != null && reader.HasRows)
+                    {
+                        result = (T)sqlGetAnswer(reader, typeof(T));
+                    }
+
+                    return result;
+                }           
             }
         }
 
         private SqlCommand CreateQuery(SqlConnection connection, string query, IEnumerable<SqlParameter> args)
         {
-            var sql = new SqlCommand(query, connection);
+            var sql = new SqlCommand(query, connection)
+            {
+                CommandType = System.Data.CommandType.StoredProcedure
+            };
 
             foreach (var param in args)
             {

@@ -6,11 +6,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Context;
+using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
 using WareHouse.LogHelper;
 
-namespace WareHouse.Data.EF.Repository
+namespace WareHouse.Data.SQL.Repository
 {
     public class WarehouseItemSQLRepository : BaseRepository<WarehouseItem>, IWarehouseItemRepository
     {
@@ -35,7 +36,7 @@ namespace WareHouse.Data.EF.Repository
         {
             try
             {
-                await sql.ExecSQLAsync("exec WarehouseItemAdd @itemId, @count", new SqlParameter("@itemId", item.Item.Id), new SqlParameter("@count", item.Count));
+                await sql.ExecStoredProcedureAsync("WarehouseItemAdd", new SqlParameter("@itemId", item.Item.Id), new SqlParameter("@count", item.Count));
                 return OperationStatus.Added;
             }
             catch(Exception e)
@@ -62,7 +63,7 @@ namespace WareHouse.Data.EF.Repository
         {
             try
             {
-                await sql.ExecSQLAsync("exec RemoveWarehouseItemById @itemId", new SqlParameter("@itemId", item.Item.Id));
+                await sql.ExecStoredProcedureAsync("RemoveWarehouseItemById", new SqlParameter("id", item.Item.Id));
                 return OperationStatus.Added;
             }
             catch (Exception e)
@@ -76,7 +77,7 @@ namespace WareHouse.Data.EF.Repository
         {
             try
             {
-                var item = await sql.GetFirstItemAsync<WarehouseItem>("exec GetItemByName @name", new SqlParameter("@name", name));
+                var item = await sql.GetFirstItemAsync<WarehouseItem>("GetItemByName", new SqlParameter("@name", name));
                 item.Item = await GetItemById(item.ItemId);
 
                 return item;
@@ -92,7 +93,7 @@ namespace WareHouse.Data.EF.Repository
         {
             try
             {
-                var items = await sql.GetItemsAsync<WarehouseItem>("exec GetAllWarehouseItems");
+                var items = await sql.GetItemsAsync<WarehouseItem>("GetAllWarehouseItems");
 
                 foreach (var item in items)
                 {
@@ -125,7 +126,7 @@ namespace WareHouse.Data.EF.Repository
 
                 item.Count += deltaCount;
 
-                await sql.ExecSQLAsync("exec UpdateCountWarehouseItem @itemId, @count", new SqlParameter("@itemId", item.Id), new SqlParameter("@count", item.Count));
+                await sql.ExecStoredProcedureAsync("UpdateCountWarehouseItem", new SqlParameter("@id", item.Id), new SqlParameter("@count", item.Count));
                 return true;
             }
             catch (Exception e)
@@ -139,7 +140,7 @@ namespace WareHouse.Data.EF.Repository
         {
             try
             {
-                var item = await sql.GetFirstItemAsync<WarehouseItem>("exec GetWarehouseItemById @id", new SqlParameter("@id", id));
+                var item = await sql.GetFirstItemAsync<WarehouseItem>("GetWarehouseItemById", new SqlParameter("@param1", id));
                 item.Item = await GetItemById(item.ItemId);
 
                 return item;
@@ -153,7 +154,7 @@ namespace WareHouse.Data.EF.Repository
 
         private async Task<Item> GetItemById(int id)
         {
-            return await sql.GetFirstItemAsync<Item>("exec GetItemById @id", new SqlParameter("@id", id));
+            return await sql.GetFirstItemAsync<Item>("GetItemById", new SqlParameter("@id", id));
         }
     }
 }
