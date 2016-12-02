@@ -82,19 +82,20 @@ export function returnOrder(orderId){
   }
 }
 
-export function addOrder(itemName, count, client, employee){
+export function addOrder(itemName, count, client, employee, success){
   return (dispatch) => {
     dispatch({
       type: ADD_ORDER_REQUEST,
       payload: {}
-    })
+    });
 
     new OperationsRepository().addOrder(itemName, count, client, employee, () =>{
-      getOrders()(dispatch)
+      getOrders()(dispatch);
+      success();
       dispatch({
         type: ADD_ORDER_SUCCESS,
         payload: {}
-      })
+      });
     })
   }
 }

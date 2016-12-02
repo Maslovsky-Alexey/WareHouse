@@ -15,6 +15,7 @@ import {
 
 const initialState = {
   items: [],
+  ready: true,
   errorMessage: null
 }
 
@@ -23,37 +24,33 @@ export default function supplies(state = initialState, action) {
 
    case GET_SUPPLIES_REQUEST:
    case ADD_SUPPLY_REQUEST:
-   case ADD_SUPPLY_SUCCESS:
+   case RETURN_SUPPLY_REQUEST:
+   case CONFIRM_SUPPLY_REQUEST:
      return Object.assign({}, state, {
-       errorMessage: null
+       errorMessage: null,
+       ready: false
+     })
+
+   case ADD_SUPPLY_SUCCESS:
+   case RETURN_SUPPLY_SUCCESS:
+   case CONFIRM_SUPPLY_SUCCESS:
+     return Object.assign({}, state, {
+       errorMessage: null,
+       ready: true
      })
 
    case GET_SUPPLIES_SUCCESS:
      return Object.assign({}, state, {
        items: action.payload,
+       ready: true,
        errorMessage: null
      })
 
     case GET_SUPPLIES_FAILED:
       return Object.assign({}, state, {
         items: [],
+        ready: true,
         errorMessage: action.payload.errorMessage
-      })
-
-    case CONFIRM_SUPPLY_REQUEST:
-      return Object.assign({}, state, {
-      })
-
-    case CONFIRM_SUPPLY_SUCCESS:
-      return Object.assign({}, state, {
-      })
-
-    case RETURN_SUPPLY_REQUEST:
-      return Object.assign({}, state, {
-      })
-
-    case RETURN_SUPPLY_SUCCESS:
-      return Object.assign({}, state, {
       })
 
      default:

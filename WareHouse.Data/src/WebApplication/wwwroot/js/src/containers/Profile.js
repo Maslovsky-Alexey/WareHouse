@@ -14,6 +14,9 @@ import GridView from '../components/others/gridView/GridView'
 import generateOrderModel from '../components/others/gridView/models/orderModel'
 import generateSupplyModel from '../components/others/gridView/models/supplyModel'
 
+import BlockUi from 'react-block-ui';
+import 'react-block-ui/style.css'
+
 class Profile extends Component {
   componentDidMount(){
       this.props.suppliesActions.getSupplies();
@@ -27,7 +30,7 @@ class Profile extends Component {
     const supplies = this.props.supplies.items
     const {addClient, addEmployee} = this.props.adminActions
 
-    return <div>
+    return <BlockUi tag="div" blocking={!this.props.ready}>
       {
         errorMessage == null ?
           <div>
@@ -51,7 +54,7 @@ class Profile extends Component {
         :
           <ErrorMessage title={"Error"} message={errorMessage}/>
       }
-    </div>
+    </BlockUi>
   }
 }
 
@@ -60,7 +63,8 @@ function mapStateToProps (state) {
     about: state.about,
     orders: state.orders,
     supplies: state.supplies,
-    admin: state.admin
+    admin: state.admin,
+    ready: state.orders.ready && state.supplies.ready
   }
 }
 

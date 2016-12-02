@@ -82,7 +82,7 @@ export function returnSupply(supplyId){
   }
 }
 
-export function addSupply(itemName, count, provider, employee){
+export function addSupply(itemName, count, provider, employee, success){
   return (dispatch) => {
     dispatch({
       type: ADD_SUPPLY_REQUEST,
@@ -90,11 +90,12 @@ export function addSupply(itemName, count, provider, employee){
     })
 
     new OperationsRepository().addSupply(itemName, count, provider, employee, () =>{
-      getSupplies()(dispatch)
+      getSupplies()(dispatch);
+      success();
       dispatch({
         type: ADD_SUPPLY_SUCCESS,
         payload: {}
-      })
+      });
     })
   }
 }
