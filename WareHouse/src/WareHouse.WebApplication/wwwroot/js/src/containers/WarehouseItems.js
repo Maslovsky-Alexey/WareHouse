@@ -22,7 +22,7 @@ class WarehouseItems extends Component {
 
 
         if (minCount != null && maxCount != null && minCount.length > 0 && maxCount.length > 0)
-            filter += "&$property2=count&$morethan2=" + (minCount - 1) + "&$lessthan2=" + (maxCount + 1);
+            filter += "&$property2=count&$morethan2=" + (minCount - 1) + "&$lessthan2=" + (+maxCount + 1);
 
         if (orderBy != null)
             filter += "&$orderby=" + orderBy;

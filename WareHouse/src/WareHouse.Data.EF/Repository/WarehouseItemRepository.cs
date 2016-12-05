@@ -32,12 +32,6 @@ namespace WareHouse.Data.EF.Repository
                 .ToListAsync();
         }
 
-        public override async Task<IEnumerable<WarehouseItem>> GetAllWithFilter(
-            Expression<Func<WarehouseItem, bool>> filter)
-        {
-            return (await GetAll()).AsQueryable().Where(filter);
-        }
-
         public async Task<bool> UpdateCount(int warehouseItemId, int deltaCount)
         {
             var item = await GetItem(warehouseItemId);

@@ -8,6 +8,7 @@ using WareHouse.Data.EF.Context;
 using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
 using WareHouse.LogHelper;
+using WareHouse.MyOData;
 
 namespace WareHouse.Data.EF.Repository
 {
@@ -79,8 +80,10 @@ namespace WareHouse.Data.EF.Repository
             return await table.CountAsync();
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllWithFilter(Expression<Func<T, bool>> filter)
+        public virtual async Task<IEnumerable<T>> GetAllWithFilter(MyODataConfigurates config)
         {
+            var filter = MyOData.MyOData.CompileFilters<T>(config);
+
             return await Task<IEnumerable<T>>.Factory.StartNew(() => table.Where(filter));
         }
 

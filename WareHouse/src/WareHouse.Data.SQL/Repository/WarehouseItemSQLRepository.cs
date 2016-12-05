@@ -10,6 +10,8 @@ using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
 using WareHouse.LogHelper;
+using WareHouse.MyOData;
+using WareHouse.MyOData.Concrete.Configurators;
 
 namespace WareHouse.Data.SQL.Repository
 {
@@ -91,30 +93,16 @@ namespace WareHouse.Data.SQL.Repository
 
         public override async Task<IEnumerable<WarehouseItem>> GetAll()
         {
-            try
-            {
-                var items = await sql.GetItemsAsync<WarehouseItem>("GetAllWarehouseItems");
-
-                foreach (var item in items)
-                {
-                    item.Item = await GetItemById(item.ItemId);
-                }
-
-                return items;
-            }
-            catch (Exception e)
-            {
-                log?.Log(e.Message + '\n' + e.InnerException);
-                return null;
-            }
+            return await GetAllItemsWithFilter();
         }
 
-        public override async Task<IEnumerable<WarehouseItem>> GetAllWithFilter(
-            Expression<Func<WarehouseItem, bool>> filter)
+        public override async Task<IEnumerable<WarehouseItem>> GetAllWithFilter(MyODataConfigurates config)
         {
-            return (await GetAll()).AsQueryable().Where(filter);
+            var warehouseItemConfig = new WarehouseItemODataConfigurator(config);
+            return await GetAllItemsWithFilter(warehouseItemConfig.CountFilter?.MoreThan, warehouseItemConfig.CountFilter?.LessThan, warehouseItemConfig.OrderByName, warehouseItemConfig.OrderDesc);
         }
 
+        
         public async Task<bool> UpdateCount(int warehouseItemId, int deltaCount)
         {
             try
@@ -155,6 +143,48 @@ namespace WareHouse.Data.SQL.Repository
         private async Task<Item> GetItemById(int id)
         {
             return await sql.GetFirstItemAsync<Item>("GetItemById", new SqlParameter("@id", id));
+        }
+
+        private async Task<IEnumerable<WarehouseItem>> GetAllItemsWithFilter(double? minCount = null, double? maxCount = null, bool? orderByName = null, bool? orderDesc = null)
+        {
+            try
+            {
+                SqlParameter[] parameters = CompileParameters(minCount, maxCount, orderByName, orderDesc);
+                var items = await sql.GetItemsAsync<WarehouseItem>("GetAllWarehouseItems", parameters);
+
+                foreach (var item in items)
+                {
+                    item.Item = await GetItemById(item.ItemId);
+                }
+
+                return items;
+            }
+            catch (Exception e)
+            {
+                log?.Log(e.Message + '\n' + e.InnerException);
+                return null;
+            }
+        }
+
+        private SqlParameter[] CompileParameters(double? minCount = null, double? maxCount = null, bool? orderByName = null, bool? orderDesc = null)
+        {
+            var result = new List<SqlParameter>();
+
+  
+            AddParameterIfNotNull(result, "@minCount", minCount);
+            AddParameterIfNotNull(result, "@maxCount", maxCount);
+            AddParameterIfNotNull(result, "@orderByName", orderByName);
+            AddParameterIfNotNull(result, "@orderDesc", orderDesc);
+
+            return result.ToArray();   
+        }
+
+        private void AddParameterIfNotNull(List<SqlParameter> parameters, string name, object value)
+        {
+            if (value != null)
+            {
+                parameters.Add(new SqlParameter(name, value));
+            }
         }
     }
 }

@@ -66,19 +66,15 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<PageModel> GetPage(int page, MyODataConfigurates config)
         {
-            var search = GetAndRemoveSearchString(config);
-           
-            var filter = MyOData.MyOData.CompileFilters<Data.Model.WarehouseItem>(config);
+            var search = GetAndRemoveSearchString(config);        
 
-            var allItems = (await repository.GetAllWithFilter(filter))
+            var allItems = (await repository.GetAllWithFilter(config))
                 .Select(MapToViewModel);
 
             var items = SearchItems(allItems, search);
 
             if (items == null || !items.Any())
                 return new PageModel();
-
-            items = MyOData.MyOData.OrderBy(items, config).ToList();
 
             return GetPage(items, page);
         }
@@ -107,9 +103,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (searchItems == null)
                 return null;
 
-            foreach (var a in searchItems)
+            foreach (var item in source)
             {
-                var b = source.FirstOrDefault(x => x.Id == a.Id);
+                var b = searchItems.FirstOrDefault(x => x.Id == item.Id);
 
                 if (b != null)
                     items.Add(b);

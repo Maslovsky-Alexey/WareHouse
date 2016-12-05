@@ -9,7 +9,6 @@ namespace WareHouse.Data.SQL.SQLHelper
 {
     public delegate object SQLGetAnswerMethod(SqlDataReader reader, Type type);
 
-
     public class SQLHelper
     {
         public string ConnectionString { get; private set; }
