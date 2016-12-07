@@ -25,7 +25,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 return;
 
             if (await Add(model) == Data.Repository.OperationStatus.Added)
-                OnNext(model);
+                OnNext(await GetItemByName(model.Name, true));
         }
 
         public async Task<Item> GetItemByName(string name, bool ignoreCase)

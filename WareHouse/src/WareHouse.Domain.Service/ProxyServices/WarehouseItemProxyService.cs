@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using WareHouse.Data.EF.Repository;
-using WareHouse.Data.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
-using WareHouse.Domain.Service.ConcreteServices;
-using WareHouse.Domain.Service.ModelsMapper;
-using WareHouse.Domain.Service.ModelsMapper.Configurators;
-using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 using WareHouse.MyOData;
 

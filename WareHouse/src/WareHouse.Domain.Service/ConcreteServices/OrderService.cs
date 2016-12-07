@@ -22,6 +22,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             orderRepository = (IOrderRepository) repository;
         }
 
+
         public async Task<IEnumerable<OrderViewModel>> GetAllAsViewModel()
         {
             return (await GetAll())
@@ -31,7 +32,9 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public async Task UpdateOrderStatus(int id, int statusId)
         {
             await orderRepository.UpdateOrderStatus(id, statusId);
-            OnNext(null);
+
+            var item = await GetItem(id);
+            OnNext(item);
         }
 
         public async Task<IEnumerable<OrderViewModel>> GetClientOrders(string clientName)

@@ -12,7 +12,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class BaseService<ServiceModel, EFModel> : IService<ServiceModel, EFModel>, IObservable<ServiceModel>
         where EFModel : BaseModel
-        where ServiceModel : Model.BaseModel
+        where ServiceModel : Model.BaseModel, new()
     {
         private readonly ModelsMapper<EFModel, ServiceModel> mapper;
         protected BaseRepository<EFModel> repository;
@@ -29,7 +29,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return (await repository.GetAll()).Select(MapToServiceModel);
         }
 
-        public async Task<OperationStatus> Add(ServiceModel item)
+        public virtual async Task<OperationStatus> Add(ServiceModel item)
         {
             return await repository.Add(MapToEFModel(item));
         }

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace WareHouse.Domain.Service.ProxyServices.Cache
+namespace WareHouse.Caches
 {
     public class CacheManager : ICacheManager
     {

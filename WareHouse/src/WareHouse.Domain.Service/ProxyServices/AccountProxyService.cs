@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using WareHouse.Data.Repository;
-using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
-using WareHouse.Domain.Service.ConcreteServices;
-using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.ServiceInterfaces.Safe;
-using WareHouse.Domain.Service.ProxyServices.Cache;
+using WareHouse.Caches;
 
 namespace WareHouse.Domain.Service.ProxyServices
 {
-    public class AccountProxyService : ISafeAccountService, System.IObservable<SignInLogModel>
+    public class AccountProxyService : ISafeAccountService, IObservable<SignInLogModel>
     {
         private ISafeAccountService safeAccountService;
         private ICache cache;

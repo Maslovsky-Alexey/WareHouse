@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using WareHouse.Data.Repository;
+﻿using System.Threading.Tasks;
 using WareHouse.Domain.Model;
-using WareHouse.Domain.Model.ViewModel;
-using WareHouse.Domain.Service.ConcreteServices;
-using WareHouse.Domain.Service.ProxyServices.Cache;
-using WareHouse.Domain.ServiceInterfaces;
+using WareHouse.Caches;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 
 namespace WareHouse.Domain.Service.ProxyServices

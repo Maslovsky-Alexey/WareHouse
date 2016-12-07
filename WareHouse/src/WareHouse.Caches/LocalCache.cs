@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace WareHouse.Domain.Service.ProxyServices.Cache
+namespace WareHouse.Caches
 {
     public class LocalCache : ICache
     {
@@ -30,6 +32,21 @@ namespace WareHouse.Domain.Service.ProxyServices.Cache
         public void Clear()
         {
             memoryCache = new MemoryCache(new MemoryCacheOptions { });
+        }
+
+        public IEnumerable<string> GetAllKeys()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> GetAsync<T>(string key) where T : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<string>> GetAllKeysAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

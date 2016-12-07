@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WareHouse.Data.Model;
-using WareHouse.Domain.Service.ProxyServices.Cache;
+using WareHouse.Caches;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 
 namespace WareHouse.Domain.Service.ProxyServices

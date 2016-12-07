@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using WareHouse.Data.Repository;
 using WareHouse.Domain.Model;
 using WareHouse.Domain.Model.ViewModel;
-using WareHouse.Domain.Service.ConcreteServices;
-using WareHouse.Domain.Service.ProxyServices.Cache;
-using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.ServiceInterfaces.Safe;
+using WareHouse.Caches;
 
 namespace WareHouse.Domain.Service.ProxyServices
 {
@@ -22,7 +17,6 @@ namespace WareHouse.Domain.Service.ProxyServices
             this.safeSupplyService = (ISafeSupplyService)safeService;
             cache.Clear();
         }
-
 
         public async Task<IEnumerable<SupplyViewModel>> GetAllAsViewModel()
         {

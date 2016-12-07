@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using WareHouse.Data.Model;
-using WareHouse.Data.Repository;
-using WareHouse.Domain.Model;
-using WareHouse.Domain.Service.ConcreteServices;
-using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.ServiceInterfaces.Safe;
 
 namespace WareHouse.Domain.Service.ProxyServices

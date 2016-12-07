@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
 
   "dependencies": {
@@ -6,7 +6,8 @@
     "NETStandard.Library": "1.6.0",
     "WareHouse.Data": "1.0.0-*",
     "WareHouse.MyOData": "1.0.0-*",
-    "FluentValidation.AspNetCore": "6.4.0-beta3"
+    "FluentValidation.AspNetCore": "6.4.0-beta3",
+    "WareHouse.PollingEventManager": "1.0.0-*"
   },
 
   "frameworks": {

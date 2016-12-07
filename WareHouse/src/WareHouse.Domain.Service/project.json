@@ -16,7 +16,8 @@
     "WareHouse.MyEventStream": "1.0.0-*",
     "ElasticsearchCrud": "2.4.1.1",
     "WareHouse.AuthAPIHelper": "1.0.0-*",
-    "WareHouse.MyOData.Concrete": "1.0.0-*"
+    "WareHouse.MyOData.Concrete": "1.0.0-*",
+    "WareHouse.Caches": "1.0.0-*"
   },
 
   "frameworks": {

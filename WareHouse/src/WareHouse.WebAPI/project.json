@@ -39,7 +39,8 @@
     "WareHouse.Domain.Service": "1.0.0-*",
     "WareHouse.HttpExtensions": "1.0.0-*",
     "FluentValidation.AspNetCore": "6.4.0-beta3",
-    "WareHouse.Data.SQL": "1.0.0-*"
+    "WareHouse.Data.SQL": "1.0.0-*",
+    "WareHouse.PollingEventManager": "1.0.0-*"
   },
 
   "tools": {

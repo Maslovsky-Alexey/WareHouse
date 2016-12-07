@@ -42,6 +42,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.Data.SQL", "src\W
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.MyOData.Concrete", "src\WareHouse.MyOData.Concrete\WareHouse.MyOData.Concrete.xproj", "{C409E1C7-D3BE-446C-BC33-D295A6CB21B7}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.PollingEventManager", "src\WareHouse.PollingEventManager\WareHouse.PollingEventManager.xproj", "{D2BB84FB-4E76-44C3-8528-E076F1AF8EBD}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.Caches", "src\WareHouse.Caches\WareHouse.Caches.xproj", "{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -112,6 +116,14 @@ Global
 		{C409E1C7-D3BE-446C-BC33-D295A6CB21B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C409E1C7-D3BE-446C-BC33-D295A6CB21B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C409E1C7-D3BE-446C-BC33-D295A6CB21B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2BB84FB-4E76-44C3-8528-E076F1AF8EBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2BB84FB-4E76-44C3-8528-E076F1AF8EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2BB84FB-4E76-44C3-8528-E076F1AF8EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2BB84FB-4E76-44C3-8528-E076F1AF8EBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,5 +145,7 @@ Global
 		{213126A6-99F8-48B7-8E60-7A939CDC540D} = {EEE8B00A-29BC-4DF2-95C7-1FC2A2F49EA4}
 		{85DAC69C-6A7F-45D0-BA3E-739D380B8C9B} = {EEE8B00A-29BC-4DF2-95C7-1FC2A2F49EA4}
 		{C409E1C7-D3BE-446C-BC33-D295A6CB21B7} = {EEE8B00A-29BC-4DF2-95C7-1FC2A2F49EA4}
+		{D2BB84FB-4E76-44C3-8528-E076F1AF8EBD} = {EEE8B00A-29BC-4DF2-95C7-1FC2A2F49EA4}
+		{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB} = {EEE8B00A-29BC-4DF2-95C7-1FC2A2F49EA4}
 	EndGlobalSection
 EndGlobal

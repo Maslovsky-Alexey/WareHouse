@@ -16,7 +16,7 @@ using WareHouse.Domain.ServiceInterfaces;
 using WareHouse.Domain.Service.ProxyServices;
 using WareHouse.Domain.ServiceInterfaces.Unsafe;
 using WareHouse.Domain.ServiceInterfaces.Safe;
-using WareHouse.Domain.Service.ProxyServices.Cache;
+using WareHouse.Caches;
 
 using WareHouse.Domain.Service.ModelsMapper.Configurators;
 using WareHouse.LogHelper;
@@ -29,6 +29,8 @@ using WareHouse.AuthAPIHelper;
 using FluentValidation.AspNetCore;
 using WareHouse.Domain.Model.ViewModel.ModelValidators;
 using WareHouse.Data.SQL.Repository;
+using WareHouse.PollingEventManager;
+using System.Reflection;
 
 namespace WareHouse.WebAPI
 {
@@ -88,7 +90,7 @@ namespace WareHouse.WebAPI
             containerBuilder.Populate(services);
             ApplicationContainer = containerBuilder.Build();
             ApplicationContainer.ResolveKeyed<ILog>("SignIn");
-
+            ApplicationContainer.Resolve<IPollingEventManager>();
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(ApplicationContainer);
         }
@@ -116,6 +118,18 @@ namespace WareHouse.WebAPI
                 .WithParameter("url", redisUrl)
                 .WithParameter("dbIndex", 3)
                 .Keyed<ICache>("Supplies");
+
+            containerBuilder.RegisterType<RedisCache>()
+                .WithParameter("url", redisUrl)
+                .WithParameter("dbIndex", 4)
+                .Keyed<ICache>("PollingEventManager");
+
+
+            containerBuilder.Register(context => PollingEventManager.PollingEventManager.Instance(context.ResolveKeyed<ICache>("PollingEventManager")))
+                 .As<IPollingEventManager>()
+                 .OnActivated(h => MyEventStream.MyEventStream.Instance.Subscribe(h.Instance));
+
+            containerBuilder.RegisterType<NotificationsService>().As<ISafeNotificationsService>();
 
             containerBuilder.Register(c => FileLog<WareHouse.Domain.Model.ViewModel.SignInLogModel>.Instance("d:\\log.txt")).Keyed<ILog>("SignIn").SingleInstance().OnActivated(h => MyEventStream.MyEventStream.Instance.Subscribe(h.Instance));
             containerBuilder.RegisterType<ConsoleLog>().As<ILog>();
@@ -160,7 +174,7 @@ namespace WareHouse.WebAPI
             containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>(), context.Resolve<IElasticSearchtemProvider>())).As<ISafeWarehouseItemService>();
 
             containerBuilder.RegisterType<OrderRepository>().As<BaseRepository<Order>>();
-            containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<IUnsafeOrderService>();
+            containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<IUnsafeOrderService>().OnActivated(h => MyEventStream.MyEventStream.Instance.Add(h.Instance));
             containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<ISafeOrderService>();
 
 
