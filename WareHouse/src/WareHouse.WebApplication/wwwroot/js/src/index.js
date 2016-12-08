@@ -8,6 +8,7 @@ import { Router, Route, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
 //import containers begin
+import AppContainer from './containers/AppContainer';
 import Layout from './containers/Layout';
 import WarehouseItems from './containers/WarehouseItems';
 import Profile from './containers/Profile';
@@ -23,11 +24,13 @@ const history = syncHistoryWithStore(browserHistory, store);
 render(
   <Provider store={store}>
     <Router history={history}>
-      <Route component={Layout}>
-        <Route path="/" component={Profile}/>
-        <Route path="/items" component={WarehouseItems}/>
-        <Route path="/additem" component={AddItem}/>
-        <Route path="/operations" component={Operations}/>
+      <Route component={AppContainer}>
+        <Route component={Layout}>
+          <Route path="/" component={Profile}/>
+          <Route path="/items" component={WarehouseItems}/>
+          <Route path="/additem" component={AddItem}/>
+          <Route path="/operations" component={Operations}/>
+        </Route>
       </Route>
     </Router>
   </Provider>,

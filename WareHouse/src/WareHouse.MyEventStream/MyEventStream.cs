@@ -11,13 +11,12 @@ namespace WareHouse.MyEventStream
         private static object threadlock = new object();
 
         private static MyEventStream sender;
-        private readonly List<KeyValue> observebles;
-        private readonly List<KeyValue> subscribers;
+
+        private readonly List<WeakReference> subscribers;
 
         private MyEventStream()
         {
-            observebles = new List<KeyValue>();
-            subscribers = new List<KeyValue>();
+            subscribers = new List<WeakReference>();
         }
 
         public static MyEventStream Instance
@@ -34,52 +33,32 @@ namespace WareHouse.MyEventStream
             }
         }
 
-        public void Add<T>(IObservable<T> observeble) where T : new ()
+        public void Subscribe<T>(IObserver<T> observer)
         {
-            observebles.Add(new KeyValue(typeof(T).FullName, observeble));
-
-            List<IObserver<T>> list = subscribers
-                .Where(x => GetModelTypeFromObserver(x.Value).GetType().GetTypeInfo().IsInstanceOfType(new T()))
-                .Select(x => x.Value as IObserver<T>)
-                .ToList();
-
-            if (list.Count == 0)
-                return;
+            subscribers.Add(new WeakReference(observer));
         }
 
-        public void Subscribe<T>(IObserver<T> observer) where T : new()
+        public void Emit<T>(T value)
         {
-            subscribers.Add(new KeyValue(typeof(T).FullName, observer));
+            RemoveNullObservers();
 
-            List<IObservable<T>> list = observebles
-                .Where(x => new T().GetType().GetTypeInfo().IsInstanceOfType(Activator.CreateInstance(GetModelTypeFromObserver(observer))))
-                .Select(x => x.Value as IObservable<T>)
-                .ToList();
-          
-            if (list.Count == 0)
-                return;
+            subscribers
+                .Where(x => GetModelTypeFromObserver(x.Target).IsInstanceOfType(value))
+                .Select(x => x.Target as IObserver<T>)
+                .ToList()
+                .ForEach(item => item.OnNext(value));
         }
 
-        public void Emit<T>(T value) where T : new()
+
+        private void RemoveNullObservers()
         {
-            List<IObserver<T>> list = subscribers
-                .Where(x => GetModelTypeFromObserver(x.Value).GetTypeInfo().IsInstanceOfType(value))
-                .Select(x => x.Value as IObserver<T>)
-                .ToList();
-
-            if (list.Count == 0)
-                return;
-
-            list.ForEach(item => item.OnNext(value));
+            subscribers.RemoveAll((obj) => !obj.IsAlive);
         }
 
         private Type GetModelTypeFromObserver(object observer)
         {
             return observer
-                .GetType()
-                .GetTypeInfo()
-                .GetInterfaces()
-                .FirstOrDefault(x => x.Name.IndexOf("IObserver") > -1)
+                .GetInterfaceByPattern("IObserver", false)
                 .GenericTypeArguments[0];
         }
     }

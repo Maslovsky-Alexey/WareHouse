@@ -7,6 +7,7 @@ import supplies from './supplies/supplies'
 import page from './warehouseItems/warehouseItems'
 import items from './items/items'
 import addItem from './addItem/addItem'
+import notifications from './notifications/notifications'
 
 import { routerReducer } from 'react-router-redux'
 
@@ -18,5 +19,6 @@ export default combineReducers({
   page,
   items,
   addItem,
+  notifications,
   routing: routerReducer
 })

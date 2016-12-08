@@ -46,6 +46,7 @@ namespace WareHouse.WebAPI
 
             if (env.IsDevelopment())
                 builder.AddApplicationInsightsSettings(true);
+
             Configuration = builder.Build();
         }
 
@@ -90,7 +91,9 @@ namespace WareHouse.WebAPI
             containerBuilder.Populate(services);
             ApplicationContainer = containerBuilder.Build();
             ApplicationContainer.ResolveKeyed<ILog>("SignIn");
-            ApplicationContainer.Resolve<IPollingEventManager>();
+
+            MyEventStream.MyEventStream.Instance.Subscribe(ApplicationContainer.Resolve<IPollingEventManager>());
+
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(ApplicationContainer);
         }
@@ -124,10 +127,7 @@ namespace WareHouse.WebAPI
                 .WithParameter("dbIndex", 4)
                 .Keyed<ICache>("PollingEventManager");
 
-
-            containerBuilder.Register(context => PollingEventManager.PollingEventManager.Instance(context.ResolveKeyed<ICache>("PollingEventManager")))
-                 .As<IPollingEventManager>()
-                 .OnActivated(h => MyEventStream.MyEventStream.Instance.Subscribe(h.Instance));
+            containerBuilder.Register(context => PollingEventManager.PollingEventManager.Instance(context.ResolveKeyed<ICache>("PollingEventManager"))).As<IPollingEventManager>();
 
             containerBuilder.RegisterType<NotificationsService>().As<ISafeNotificationsService>();
 
@@ -152,7 +152,7 @@ namespace WareHouse.WebAPI
             containerBuilder.Register(context => new ClientService(context.Resolve<BaseRepository<Client>>(), context.Resolve<ClientMapConfigurator>())).As<ISafeClientService>();
 
             containerBuilder.RegisterType<ItemRepository>().As<BaseRepository<Item>>();
-            containerBuilder.Register(context => new ItemService(context.Resolve<BaseRepository<Item>>(), context.Resolve<ItemMapConfigurator>())).As<IUnsafeItemService>().OnActivated(h => MyEventStream.MyEventStream.Instance.Add(h.Instance));
+            containerBuilder.Register(context => new ItemService(context.Resolve<BaseRepository<Item>>(), context.Resolve<ItemMapConfigurator>())).As<IUnsafeItemService>();
             containerBuilder.Register(context => new ItemProxyService(new ItemService(context.Resolve<BaseRepository<Item>>(), context.Resolve<ItemMapConfigurator>()), 
                 context.Resolve<ICacheManager>().AddOrGetExistSection("ItemService", context.ResolveKeyed<ICache>("Items"))));
             containerBuilder.Register(context => context.Resolve<ItemProxyService>()).As<ISafeItemService>().OnActivated(h => MyEventStream.MyEventStream.Instance.Subscribe(h.Instance));
@@ -174,12 +174,12 @@ namespace WareHouse.WebAPI
             containerBuilder.Register(context => new WarehouseItemService(context.Resolve<BaseRepository<WarehouseItem>>(), context.Resolve<WarehouseItemMapConfigurator>(), context.Resolve<IElasticSearchtemProvider>())).As<ISafeWarehouseItemService>();
 
             containerBuilder.RegisterType<OrderRepository>().As<BaseRepository<Order>>();
-            containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<IUnsafeOrderService>().OnActivated(h => MyEventStream.MyEventStream.Instance.Add(h.Instance));
+            containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<IUnsafeOrderService>();
             containerBuilder.Register(context => new OrderService(context.Resolve<BaseRepository<Order>>(), context.Resolve<OrderMapConfigurator>())).As<ISafeOrderService>();
 
 
             containerBuilder.RegisterType<SupplyRepository>().As<BaseRepository<Supply>>();
-            containerBuilder.Register(context => new SupplyService(context.Resolve<BaseRepository<Supply>>(), context.Resolve<SupplyMapConfigurator>())).As<IUnsafeSupplyService>().OnActivated(h => MyEventStream.MyEventStream.Instance.Add(h.Instance));
+            containerBuilder.Register(context => new SupplyService(context.Resolve<BaseRepository<Supply>>(), context.Resolve<SupplyMapConfigurator>())).As<IUnsafeSupplyService>();
             containerBuilder.Register(context => new SupplyProxyService(new SupplyService(context.Resolve<BaseRepository<Supply>>(), context.Resolve<SupplyMapConfigurator>()),
                 context.Resolve<ICacheManager>().AddOrGetExistSection("SupplyService", context.ResolveKeyed<ICache>("Supplies"))));
             containerBuilder.Register(context => context.Resolve<SupplyProxyService>()).As<ISafeSupplyService>().OnActivated(h => MyEventStream.MyEventStream.Instance.Subscribe(h.Instance));
@@ -193,7 +193,7 @@ namespace WareHouse.WebAPI
             containerBuilder.RegisterType<AccountService>().As<IUnsafeAccountService>();
             containerBuilder.RegisterType<AccountService>();           
             containerBuilder.Register(context => new AccountProxyService(context.Resolve<AccountService>(), null));
-            containerBuilder.Register(context => context.Resolve<AccountProxyService>()).As<ISafeAccountService>().OnActivated(h => MyEventStream.MyEventStream.Instance.Add(h.Instance));
+            containerBuilder.Register(context => context.Resolve<AccountProxyService>()).As<ISafeAccountService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

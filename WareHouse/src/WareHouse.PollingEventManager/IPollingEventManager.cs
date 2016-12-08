@@ -6,7 +6,7 @@ using WareHouse.PollingEventManager.Models;
 
 namespace WareHouse.PollingEventManager
 {
-    public interface IPollingEventManager
+    public interface IPollingEventManager : IObserver<object>
     {
         IEnumerable<EventModel> GetFreshEvents(long ticks);
 

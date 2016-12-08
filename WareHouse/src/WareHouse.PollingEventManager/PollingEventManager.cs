@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace WareHouse.PollingEventManager
 {
-    public class PollingEventManager : IObserver<object>, IPollingEventManager
+    public class PollingEventManager : IPollingEventManager
     {
         private ICache cache;
 
@@ -17,8 +17,11 @@ namespace WareHouse.PollingEventManager
         public static PollingEventManager Instance(ICache cache)
         {
             if (instance == null)
+            {
                 instance = new PollingEventManager(cache);
-
+                cache.Clear();
+            }
+             
             return instance;
         }
 

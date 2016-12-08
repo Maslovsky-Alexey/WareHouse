@@ -10,7 +10,7 @@ using WareHouse.Domain.ServiceInterfaces;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
-    public class BaseService<ServiceModel, EFModel> : IService<ServiceModel, EFModel>, IObservable<ServiceModel>
+    public class BaseService<ServiceModel, EFModel> : IService<ServiceModel, EFModel>
         where EFModel : BaseModel
         where ServiceModel : Model.BaseModel, new()
     {
@@ -57,11 +57,6 @@ namespace WareHouse.Domain.Service.ConcreteServices
         protected ServiceModel MapToServiceModel(EFModel model)
         {
             return mapper.MapService(model);
-        }
-
-        public IDisposable Subscribe(IObserver<ServiceModel> observer)
-        {
-            return null;
         }
 
         protected void OnNext(ServiceModel value)
