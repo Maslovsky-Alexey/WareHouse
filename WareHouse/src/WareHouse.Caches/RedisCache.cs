@@ -14,9 +14,11 @@ namespace WareHouse.Caches
         private IServer server;
         private IDatabase database;
         private int dbIndex;
+        private TimeSpan? ttl;
 
-        public RedisCache(string url, int dbIndex)
+        public RedisCache(string url, int dbIndex, TimeSpan? ttl = null)
         {
+            this.ttl = ttl;
             redis = ConnectionMultiplexer.Connect($"{url}, allowAdmin=true");
 
             server = redis.GetServer(url);
@@ -44,7 +46,7 @@ namespace WareHouse.Caches
             database.StringSet(key, JsonConvert.SerializeObject(item, new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
-            }));
+            }), expiry: new TimeSpan(1, 0, 0));
         }
 
         public void Remove(string key)

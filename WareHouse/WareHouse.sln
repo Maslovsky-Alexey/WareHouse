@@ -46,6 +46,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.PollingEventManag
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.Caches", "src\WareHouse.Caches\WareHouse.Caches.xproj", "{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WareHouse.RegistrationTypes", "src\WareHouse.RegistrationTypes\WareHouse.RegistrationTypes.xproj", "{117FDBFB-3D7F-4D87-B954-0C36B077B185}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +126,10 @@ Global
 		{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{117FDBFB-3D7F-4D87-B954-0C36B077B185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{117FDBFB-3D7F-4D87-B954-0C36B077B185}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{117FDBFB-3D7F-4D87-B954-0C36B077B185}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{117FDBFB-3D7F-4D87-B954-0C36B077B185}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -147,5 +153,6 @@ Global
 		{C409E1C7-D3BE-446C-BC33-D295A6CB21B7} = {EEE8B00A-29BC-4DF2-95C7-1FC2A2F49EA4}
 		{D2BB84FB-4E76-44C3-8528-E076F1AF8EBD} = {EEE8B00A-29BC-4DF2-95C7-1FC2A2F49EA4}
 		{1728F231-9800-4A99-AF4F-BB1FB6E8D3BB} = {EEE8B00A-29BC-4DF2-95C7-1FC2A2F49EA4}
+		{117FDBFB-3D7F-4D87-B954-0C36B077B185} = {EEE8B00A-29BC-4DF2-95C7-1FC2A2F49EA4}
 	EndGlobalSection
 EndGlobal
