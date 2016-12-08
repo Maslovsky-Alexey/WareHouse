@@ -26,7 +26,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (provider != null)
                 return;
 
-            if (await Add(value) == Data.Repository.OperationStatus.Added)
+            if ((await Add(value)).OperationStatus == Data.Repository.OperationStatus.Added)
                 OnNext(value);
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using WareHouse.Data.Model.AnswerModel;
 
 namespace WareHouse.Data.Repository
 {
@@ -16,7 +17,7 @@ namespace WareHouse.Data.Repository
     {
         Task<IEnumerable<T>> GetAll();
 
-        Task<OperationStatus> Add(T item);
+        Task<OperationStatusModel> Add(T item);
 
         Task<OperationStatus> Remove(T item);
 

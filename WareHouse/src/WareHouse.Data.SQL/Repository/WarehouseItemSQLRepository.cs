@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using WareHouse.Data.EF.Context;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
+using WareHouse.Data.Model.AnswerModel;
 using WareHouse.Data.Repository;
 using WareHouse.LogHelper;
 using WareHouse.MyOData;
@@ -34,17 +35,24 @@ namespace WareHouse.Data.SQL.Repository
             sql = new SQLHelper.SQLHelper(context.Database.GetDbConnection().ConnectionString);
         }
 
-        public override async Task<OperationStatus> Add(WarehouseItem item)
+        public override async Task<OperationStatusModel> Add(WarehouseItem item)
         {
             try
             {
                 await sql.ExecStoredProcedureAsync("WarehouseItemAdd", new SqlParameter("@itemId", item.Item.Id), new SqlParameter("@count", item.Count));
-                return OperationStatus.Added;
+                return new OperationStatusModel
+                {
+                    OperationStatus = OperationStatus.Added
+                };
             }
             catch(Exception e)
             {
                 log?.Log(e.Message + '\n' + e.InnerException);
-                return OperationStatus.Error;
+
+                return new OperationStatusModel
+                {
+                    OperationStatus = OperationStatus.Error
+                };
             }
         }
 

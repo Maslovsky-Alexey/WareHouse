@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
 using WareHouse.Data.Model;
+using WareHouse.Data.Model.AnswerModel;
 using WareHouse.Data.Repository;
 using WareHouse.Domain.Service.ModelsMapper;
 using WareHouse.Domain.ServiceInterfaces;
@@ -29,9 +30,16 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return (await repository.GetAll()).Select(MapToServiceModel);
         }
 
-        public virtual async Task<OperationStatus> Add(ServiceModel item)
+        public virtual async Task<OperationStatusModel> Add(ServiceModel item)
         {
-            return await repository.Add(MapToEFModel(item));
+            var result = await repository.Add(MapToEFModel(item));
+
+            if (result.OperationStatus == OperationStatus.Added)
+            {
+                OnNext(await GetItem(result.Id));
+            }
+
+            return result;
         }
 
         public async Task<OperationStatus> Remove(ServiceModel item)

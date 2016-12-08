@@ -29,7 +29,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
             if (client != null)
                 return false;
 
-            if (await Add(value) == Data.Repository.OperationStatus.Added)
+            if ((await Add(value)).OperationStatus == Data.Repository.OperationStatus.Added)
                 OnNext(value);
 
             return true;

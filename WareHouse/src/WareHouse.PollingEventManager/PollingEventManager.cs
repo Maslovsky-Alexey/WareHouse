@@ -19,7 +19,6 @@ namespace WareHouse.PollingEventManager
             if (instance == null)
             {
                 instance = new PollingEventManager(cache);
-                cache.Clear();
             }
              
             return instance;

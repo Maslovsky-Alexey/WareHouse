@@ -75,7 +75,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<OperationStatus> AddOrder(OrderViewModel item)
         {
-            return await unsafeOrderService.Add(new Order
+            return (await unsafeOrderService.Add(new Order
             {
                 ClientId = item.Client.Id,
                 EmployeeId = (await safeEmployeeService.GetEmployeeByName(item.Employee.Name, true)).Id,
@@ -83,13 +83,13 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 StatusId = (await safeItemStatusService.GetStatus(Status.Processing)).Id,
                 Count = item.Count,
                 DateTime = DateTime.Now
-            });
+            })).OperationStatus;
 
         }
 
         public async Task<OperationStatus> AddSupply(SupplyViewModel supply)
         {
-            return await unsafeSupplyService.Add(new Supply
+            return (await unsafeSupplyService.Add(new Supply
             {
                 ProviderId = supply.Provider.Id,
                 EmployeeId = (await safeEmployeeService.GetEmployeeByName(supply.Employee.Name, true)).Id,
@@ -97,7 +97,7 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 StatusId = (await safeItemStatusService.GetStatus(Status.Processing)).Id,
                 Count = supply.Count,
                 DateTime = DateTime.Now
-            });
+            })).OperationStatus;
         }
 
         public async Task<ConfirmationStatus> ConfirmOrder(int orderId)

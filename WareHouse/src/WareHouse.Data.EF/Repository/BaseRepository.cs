@@ -9,6 +9,7 @@ using WareHouse.Data.Model;
 using WareHouse.Data.Repository;
 using WareHouse.LogHelper;
 using WareHouse.MyOData;
+using WareHouse.Data.Model.AnswerModel;
 
 namespace WareHouse.Data.EF.Repository
 {
@@ -35,7 +36,7 @@ namespace WareHouse.Data.EF.Repository
             return await table.ToArrayAsync();
         }
 
-        public virtual async Task<OperationStatus> Add(T item)
+        public virtual async Task<OperationStatusModel> Add(T item)
         {
             var count = 0;
 
@@ -48,10 +49,14 @@ namespace WareHouse.Data.EF.Repository
             catch (Exception e)
             {
                 log?.Log(e.Message + '\n' + e.InnerException);
-                return OperationStatus.Error;
+                return new OperationStatusModel { OperationStatus = OperationStatus.Error };
             }
 
-            return count > 0 ? OperationStatus.Added : OperationStatus.NotAdded;
+            return new OperationStatusModel
+            {
+                OperationStatus = count > 0 ? OperationStatus.Added : OperationStatus.NotAdded,
+                Id = item.Id
+            };            
         }
 
         public virtual async Task<OperationStatus> Remove(T item)
