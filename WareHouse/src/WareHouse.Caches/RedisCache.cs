@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Serialization;
 
 namespace WareHouse.Caches
 {    
@@ -40,7 +41,10 @@ namespace WareHouse.Caches
 
         public void AddOrUpdate(string key, object item)
         {
-            database.StringSet(key, JsonConvert.SerializeObject(item));
+            database.StringSet(key, JsonConvert.SerializeObject(item, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            }));
         }
 
         public void Remove(string key)

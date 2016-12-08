@@ -1,6 +1,7 @@
 .profile-items-view{
   border: 1px solid gray;
   overflow: auto;
+  height: 500px;
 }
 
 .profile-items-prop{

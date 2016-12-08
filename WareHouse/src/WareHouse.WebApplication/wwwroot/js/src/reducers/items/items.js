@@ -4,6 +4,10 @@ import {
   GET_ITEMS_FAILED
 } from '../../constants/items/items'
 
+import {
+  CHANGE_OR_ADD_ITEM,
+} from '../../constants/pollingEventManager/pollingEventManager'
+
 const initialState = {
   items: [],
   errorMessage: null
@@ -26,6 +30,18 @@ export default function items(state = initialState, action) {
       return Object.assign({}, state, {
         errorMessage: action.payload.errorMessage
       })
+
+    case CHANGE_OR_ADD_ITEM:
+      let newState = Object.assign({}, state);
+      for (let i = 0; i < newState.items.length; i++){
+        if (newState.items[i].id == action.payload.id){
+          newState.items[i] = action.payload;
+          return newState;
+        }
+      }
+
+      newState.items.push(action.payload);
+      return newState;
 
      default:
        return state;

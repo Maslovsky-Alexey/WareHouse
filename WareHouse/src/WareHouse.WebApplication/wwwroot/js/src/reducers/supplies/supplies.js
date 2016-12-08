@@ -13,6 +13,10 @@ import {
   ADD_SUPPLY_SUCCESS
 } from '../../constants/supplies/supplies'
 
+import {
+  CHANGE_OR_ADD_SUPPLY,
+} from '../../constants/pollingEventManager/pollingEventManager'
+
 const initialState = {
   items: [],
   ready: true,
@@ -52,6 +56,17 @@ export default function supplies(state = initialState, action) {
         ready: true,
         errorMessage: action.payload.errorMessage
       })
+
+    case CHANGE_OR_ADD_SUPPLY:
+      let newState = Object.assign({}, state);
+      for (let i = 0; i < newState.items.length; i++){
+        if (newState.items[i].id == action.payload.id){
+          newState.items[i] = action.payload;
+          return newState;
+        }
+      }
+      newState.items.push(action.payload);
+      return newState;
 
      default:
        return state;

@@ -13,6 +13,10 @@ import {
   ADD_ORDER_SUCCESS
 } from '../../constants/orders/orders'
 
+import {
+  CHANGE_OR_ADD_ORDER,
+} from '../../constants/pollingEventManager/pollingEventManager'
+
 const initialState = {
   items: [],
   ready: true,
@@ -52,6 +56,17 @@ export default function orders(state = initialState, action) {
         errorMessage: action.payload.errorMessage,
         ready: true
       })
+
+    case CHANGE_OR_ADD_ORDER:
+      let newState = Object.assign({}, state);
+      for (let i = 0; i < newState.items.length; i++){
+        if (newState.items[i].id == action.payload.id){
+          newState.items[i] = action.payload;
+          return newState;
+        }
+      }
+      newState.items.push(action.payload);
+      return newState;
 
      default:
        return state;

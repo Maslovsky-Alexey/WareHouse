@@ -23,6 +23,16 @@ namespace WareHouse.Data.EF.Repository
                 .ToListAsync();
         }
 
+        public override async Task<Order> GetItem(int id)
+        {
+            return await table
+            .Include(x => x.Item)
+            .Include(x => x.Status)
+            .Include(x => x.Client)
+            .Include(x => x.Employee)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task UpdateOrderStatus(int id, int statusId)
         {
             var order = await GetItem(id);
