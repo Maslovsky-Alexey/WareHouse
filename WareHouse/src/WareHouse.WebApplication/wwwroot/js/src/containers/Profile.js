@@ -19,8 +19,8 @@ import 'react-block-ui/style.css'
 
 class Profile extends Component {
   componentDidMount(){
-      this.props.suppliesActions.getSupplies();
-      this.props.ordersActions.getOrders();
+        this.props.suppliesActions.getSupplies();
+        this.props.ordersActions.getOrders();
   }
 
   render() {

@@ -98,6 +98,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
         private IEnumerable<WarehouseItemViewModel> SearchItems(IEnumerable<WarehouseItemViewModel> source, string searchString)
         {
             var items = new List<WarehouseItemViewModel>();
+
+            foreach (var item in source)
+            {
+                elasticSearchProvider.AddUpdateEntity(item);
+            }
+
             var searchItems = elasticSearchProvider.QueryString(searchString);
 
             if (searchItems == null)
