@@ -65,7 +65,6 @@ namespace WareHouse.Domain.Service.ConcreteServices
         public async Task<UserModel> GetUserByName(string username)
         {
             var apiUser = await authHelper.GetUserByName(username);
-
             return await MapToUserModel(apiUser);
         }
 
@@ -101,20 +100,32 @@ namespace WareHouse.Domain.Service.ConcreteServices
         private async Task<string> GetUserName(string id, IEnumerable<string> roles)
         {
             if (roles.Contains("employee"))
-                return (await safeEmployeeService.GetEmployeeByIdentityId(id)).Name;
+                return (await safeEmployeeService.GetEmployeeByIdentityId(id))?.Name;
             if (roles.Contains("client"))
-                return (await safeClientService.GetClientByIdentityId(id)).Name;
+                return (await safeClientService.GetClientByIdentityId(id))?.Name;
 
             return null;
         }
 
         private async Task<UserModel> MapToUserModel(UserAPIModel apiUser)
         {
+            var name = await GetUserName(apiUser.Id, apiUser.Roles);        
+
+            if (name == null)
+            {
+                foreach (var role in apiUser.Roles)
+                {
+                   await AddOrAssignWithApplicationUser(apiUser, role);
+                }     
+            }
+
+            name = await GetUserName(apiUser.Id, apiUser.Roles);
+
             return new UserModel
             {
                 isEmployee = apiUser.Roles.Contains("employee"),
                 Login = apiUser.UserName,
-                Name = await GetUserName(apiUser.Id, apiUser.Roles)
+                Name = name
             };
         }
 

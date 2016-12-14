@@ -28791,7 +28791,7 @@
 	            return;
 	        }
 
-	        new AccountRepository().login(this.state.name, this.state.password, this.successLogin);      
+	        new AccountRepository().login(this.state.name, this.state.password, this.successLogin);
 	    },
 
 	    LoginAD: function () {
@@ -28844,6 +28844,18 @@
 	        new AccountRepository().logFacebook(GenerateRedirectUri());
 	    },
 
+	    isClient: function(){
+	      new AccountRepository().addClientRole(document.getElementById("useris").value, function()  {
+	        document.getElementById("useris").value = "";
+	      });
+	    },
+
+	    isEmployee: function(){
+	      new AccountRepository().addEmployeeRole(document.getElementById("useris").value, function()  {
+	        document.getElementById("useris").value = "";
+	      });
+	    },
+
 	    render: function () {
 	        return (
 	            React.createElement("div", {className: "login-form row"}, 
@@ -28857,21 +28869,24 @@
 	                        React.createElement("input", {type: "password", className: "form-control", id: "password1", placeholder: "Password", onChange: this.passwordChanged})
 	                    ), 
 	                    React.createElement("div", {className: "row"}, 
-	                        React.createElement("div", {className: "col-sm-1"}, 
-	                            React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.Login}, "Login")
+	                        React.createElement("div", {className: "btn-group"}, 
+	                          React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.Login}, "Login"), 
+	                          React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.LoginAD}, "Login as Active Directory"), 
+	                          React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.Register}, "Register")
 	                        ), 
-	                        React.createElement("div", {className: "col-sm-1"}, 
-	                            React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.LoginAD}, "Login as Active Directory")
-	                        ), 
-	                        React.createElement("div", {className: "col-sm-1 col-sm-offset-1"}, 
-	                            React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.Register}, "Register")
-	                        ), 
-	                        React.createElement("div", {className: "col-sm-1 col-sm-offset-1"}, 
-	                            React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.SendVk}, "Vk")
-	                        ), 
-	                        React.createElement("div", {className: "col-sm-1 col-sm-offset-1"}, 
-	                            React.createElement("button", {type: "submit", className: "btn btn-default", onClick: this.SendFacebook}, "Facebook")
+
+	                        React.createElement("div", {className: "btn-group"}, 
+	                          React.createElement("button", {type: "submit", className: "btn btn-primary", onClick: this.SendVk}, "Vk"), 
+	                          React.createElement("button", {type: "submit", className: "btn btn-primary", onClick: this.SendFacebook}, "Facebook")
 	                        )
+	                    ), 
+
+	                    React.createElement("div", {className: "row"}, 
+	                      React.createElement("input", {placeholder: "user name", id: "useris", className: "form-control"}), " IS", 
+	                      React.createElement("div", {className: "btn-group"}, 
+	                        React.createElement("button", {type: "submit", className: "btn btn-warning", onClick: this.isClient}, "Client"), 
+	                        React.createElement("button", {type: "submit", className: "btn btn-warning", onClick: this.isEmployee}, "Employee")
+	                      )
 	                    )
 	                )
 	            )
@@ -28880,7 +28895,6 @@
 	});
 
 	exports.LoginView = LoginView;
-
 
 
 /***/ },
@@ -28923,7 +28937,7 @@
 	                var token = null;
 
 	                if (data != "null") {
-	                    token = httpContext.getResponseHeader("Authorization");                   
+	                    token = httpContext.getResponseHeader("Authorization");
 	                }
 
 	                success(token);
@@ -28990,9 +29004,31 @@
 	                window.location.href = redirectUri;
 	            });
 	    };
+
+	    this._addRole = function(username, role, success) {
+	      serverMediator.sendRequest("api/account/users/" + username + "/roles/?role=" + role,
+	          "post",
+	          null,
+	          function (data) {
+	              if (data == "")
+	                  data = "null";
+
+	              success(JSON.parse(data));
+	          });
+	    };
+
+	    this.addEmployeeRole  = function(username, success) {
+	        this._addRole(username, 'employee', success);
+	    };
+
+	    this.addClientRole = function(username, success) {
+	        this._addRole(username, 'client', success);
+	    };
+
 	};
 
 	exports.AccountRepository = AccountRepository;
+
 
 /***/ },
 /* 467 */

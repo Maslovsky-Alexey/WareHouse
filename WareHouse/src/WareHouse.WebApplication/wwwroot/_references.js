@@ -18,6 +18,7 @@
 /// <reference path="js/public/0.e355babc032f2a8b10b0.hot-update.js" />
 /// <reference path="js/public/0.ed695d61e15a66c551ae.hot-update.js" />
 /// <reference path="js/public/main.js" />
+/// <reference path="js/site.min.js" />
 /// <reference path="js/src/actions/additem/items.js" />
 /// <reference path="js/src/actions/items/items.js" />
 /// <reference path="js/src/actions/notifications/notifications.js" />

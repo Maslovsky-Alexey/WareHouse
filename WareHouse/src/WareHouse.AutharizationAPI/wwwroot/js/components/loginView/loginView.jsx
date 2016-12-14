@@ -17,7 +17,7 @@ var LoginView = React.createClass({
             return;
         }
 
-        new AccountRepository().login(this.state.name, this.state.password, this.successLogin);      
+        new AccountRepository().login(this.state.name, this.state.password, this.successLogin);
     },
 
     LoginAD: function () {
@@ -70,6 +70,18 @@ var LoginView = React.createClass({
         new AccountRepository().logFacebook(GenerateRedirectUri());
     },
 
+    isClient: function(){
+      new AccountRepository().addClientRole(document.getElementById("useris").value, () => {
+        document.getElementById("useris").value = "";
+      });
+    },
+
+    isEmployee: function(){
+      new AccountRepository().addEmployeeRole(document.getElementById("useris").value, () => {
+        document.getElementById("useris").value = "";
+      });
+    },
+
     render: function () {
         return (
             <div className="login-form row">
@@ -83,21 +95,24 @@ var LoginView = React.createClass({
                         <input type="password" className="form-control" id="password1" placeholder="Password" onChange={this.passwordChanged}/>
                     </div>
                     <div className="row">
-                        <div className="col-sm-1">
-                            <button type="submit" className="btn btn-success" onClick={this.Login}>Login</button>
+                        <div className="btn-group">
+                          <button type="submit" className="btn btn-success" onClick={this.Login}>Login</button>
+                          <button type="submit" className="btn btn-success" onClick={this.LoginAD}>Login as Active Directory</button>
+                          <button type="submit" className="btn btn-success" onClick={this.Register}>Register</button>
                         </div>
-                        <div className="col-sm-1">
-                            <button type="submit" className="btn btn-success" onClick={this.LoginAD}>Login as Active Directory</button>
+
+                        <div className="btn-group">
+                          <button type="submit" className="btn btn-primary" onClick={this.SendVk}>Vk</button>
+                          <button type="submit" className="btn btn-primary" onClick={this.SendFacebook}>Facebook</button>
                         </div>
-                        <div className="col-sm-1 col-sm-offset-1">
-                            <button type="submit" className="btn btn-success" onClick={this.Register}>Register</button>
-                        </div>
-                        <div className="col-sm-1 col-sm-offset-1">
-                            <button type="submit" className="btn btn-default" onClick={this.SendVk}>Vk</button>
-                        </div>
-                        <div className="col-sm-1 col-sm-offset-1">
-                            <button type="submit" className="btn btn-default" onClick={this.SendFacebook}>Facebook</button>
-                        </div>
+                    </div>
+
+                    <div className="row">
+                      <input placeholder="user name" id="useris" className="form-control"/> IS
+                      <div className="btn-group">
+                        <button type="submit" className="btn btn-warning" onClick={this.isClient}>Client</button>
+                        <button type="submit" className="btn btn-warning" onClick={this.isEmployee}>Employee</button>
+                      </div>
                     </div>
                 </div>
             </div>
@@ -106,4 +121,3 @@ var LoginView = React.createClass({
 });
 
 exports.LoginView = LoginView;
-

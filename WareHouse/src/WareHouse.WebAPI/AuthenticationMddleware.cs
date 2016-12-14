@@ -61,7 +61,6 @@ namespace WareHouse.WebAPI
                 lock (this)
                 {
                     user = safeAccountService.GetUserByToken(token.Substring(6).Replace(" ", "")).Result;
-
                     if (user == null)
                     {
                         httpContext.Response.StatusCode = 400;
@@ -72,7 +71,7 @@ namespace WareHouse.WebAPI
                         (safeAccountService.GetUserRoles(user.Login).Result).ToArray());
                 }
             }
-            catch
+            catch(Exception e)
             {
                 httpContext.Response.StatusCode = 401;
             }

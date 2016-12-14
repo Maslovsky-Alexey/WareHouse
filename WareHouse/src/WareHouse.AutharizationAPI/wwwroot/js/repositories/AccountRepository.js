@@ -17,7 +17,7 @@ var AccountRepository = function() {
                 var token = null;
 
                 if (data != "null") {
-                    token = httpContext.getResponseHeader("Authorization");                   
+                    token = httpContext.getResponseHeader("Authorization");
                 }
 
                 success(token);
@@ -84,6 +84,27 @@ var AccountRepository = function() {
                 window.location.href = redirectUri;
             });
     };
+
+    this._addRole = function(username, role, success) {
+      serverMediator.sendRequest("api/account/users/" + username + "/roles/?role=" + role,
+          "post",
+          null,
+          function (data) {
+              if (data == "")
+                  data = "null";
+
+              success(JSON.parse(data));
+          });
+    };
+
+    this.addEmployeeRole  = function(username, success) {
+        this._addRole(username, 'employee', success);
+    };
+
+    this.addClientRole = function(username, success) {
+        this._addRole(username, 'client', success);
+    };
+
 };
 
 exports.AccountRepository = AccountRepository;
