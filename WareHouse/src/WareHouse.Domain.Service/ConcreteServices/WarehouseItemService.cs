@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WareHouse.Data.EF.Repository;
@@ -66,16 +68,20 @@ namespace WareHouse.Domain.Service.ConcreteServices
 
         public async Task<PageModel> GetPage(int page, MyODataConfigurates config)
         {
-            var search = GetAndRemoveSearchString(config);        
+            var search = GetAndRemoveSearchString(config);
 
-            var allItems = (await repository.GetAllWithFilter(config))
-                .Select(MapToViewModel);
+            var allItems = (await repository.GetAllWithFilter(config))?.Select(MapToViewModel);
+
+            if (allItems == null)
+            {
+                return new PageModel();
+            }
 
             var items = SearchItems(allItems, search);
-
+ 
             if (items == null || !items.Any())
                 return new PageModel();
-
+        
             return GetPage(items, page);
         }
 

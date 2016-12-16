@@ -12,7 +12,7 @@ export default class WarehouseItemsRepository extends ServerMediator{
   }
 
   getPageItems(success, page) {
-    super.sendRequest("api/warehouseitems/pages/?page=" + page,
+    super.sendRequest("api/warehouseitems/pages?page=" + page,
         "get",
         null,
         function(data) {
@@ -25,7 +25,7 @@ export default class WarehouseItemsRepository extends ServerMediator{
 
   getPageItemsWithFilter(success, page, filter) {
     if (filter){
-      super.sendRequest("api/warehouseitems/pages/?page=" + page + "&" + filter,
+      super.sendRequest("api/warehouseitems/pages?page=" + page + "&" + filter,
           "get",
           null,
           function(data) {
@@ -36,7 +36,7 @@ export default class WarehouseItemsRepository extends ServerMediator{
           });
     }
     else{
-      super.sendRequest("api/warehouseitems/pages/?page=" + page,
+      super.sendRequest("api/warehouseitems/pages?page=" + page,
           "get",
           null,
           function(data) {

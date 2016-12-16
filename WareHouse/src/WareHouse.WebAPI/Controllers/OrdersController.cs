@@ -27,7 +27,7 @@ namespace WareHouse.WebAPI.Controllers
         // GET: api/values
 
         [HttpGet]
-        [Authorize(Roles = "employee")]
+        [Authorize]
         public async Task<IEnumerable<OrderViewModel>> Get()
         {
             return await safeOrderService.GetAllAsViewModel();

@@ -122,14 +122,14 @@ export function getClients() {
   }
 }
 
-export function addProvider(provider) {
+export function addProvider(providerName) {
   return (dispatch) => {
     dispatch({
       type: ADD_PROVIDER_REQUEST,
       payload: {}
     })
 
-    new ActorsRepository().addProvder(() => {
+    new ActorsRepository().addProvder({name: providerName}, () => {
       if (data != null){
         dispatch({
           type: ADD_PROVIDER_SUCCESS,

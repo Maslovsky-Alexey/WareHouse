@@ -13,6 +13,18 @@ export default class AddItemForm extends Component {
   desc = ""
   isValidDesc = false
   isValidName = false
+  b64 = ""
+
+  componentDidMount(){
+    var r = this;
+    document.getElementById('file').onchange = function (e) {
+      let reader = new FileReader();
+       reader.onload = function (e) {
+         r.b64 = e.target.result;
+       }
+      reader.readAsDataURL(e.target.files[0]);
+    };
+  }
 
   changeValidName(isValid, text){
       this.name = text;
@@ -25,11 +37,11 @@ export default class AddItemForm extends Component {
   }
 
   Send(){
-      if (this.isValidName == false || this.isValidDesc == false){
+      if (this.isValidName == false || this.isValidDesc == false || this.b64 == ""){
         return;
       }
 
-      this.props.send(this.name, this.desc, this.success);
+      this.props.send(this.name, this.desc, this.b64, this.success);
   }
 
   success(){
@@ -48,6 +60,7 @@ export default class AddItemForm extends Component {
             <ValidationInput rule={validator.description} changeValid={::this.changeValidDesc} id='add-input-dis'/>
 
             <br/>
+            <input type="file" id="file" />
             <button className='btn btn-success' onClick={::this.Send}>Add</button>
         </div>
     </div>

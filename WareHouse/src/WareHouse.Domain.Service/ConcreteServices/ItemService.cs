@@ -7,14 +7,18 @@ using WareHouse.Domain.ServiceInterfaces;
 using System.Reactive.Subjects;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace WareHouse.Domain.Service.ConcreteServices
 {
     public class ItemService : BaseService<Item, Data.Model.Item>, IItemService
     {
-        public ItemService(BaseRepository<Data.Model.Item> repository, IMapConfigurator mapConfigurator) : base(repository,
+        private readonly string fileLocation;
+
+        public ItemService(BaseRepository<Data.Model.Item> repository, IMapConfigurator mapConfigurator, string fileLocation) : base(repository,
             new ModelsMapper<Data.Model.Item, Item>(mapConfigurator))
         {
+            this.fileLocation = fileLocation;
         }
 
         public async Task AddWithoutRepetition(Item model)
@@ -25,6 +29,19 @@ namespace WareHouse.Domain.Service.ConcreteServices
                 return;
 
             await Add(model);
+        }
+
+        protected override Data.Model.Item MapToEFModel(Model.Item model)
+        {
+            var fileName = $"{DateTime.Now.Ticks}_{model.Name}";
+            File.WriteAllBytes(fileLocation + @"\" + fileName, Convert.FromBase64String(model.Base64));  // Вынести в отдельный класс
+
+            return new Data.Model.Item
+            {
+                Description = model.Description,
+                Name = model.Name,
+                FileLocation = fileName
+            };
         }
 
         public async Task<Item> GetItemByName(string name, bool ignoreCase)

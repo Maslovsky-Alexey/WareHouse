@@ -21,6 +21,8 @@ namespace WareHouse.RegistrationTypes.Modules
 {
     public class ServicesModule : Module
     {
+        private string fileLocation = "D:\\Dev2.0\\images";
+
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<NotificationsService>().As<ISafeNotificationsService>();
@@ -34,7 +36,7 @@ namespace WareHouse.RegistrationTypes.Modules
 
         private void RegisterProxyServices(ContainerBuilder builder)
         {
-            builder.Register(context => new ItemProxyService(new ItemService(context.Resolve<BaseRepository<Item>>(), context.Resolve<ItemMapConfigurator>()),
+            builder.Register(context => new ItemProxyService(new ItemService(context.Resolve<BaseRepository<Item>>(), context.Resolve<ItemMapConfigurator>(), fileLocation),
                context.Resolve<ICacheManager>().AddOrGetExistSection("ItemService", context.ResolveKeyed<ICache>("Items"))));
 
             builder.Register(context => new SupplyProxyService(new SupplyService(context.Resolve<BaseRepository<Supply>>(), context.Resolve<SupplyMapConfigurator>()),
@@ -60,7 +62,7 @@ namespace WareHouse.RegistrationTypes.Modules
         public void RegisterUnsafeServices(ContainerBuilder builder)
         {
             builder.Register(context => new ClientService(context.Resolve<BaseRepository<Client>>(), context.Resolve<ClientMapConfigurator>())).As<IUnsafeClientService>();
-            builder.Register(context => new ItemService(context.Resolve<BaseRepository<Item>>(), context.Resolve<ItemMapConfigurator>())).As<IUnsafeItemService>();
+            builder.Register(context => new ItemService(context.Resolve<BaseRepository<Item>>(), context.Resolve<ItemMapConfigurator>(), fileLocation)).As<IUnsafeItemService>();
             builder.Register(context => new ProviderService(context.Resolve<BaseRepository<Provider>>(), context.Resolve<ProviderMapConfigurator>())).As<IUnsafeProviderService>();
             builder.Register(context => new EmployeeService(context.Resolve<BaseRepository<Employee>>(), context.Resolve<EmployeeMapConfigurator>())).As<IUnsafeEmployeeService>();
             builder.Register(context => new ItemStatusService(context.Resolve<BaseRepository<ItemStatus>>(), context.Resolve<ItemStatusMapConfigurator>())).As<IUnsafeItemStatusService>();

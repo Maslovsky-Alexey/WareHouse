@@ -42,27 +42,28 @@ export default class OperationsRepository extends ServerMediator{
       super.sendRequest("api/operations/supplies", "post", JSON.stringify(model), success);
   }
 
-  addItemWithoutRepetition(item, desc, success) {
+  addItemWithoutRepetition(item, desc, b64, success) {
       const model = {
         name: item,
-        description: desc
+        description: desc,
+        base64: b64.substring(b64.indexOf('base64,') + 7) // временный костыль
       }
       super.sendRequest("api/operations/items", "post", JSON.stringify(model), success);
   }
 
   confirmOrder(id, success) {
-      super.sendRequest("api/operations/orders/actions/confirm/" + id, "put", null, success);
+      super.sendRequest("api/operations/orders/actions/confirm/" + id, "post", null, success);
   }
 
   confirmSupply(id, success) {
-      super.sendRequest("api/operations/supplies/actions/confirm/" + id, "put", null, success);
+      super.sendRequest("api/operations/supplies/actions/confirm/" + id, "post", null, success);
   }
 
   returnOrder(id, success) {
-      super.sendRequest("api/operations/orders/actions/return/" + id, "put", null, success);
+      super.sendRequest("api/operations/orders/actions/return/" + id, "post", null, success);
   }
 
   returnSupply(id, success) {
-      super.sendRequest("api/operations/supplies/actions/return/" + id, "put", null, success);
+      super.sendRequest("api/operations/supplies/actions/return/" + id, "post", null, success);
   }
 }

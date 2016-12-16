@@ -5,7 +5,7 @@ import {
 
 import OperationsRepository from '../../repositories/OperationsRepository'
 
-export function addItem(itemName, desc, success) {
+export function addItem(itemName, desc, b64, success) {
 
   return (dispatch) => {
     dispatch({
@@ -14,7 +14,7 @@ export function addItem(itemName, desc, success) {
     });
 
 
-    new OperationsRepository().addItemWithoutRepetition(itemName, desc, () => {
+    new OperationsRepository().addItemWithoutRepetition(itemName, desc, b64, () => {
         success();
         dispatch({
           type: ADD_ITEM_SUCCESS,

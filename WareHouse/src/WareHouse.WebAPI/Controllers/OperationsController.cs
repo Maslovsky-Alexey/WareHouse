@@ -58,7 +58,7 @@ namespace WareHouse.WebAPI.Controllers
         }
                 
         [Route("orders/actions/confirm/{id}")]
-        [HttpPut("{id}")]
+        [HttpPost("{id}")]
         [Authorize]
         public async Task ConfirmOrder(int id)
         {
@@ -67,7 +67,7 @@ namespace WareHouse.WebAPI.Controllers
         }
 
         [Route("supplies/actions/confirm/{id}")]
-        [HttpPut("{id}")]
+        [HttpPost("{id}")]
         [Authorize(Roles = "employee")]
         public async Task ConfirmSupply(int id)
         {
@@ -76,7 +76,7 @@ namespace WareHouse.WebAPI.Controllers
         }
 
         [Route("orders/actions/return/{id}")]
-        [HttpPut("{id}")]
+        [HttpPost("{id}")]
         [Authorize]
         public async Task ReturnOrder(int id)
         {
@@ -85,7 +85,7 @@ namespace WareHouse.WebAPI.Controllers
         }
 
         [Route("supplies/actions/return/{id}")]
-        [HttpPut("{id}")]
+        [HttpPost("{id}")]
         [Authorize(Roles = "employee")]
         public async Task ReturnSupply(int id)
         {

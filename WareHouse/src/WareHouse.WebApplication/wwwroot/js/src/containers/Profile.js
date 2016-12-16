@@ -28,7 +28,7 @@ class Profile extends Component {
     const {getUserInformation} = this.props.aboutActions
     const orders = this.props.orders.items
     const supplies = this.props.supplies.items
-    const {addClient, addEmployee} = this.props.adminActions
+    const {addClient, addEmployee, addProvider} = this.props.adminActions
 
     return <BlockUi tag="div" blocking={!this.props.ready}>
       {
@@ -38,7 +38,7 @@ class Profile extends Component {
             {
               isEmployee ?
                 <div>
-                  <UserActions addClient={addClient} addEmployee={addEmployee}/>
+                  <UserActions addClient={addClient} addEmployee={addEmployee} addProvider={addProvider}/>
                   Supplies
                   <GridView items={supplies} properties={generateSupplyModel(
                       (item) => {this.props.suppliesActions.confirmSupply(item.id)},

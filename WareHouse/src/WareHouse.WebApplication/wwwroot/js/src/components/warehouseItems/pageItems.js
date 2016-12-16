@@ -16,7 +16,7 @@ export default class Items extends Component {
           return (
               <div className="col-sm-4 col-lg-4 col-md-4" key={index }>
                   <div className="thumbnail">
-                      <img src={item.imgSrc ? item.imgSrc : "http://placehold.it/320x150"} alt=""/>
+                      <img src={item.base64 ? item.base64 : "http://placehold.it/320x150"} alt=""/>
                       <div className="caption">
                           <h4 className="pull-right">count: {item.count}</h4>
                           <h4>

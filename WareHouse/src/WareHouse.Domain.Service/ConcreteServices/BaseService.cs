@@ -57,12 +57,12 @@ namespace WareHouse.Domain.Service.ConcreteServices
             return await repository.Count();
         }
 
-        protected EFModel MapToEFModel(ServiceModel model)
+        protected virtual EFModel MapToEFModel(ServiceModel model)
         {
             return mapper.MapEF(model);
         }
 
-        protected ServiceModel MapToServiceModel(EFModel model)
+        protected virtual ServiceModel MapToServiceModel(EFModel model)
         {
             return mapper.MapService(model);
         }
